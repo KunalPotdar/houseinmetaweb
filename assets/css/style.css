@@ -1,0 +1,189 @@
+/* Minimal responsive styles for the House in Meta scaffold */
+.hero-wrapper {
+  position: relative;
+  margin: -2rem -1rem 4rem;
+  padding: 2rem 1rem;
+  background-image: url('/assets/images/aex-1.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 80vh;
+}
+
+.hero-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, 
+    rgba(0,0,0,0.5) 0%, 
+    rgba(0,0,0,0.4) 100%
+  );
+  z-index: 1;
+}
+
+.hero-section {
+  position: relative;
+  z-index: 2;
+  padding: 3rem 0;
+}
+
+.hero-content {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  color: white;
+  text-align: center;
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  padding-top: 1rem;
+}
+
+.brand h1, .brand div {
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+nav a {
+  color: white !important;
+  opacity: 0.9;
+}
+
+nav a:hover {
+  opacity: 1;
+}
+
+.slideshow-image.active {
+  display: block;
+}
+
+.slide-nav {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.slide-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.slide-dot.active {
+  background: white;
+}
+
+@keyframes fade {
+  from {opacity: 0.8}
+  to {opacity: 1}
+}
+
+@keyframes flip {
+  0% {
+    transform: perspective(400px) rotateY(0);
+  }
+  100% {
+    transform: perspective(400px) rotateY(360deg);
+  }
+}
+
+.logo-flip {
+  animation: flip 3s infinite linear;
+  transform-style: preserve-3d;
+}
+
+.logo-flip:hover {
+  animation-play-state: paused;
+}
+
+:root{
+  --bg:#4e8ce1;  /* Medium blue background */
+  --text:#000080;  /* Navy blue for main text */
+  --card:#ffffff;
+  --muted:#1a365d;  /* Darker navy for muted text */
+  --accent:#000080;  /* Navy blue for accents */
+  --glass:rgba(255,255,255,0.95);  /* More opaque for better text contrast */
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  margin:0;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  color:var(--text);
+  background: var(--bg);
+}
+@keyframes gradient {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+.container{max-width:980px;margin:2rem auto;padding:1rem}
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+}
+.brand h1 {
+  color:white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+.brand div {
+  color:white !important;
+}
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:8px;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+nav a {
+  color:white !important;
+  text-decoration:none;
+  margin-left:1rem;
+  opacity:0.9;
+  transition:opacity 0.2s;
+}
+nav a:hover {
+  opacity:1;
+}
+.hero{
+  margin-top:2rem;
+  padding:2rem;
+  border-radius:12px;
+  background:var(--card);
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
+}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;margin-top:1rem}
+.card{
+  background:var(--card);
+  padding:1.5rem;
+  border-radius:12px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.03);
+  border:1px solid rgba(0,0,0,0.05);
+  color:var(--text);  /* Navy blue text in cards */
+}
+.footer{text-align:center;color:var(--muted);margin-top:2rem;padding:2rem 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}}

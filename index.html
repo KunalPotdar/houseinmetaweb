@@ -7,92 +7,188 @@
   <meta name="description" content="House in Meta — personal site scaffold">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" href="/assets/images/favicon.ico" />
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add scroll to top button
+      const body = document.body;
+      const scrollBtn = document.createElement('button');
+      scrollBtn.className = 'scroll-top';
+      scrollBtn.innerHTML = '↑';
+      scrollBtn.setAttribute('aria-label', 'Scroll to top');
+      body.appendChild(scrollBtn);
+
+      // Handle scroll to top button visibility
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 500) {
+          scrollBtn.classList.add('visible');
+        } else {
+          scrollBtn.classList.remove('visible');
+        }
+      });
+
+      // Scroll to top when button is clicked
+      scrollBtn.addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Update current section based on scroll
+      window.addEventListener('scroll', function() {
+        if (window.innerWidth <= 900) { // Only on mobile
+          const sections = ['home', 'solutions', 'projects', 'blog', 'about', 'contact'];
+          let currentSection = 'Navigation';
+
+          sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              if (rect.top <= 150 && rect.bottom >= 150) {
+                currentSection = section.charAt(0).toUpperCase() + section.slice(1);
+              }
+            }
+          });
+
+          document.querySelector('.current-section span:first-child').textContent = currentSection;
+        }
+      });
+
+      // Close mobile menu when a link is clicked
+      document.querySelectorAll('.mobile-nav-items a').forEach(link => {
+        link.addEventListener('click', function() {
+          document.querySelector('.mobile-breadcrumbs').classList.remove('active');
+        });
+      });
+    });
+  </script>
 </head>
 <body>
-  <div class="hero-wrapper">
-    <div class="container">
-      <header class="header">
-        <div class="brand">
-          <img src="/assets/images/HouseInMeta.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:80px;background:none;box-shadow:0 0 20px rgba(255,255,255,0.4);border-radius:12px;padding:8px" />
+  <div class="hero-wrapper" style="height:100vh;display:flex;flex-direction:column;margin:0;padding:0">
+    <div class="container" style="flex:1;display:flex;flex-direction:column;max-width:none;margin:0;padding:0">
+      <header class="header" style="padding:2rem 4rem;position:fixed;top:0;left:0;right:0;z-index:100">
+        <div class="brand" style="mix-blend-mode:difference">
+          <img src="/assets/images/HouseInMeta.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:60px;background:none;box-shadow:0 0 20px rgba(255,255,255,0.4);border-radius:12px;padding:8px" />
           <div>
-            <h1 style="margin:0;font-size:2.2rem">House In Meta</h1>
-            <div style="font-size:1.2rem">Your Home, Forever Yours !</div>
+            <h1 style="margin:0;font-size:1.8rem;color:white">House in Meta</h1>
+            <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
           </div>
         </div>
-        <nav>
-          <a href="#home">Home</a>
-          <a href="#solutions">Solutions</a>
-          <a href="#projects">Projects</a>
-          <a href="#blog">Blog</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+
+        <!-- Mobile Breadcrumbs -->
+        <div class="mobile-breadcrumbs" style="display:none;width:100%;margin:1rem 0;padding:8px 16px;background:rgba(255,255,255,0.1);border-radius:8px;backdrop-filter:blur(5px)">
+          <div class="current-section" style="display:flex;align-items:center;justify-content:space-between;color:white;cursor:pointer" onclick="this.parentElement.classList.toggle('active')">
+            <span>Navigation</span>
+            <span style="transform:rotate(0deg);transition:transform 0.3s">▼</span>
+          </div>
+          <div class="mobile-nav-items" style="display:none;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.1)">
+            <a href="#home" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Home</a>
+            <a href="#solutions" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Solutions</a>
+            <a href="#projects" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Projects</a>
+            <a href="#blog" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Blog</a>
+            <a href="#about" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">About</a>
+            <a href="#contact" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Contact</a>
+          </div>
+        </div>
+
+        <nav style="mix-blend-mode:difference">
+          <a href="#home" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Home</a>
+          <a href="#solutions" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Solutions</a>
+          <a href="#projects" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Projects</a>
+          <a href="#blog" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Blog</a>
+          <a href="#about" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">About</a>
+          <a href="#contact" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Contact</a>
         </nav>
       </header>
 
-      <main>
-        <section id="home" class="hero-section">
-          <div class="hero-content">
-            <h1 style="font-size:2.8rem;margin:0 0 2rem;font-weight:600">Virtual Real Estates - Reveal before Build</h1>
-            <p style="font-size:1.2rem;line-height:1.6;margin:0 auto;max-width:600px">
+      <main style="flex:1;display:flex;align-items:center;justify-content:center;padding:0 2rem">
+        <section id="home" class="hero-section" style="text-align:center;max-width:1400px;margin:0 auto">
+          <div class="hero-content" style="opacity:0;animation:fadeIn 1s ease-out 0.5s forwards">
+            <h1 style="font-size:5rem;margin:0 0 2rem;font-weight:700;letter-spacing:-0.02em;line-height:1.1">
+              Virtual Real Estates<br>
+              <span style="color:var(--accent)">Reveal before Build</span>
+            </h1>
+            <p style="font-size:1.5rem;line-height:1.6;margin:2rem auto;max-width:800px;font-weight:300">
               Transform your architectural vision into immersive digital experiences. Let clients explore your properties in stunning detail, anytime, anywhere.</p>
-        </div>
-      </section>
+            <div style="margin-top:3rem">
+              <a href="#contact" style="display:inline-block;padding:1.2rem 3rem;background:white;color:black;text-decoration:none;font-size:1.1rem;font-weight:500;border-radius:3px;transition:transform 0.3s ease">Start Your Project</a>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
 
-  <div class="container">
-    <section class="card" style="background:white;padding:3rem;border-radius:12px;margin:-4rem auto 4rem;position:relative;z-index:3;box-shadow:0 4px 24px rgba(0,0,0,0.1)">
-      <h2 style="font-size:1.8rem;font-weight:600;margin:0 0 2rem;text-align:center;color:var(--accent)">Transform Spaces into Digital Experiences</h2>
-      <div style="max-width:800px;margin:0 auto">
-        <p class="muted" style="font-size:1.1rem;line-height:1.6;margin-bottom:2rem">
-          For real estate developers, every project is more than just construction — it's the art of bringing spaces to life and inspiring buyers' imagination.
-        </p>
-          
-          <p class="muted" style="margin-bottom:2rem">
+  <div class="container" style="max-width:1400px;padding:4rem 2rem">
+    <section class="card" style="padding:0;border-radius:12px;margin:-4rem auto 4rem;position:relative;z-index:3;box-shadow:0 4px 24px rgba(0,0,0,0.1);display:flex;min-height:600px;overflow:hidden">
+      <!-- Left side content -->
+      <div style="flex:1;padding:4rem;max-width:50%;display:flex;flex-direction:column;justify-content:center">
+        <h2 style="font-size:3rem;font-weight:600;margin:0 0 2rem;text-align:center">Why House In Meta?</h2>
+        <div style="text-align:center">
+          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem">
+            For real estate developers, every project is more than just construction — it's the art of bringing spaces to life and inspiring buyers' imagination.
+          </p>
+
+          <p class="muted" style="margin-bottom:2rem;font-size:1.4rem">
             At HouseInMeta, we transform your architectural vision into an immersive, web-based 3D experience, enabling clients and investors to explore your properties anytime, anywhere.
           </p>
-
-          <div style="background:var(--glass);padding:2rem;border-radius:12px;margin:2rem 0">
-            <p class="muted" style="margin-bottom:1.5rem">Our advanced Web 3D Visualization converts your plans into interactive Digital Twins, helping you:</p>
-            
-            <ul style="list-style:none;padding:0;margin:0;color:var(--accent)">
-              <li style="margin-bottom:1rem;display:flex;align-items:center">
-                <span style="display:inline-block;width:6px;height:6px;background:currentColor;border-radius:50%;margin-right:1rem"></span>
-                Showcase upcoming projects before completion
-              </li>
-              <li style="margin-bottom:1rem;display:flex;align-items:center">
-                <span style="display:inline-block;width:6px;height:6px;background:currentColor;border-radius:50%;margin-right:1rem"></span>
-                Accelerate pre-sales through realistic, virtual walkthroughs
-              </li>
-              <li style="margin-bottom:1rem;display:flex;align-items:center">
-                <span style="display:inline-block;width:6px;height:6px;background:currentColor;border-radius:50%;margin-right:1rem"></span>
-                Enhance design reviews with spatial clarity and precision
-              </li>
-            </ul>
+          <style>
+            @keyframes popLoop {
+              0%, 10% { opacity: 0; transform: scale(0.5); }
+              15% { transform: scale(1.1); }
+              20%, 90% { opacity: 1; transform: scale(1); }
+              95% { opacity: 0; transform: scale(0.5); }
+              100% { opacity: 0; transform: scale(0.5); }
+            }
+          </style>
+          <div style="display:flex;justify-content:center;gap:4rem;margin:3rem 0">
+            <div style="text-align:center">
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite">Showcase</span>
+            </div>
+            <div style="text-align:center">
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 3s">Engage</span>
+            </div>
+            <div style="text-align:center">
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 6s">Accelerate</span>
+            </div>
           </div>
-
-          <p class="muted" style="font-size:1.1rem;line-height:1.6;text-align:center">
-            From concept to marketing, our platform turns your developments into engaging digital experiences that drive confidence, speed decisions, and elevate your brand presence.
-          </p>
         </div>
-      </section>
-      
-      <section id="solutions" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2rem">Solutions That Drive Results</h2>
-        <p class="muted" style="margin-bottom:2rem">Speed up property sales with immersive digital experiences</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1rem">
-          <div style="padding:1rem;background:var(--glass);border-radius:8px">
-            <h3 style="margin-top:0">Interactive Property Customization</h3>
-            <p class="muted">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
-          </div>
-          <div style="padding:1rem;background:var(--glass);border-radius:8px">
-            <h3 style="margin-top:0">Photorealistic Exterior Views</h3>
-            <p class="muted">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
-          </div>
-          <div style="padding:1rem;background:var(--glass);border-radius:8px">
-            <h3 style="margin-top:0">Immersive Virtual Tours</h3>
-            <p class="muted">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
+      </div>
+
+      <!-- Right side image -->
+      <div style="flex:1;position:relative;background:linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0))">
+        <img src="/assets/images/aex-1.png"
+             alt="Digital Real Estate Experience"
+             style="width:100%;height:100%;object-fit:cover;object-position:center;clip-path:polygon(10% 0, 100% 0, 100% 100%, 0% 100%)" />
+      </div>
+    </section>
+
+      <section id="solutions" class="card" style="margin-bottom:4rem;padding:0;display:flex;min-height:600px;overflow:hidden">
+        <!-- Left side image -->
+        <div style="flex:0 0 50%;position:relative;background:linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0))">
+          <img src="/assets/images/aex-3.png"
+               alt="Solutions Showcase"
+               style="width:100%;height:100%;object-fit:cover;object-position:center;clip-path:polygon(0 0, 100% 0, 90% 100%, 0 100%)" />
+        </div>
+
+        <!-- Right side content -->
+        <div style="flex:3;padding:3rem 6rem;display:flex;flex-direction:column;justify-content:center">
+          <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Our Solutions</h2>
+          <div style="display:flex;flex-direction:column;gap:1.2rem">
+            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
+              <h3 style="margin-top:0;font-size:1.4rem">3D Real Estate Configurator</h3>
+              <p class="muted" style="margin-bottom:0">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
+            </div>
+            
+            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
+              <h3 style="margin-top:0;font-size:1.4rem">3D Exteriors</h3>
+              <p class="muted" style="margin-bottom:0">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
+            </div>
+            
+            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
+              <h3 style="margin-top:0;font-size:1.4rem">3D Immersive Walkthroughs</h3>
+              <p class="muted" style="margin-bottom:0">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -100,10 +196,10 @@
       <section id="blog" class="card" style="margin-bottom:4rem">
         <h2 style="font-size:2rem">Latest Blog Posts</h2>
         <p class="muted" style="margin-bottom:2rem">Insights and updates from the world of virtual real estate</p>
-        
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:2rem">
           <!-- Blog Post 1 -->
-          <div class="card" style="background:var(--glass);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
+          <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/blog-1.jpg" alt="Virtual Reality in Real Estate" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
             <h3 style="margin:0.5rem 0">The Future of Real Estate: Virtual Reality Tours</h3>
             <p class="muted" style="margin:0.5rem 0">How VR is revolutionizing property viewings and changing the way we buy homes.</p>
@@ -111,7 +207,7 @@
           </div>
 
           <!-- Blog Post 2 -->
-          <div class="card" style="background:var(--glass);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
+          <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/blog-2.jpg" alt="3D Visualization Tips" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
             <h3 style="margin:0.5rem 0">5 Tips for Better 3D Property Visualization</h3>
             <p class="muted" style="margin:0.5rem 0">Expert advice on creating stunning 3D visualizations that sell properties faster.</p>
@@ -119,7 +215,7 @@
           </div>
 
           <!-- Blog Post 3 -->
-          <div class="card" style="background:var(--glass);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
+          <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/blog-3.jpg" alt="Digital Twin Technology" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
             <h3 style="margin:0.5rem 0">Digital Twins: The Next Big Thing in Property Tech</h3>
             <p class="muted" style="margin:0.5rem 0">Understanding digital twin technology and its impact on real estate development.</p>
@@ -132,15 +228,15 @@
         <h2 style="font-size:2rem">Success Stories</h2>
         <p class="muted" style="margin-bottom:2rem">Real results from our immersive 3D solutions</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem">
-          <div class="card" style="background:var(--glass)">
+          <div class="card" style="background:var(--accent)">
             <h3>Premium Property Showcase</h3>
             <p class="muted">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
           </div>
-          <div class="card" style="background:var(--glass)">
+          <div class="card" style="background:var(--accent)">
             <h4>Commercial Space Virtual Tour</h4>
             <p class="muted">Web-based 3D walkthrough of a modern office complex with real-time lighting.</p>
           </div>
-          <div class="card" style="background:var(--glass)">
+          <div class="card" style="background:var(--accent)">
             <h4>Furniture Showcase</h4>
             <p class="muted">Product configuration system for a premium furniture manufacturer.</p>
           </div>
@@ -197,7 +293,7 @@
     let currentSlideIndex = 0;
     const slides = document.querySelectorAll('.slideshow-image');
     const dots = document.querySelectorAll('.slide-dot');
-    
+
     function currentSlide(n) {
       showSlides(currentSlideIndex = n);
     }
@@ -205,7 +301,7 @@
     function showSlides(n) {
       slides.forEach(slide => slide.classList.remove('active'));
       dots.forEach(dot => dot.classList.remove('active'));
-      
+
       slides[n].classList.add('active');
       dots[n].classList.add('active');
     }

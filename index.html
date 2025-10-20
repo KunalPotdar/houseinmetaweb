@@ -7,6 +7,143 @@
   <meta name="description" content="House in Meta — personal site scaffold">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" href="/assets/images/favicon.ico" />
+  <style>
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      /* Header adjustments */
+      .header {
+        padding: 1rem !important;
+      }
+      
+      .brand {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+      
+      .brand img {
+        height: 60px !important;
+        margin-bottom: 0.5rem;
+      }
+      
+      .brand h1 {
+        font-size: 1.2rem !important;
+      }
+      
+      .brand div {
+        font-size: 0.8rem !important;
+      }
+      
+      /* Hide desktop nav, show mobile breadcrumbs */
+      nav {
+        display: none !important;
+      }
+      
+      .mobile-breadcrumbs {
+        display: block !important;
+      }
+      
+      .mobile-breadcrumbs.active .mobile-nav-items {
+        display: block !important;
+      }
+      
+      .mobile-breadcrumbs.active .current-section span:last-child {
+        transform: rotate(180deg) !important;
+      }
+      
+      /* Hero section */
+      .hero-section h1 {
+        font-size: 2.5rem !important;
+      }
+      
+      .hero-section p {
+        font-size: 1.1rem !important;
+      }
+      
+      /* Card sections - stack vertically */
+      .card[style*="display:flex"] {
+        flex-direction: column !important;
+      }
+      
+      .card > div[style*="flex:1"],
+      .card > div[style*="flex:0"],
+      .card > div[style*="flex:3"] {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        min-height: 300px !important;
+      }
+      
+      .card h2 {
+        font-size: 1.8rem !important;
+      }
+      
+      .card p {
+        font-size: 1rem !important;
+      }
+      
+      /* Adjust padding */
+      .card > div {
+        padding: 2rem 1.5rem !important;
+      }
+      
+      /* Keywords animation section */
+      div[style*="gap:4rem"] {
+        gap: 2rem !important;
+        flex-wrap: wrap !important;
+      }
+      
+      div[style*="gap:4rem"] span {
+        font-size: 1.2rem !important;
+      }
+      
+      /* Solutions section */
+      #solutions > div[style*="flex:3"] {
+        padding: 2rem 1.5rem !important;
+      }
+      
+      /* Image clip paths - remove on mobile for better display */
+      .card img[style*="clip-path"] {
+        clip-path: none !important;
+      }
+      
+      /* Grid layouts */
+      div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+      }
+      
+      /* Contact section */
+      #contact > div {
+        grid-template-columns: 1fr !important;
+      }
+      
+      /* Container padding */
+      .container {
+        padding: 2rem 1rem !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      /* Extra small screens */
+      .hero-section h1 {
+        font-size: 2rem !important;
+      }
+      
+      .hero-section p {
+        font-size: 1rem !important;
+      }
+      
+      .card h2 {
+        font-size: 1.5rem !important;
+      }
+      
+      div[style*="gap:4rem"] {
+        gap: 1rem !important;
+      }
+      
+      div[style*="gap:4rem"] span {
+        font-size: 1rem !important;
+      }
+    }
+  </style>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Add scroll to top button

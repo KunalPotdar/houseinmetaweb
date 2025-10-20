@@ -67,13 +67,13 @@
   <div class="hero-wrapper" style="height:100vh;display:flex;flex-direction:column;margin:0;padding:0">
     <div class="container" style="flex:1;display:flex;flex-direction:column;max-width:none;margin:0;padding:0">
       <header class="header" style="padding:2rem 4rem;position:fixed;top:0;left:0;right:0;z-index:100">
-        <div class="brand" style="mix-blend-mode:difference">
-          <img src="/assets/images/HouseInMeta.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:60px;background:none;box-shadow:0 0 20px rgba(255,255,255,0.4);border-radius:12px;padding:8px" />
-          <div>
-            <h1 style="margin:0;font-size:1.8rem;color:white">House in Meta</h1>
-            <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
-          </div>
+      <div class="brand" style="mix-blend-mode:exclusion">
+        <img src="/assets/images/logo.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:100px;background:none;box-shadow:none;border-radius:0;padding:0" />
+        <div>
+          <h1 style="margin:0;font-size:1.8rem;color:white">House In Meta</h1>
+          <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
         </div>
+      </div>
 
         <!-- Mobile Breadcrumbs -->
         <div class="mobile-breadcrumbs" style="display:none;width:100%;margin:1rem 0;padding:8px 16px;background:rgba(255,255,255,0.1);border-radius:8px;backdrop-filter:blur(5px)">
@@ -123,7 +123,7 @@
     <section class="card" style="padding:0;border-radius:12px;margin:-4rem auto 4rem;position:relative;z-index:3;box-shadow:0 4px 24px rgba(0,0,0,0.1);display:flex;min-height:600px;overflow:hidden">
       <!-- Left side content -->
       <div style="flex:1;padding:4rem;max-width:50%;display:flex;flex-direction:column;justify-content:center">
-        <h2 style="font-size:3rem;font-weight:600;margin:0 0 2rem;text-align:center">Why House In Meta?</h2>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Why House In Meta?</h2>
         <div style="text-align:center">
           <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem">
             For real estate developers, every project is more than just construction — it's the art of bringing spaces to life and inspiring buyers' imagination.
@@ -194,57 +194,68 @@
       </section>
 
       <section id="blog" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2rem">Latest Blog Posts</h2>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Discover our Blogs</h2>
         <p class="muted" style="margin-bottom:2rem">Insights and updates from the world of virtual real estate</p>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:2rem">
           <!-- Blog Post 1 -->
-          <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
-            <img src="/assets/images/blog-1.jpg" alt="Virtual Reality in Real Estate" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">The Future of Real Estate: Virtual Reality Tours</h3>
-            <p class="muted" style="margin:0.5rem 0">How VR is revolutionizing property viewings and changing the way we buy homes.</p>
+         <a href="https://houseinmetablog.wordpress.com/2025/07/23/the-role-of-3d-models-and-virtual-tours-in-real-estate/" target="_blank" style="text-decoration:none;color:inherit;">
+          <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" 
+              onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" 
+              onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
+            <img src="/assets/images/image-1.png" alt="Virtual Reality in Real Estate" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
+            <h3 style="margin:0.5rem 0">The Role of 3D Models and Virtual Tours in Real Estate</h3>
+            <p class="muted" style="margin:0.5rem 0">Discover How 3D models can be leveraged in Real Estate.</p>
             <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
           </div>
-
-          <!-- Blog Post 2 -->
+        </a>
+        <a href="https://houseinmetablog.wordpress.com/2025/06/20/experience-homeownership-360-tours-for-global-buyers/" target="_blank" style="text-decoration:none;color:inherit;">
           <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
-            <img src="/assets/images/blog-2.jpg" alt="3D Visualization Tips" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">5 Tips for Better 3D Property Visualization</h3>
-            <p class="muted" style="margin:0.5rem 0">Expert advice on creating stunning 3D visualizations that sell properties faster.</p>
+            <img src="/assets/images/image-2.png" alt="3D Visualization Tips" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
+            <h3 style="margin:0.5rem 0">Experience Homeownership: 360° Tours for Global Buyers</h3>
+            <p class="muted" style="margin:0.5rem 0">Explore how 360° Virtual Towers bridges dreams to decision.</p>
             <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
           </div>
-
+        </a>
           <!-- Blog Post 3 -->
+        <a href="https://houseinmetablog.wordpress.com/2025/07/01/why-real-estate-developers-should-embrace-3d-360-web-visualization/" target="_blank" style="text-decoration:none;color:inherit;">
           <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
-            <img src="/assets/images/blog-3.jpg" alt="Digital Twin Technology" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">Digital Twins: The Next Big Thing in Property Tech</h3>
-            <p class="muted" style="margin:0.5rem 0">Understanding digital twin technology and its impact on real estate development.</p>
+            <img src="/assets/images/image-3.png" alt="Digital Twin Technology" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
+            <h3 style="margin:0.5rem 0">Why Real Estate Developers Should Embrace 3D + 360° Web Visualization</h3>
+            <p class="muted" style="margin:0.5rem 0">The Future of Property Marketing Starts Online and In 3D</p>
             <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
           </div>
         </div>
+      </a>
       </section>
 
       <section id="projects" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2rem">Success Stories</h2>
-        <p class="muted" style="margin-bottom:2rem">Real results from our immersive 3D solutions</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem">
-          <div class="card" style="background:var(--accent)">
-            <h3>Premium Property Showcase</h3>
-            <p class="muted">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
+      <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Our Featured Customer Story</h2>
+      <p class="muted" style="margin-bottom:2rem">Real results from our immersive 3D solutions</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem">
+        
+        <!-- Highlighted Project with Thumbnail -->
+        <a href="https://www.yogconstruction.com/projects/aashirwad.html" target="_blank" style="text-decoration:none;color:inherit;">
+          <div class="card" style="background:var(--accent);border:2px solid rgb(34, 34, 34);
+              box-shadow:0 8px 24px rgba(0,0,0,0.15);transform:scale(1.02);
+              transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;
+              overflow:hidden;border-radius:12px;">
+            <img src="/assets/images/marathin.png" 
+                alt="Aashirwad Project Thumbnail" 
+                style="width:100%;height:400px;object-fit:cover;">
+            <div style="padding:1rem;">
+              <h3>Premium Property Showcase</h3>
+              <p class="muted">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
+              <div style="margin-top:0.5rem;color:rgb(255, 253, 253);font-weight:500;">View Project →</div>
+            </div>
           </div>
-          <div class="card" style="background:var(--accent)">
-            <h4>Commercial Space Virtual Tour</h4>
-            <p class="muted">Web-based 3D walkthrough of a modern office complex with real-time lighting.</p>
-          </div>
-          <div class="card" style="background:var(--accent)">
-            <h4>Furniture Showcase</h4>
-            <p class="muted">Product configuration system for a premium furniture manufacturer.</p>
-          </div>
-        </div>
+        </a>
+
       </section>
 
       <section id="about" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2rem">Industry Expertise</h2>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Industry Expertise</h2>
         <p class="muted" style="margin-bottom:2rem">Transforming real estate visualization since 2023</p>
         <div style="display:grid;grid-template-columns:1fr auto;gap:2rem;margin-top:1rem">
           <div>
@@ -264,7 +275,7 @@
       </section>
 
       <section id="contact" class="card">
-        <h2 style="font-size:2rem">Start Your Digital Transformation</h2>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Trusted Partner in Your Success !</h2>
         <p class="muted" style="margin-bottom:2rem">Let's discuss how 3D visualization can enhance your property marketing</p>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;margin-top:1rem">
           <div>

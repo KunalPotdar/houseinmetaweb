@@ -14,42 +14,34 @@
       .header {
         padding: 1rem !important;
         justify-content: center !important;
+        flex-wrap: nowrap !important;
       }
       
       .brand {
-        flex-direction: column !important;
+        flex: 1 !important;
+        flex-direction: row !important;
         align-items: center !important;
         text-align: center !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
       }
       
       .brand img {
-        height: 60px !important;
-        margin-bottom: 0.5rem;
+        height: 70px !important;
+        margin-bottom: 0 !important;
       }
       
       .brand h1 {
-        font-size: 1.2rem !important;
+        font-size: 1.4rem !important;
       }
       
-      .brand div {
-        font-size: 0.8rem !important;
+      .brand > div > div {
+        font-size: 0.9rem !important;
       }
       
-      /* Hide desktop nav, show mobile breadcrumbs */
+      /* Hide desktop nav on mobile */
       nav {
         display: none !important;
-      }
-      
-      .mobile-breadcrumbs {
-        display: block !important;
-      }
-      
-      .mobile-breadcrumbs.active .mobile-nav-items {
-        display: block !important;
-      }
-      
-      .mobile-breadcrumbs.active .current-section span:last-child {
-        transform: rotate(180deg) !important;
       }
       
       /* Hero section */
@@ -112,6 +104,43 @@
         grid-template-columns: 1fr !important;
       }
       
+      /* Blog section cards - compact on mobile */
+      #blog .card {
+        min-height: auto !important;
+      }
+      
+      #blog .card img {
+        height: 150px !important;
+      }
+      
+      #blog .card h3 {
+        font-size: 1.1rem !important;
+        line-height: 1.3 !important;
+      }
+      
+      #blog .card p {
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+      }
+      
+      /* Projects section - image fit on mobile */
+      #projects .card img {
+        height: 200px !important;
+        object-fit: cover !important;
+      }
+      
+      #projects .card {
+        min-height: auto !important;
+      }
+      
+      #projects .card h3 {
+        font-size: 1.2rem !important;
+      }
+      
+      #projects .card p {
+        font-size: 0.9rem !important;
+      }
+      
       /* Contact section */
       #contact > div {
         grid-template-columns: 1fr !important;
@@ -156,13 +185,38 @@
       scrollBtn.setAttribute('aria-label', 'Scroll to top');
       body.appendChild(scrollBtn);
 
-      // Handle scroll to top button visibility
+      // Header hide/show on scroll
+      const header = document.querySelector('.header');
+      let lastScrollTop = 0;
+      let scrollTimer = null;
+
       window.addEventListener('scroll', function() {
-        if (window.scrollY > 500) {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Show/hide scroll to top button
+        if (scrollTop > 500) {
           scrollBtn.classList.add('visible');
         } else {
           scrollBtn.classList.remove('visible');
         }
+
+        // Hide/show header based on scroll direction
+        if (scrollTop > 100) { // Start hiding after scrolling 100px
+          if (scrollTop > lastScrollTop) {
+            // Scrolling down - hide header
+            header.style.transform = 'translateY(-100%)';
+            header.style.transition = 'transform 0.3s ease-in-out';
+          } else {
+            // Scrolling up - show header
+            header.style.transform = 'translateY(0)';
+            header.style.transition = 'transform 0.3s ease-in-out';
+          }
+        } else {
+          // Near top of page - always show header
+          header.style.transform = 'translateY(0)';
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
       });
 
       // Scroll to top when button is clicked
@@ -172,61 +226,18 @@
           behavior: 'smooth'
         });
       });
-
-      // Update current section based on scroll
-      window.addEventListener('scroll', function() {
-        if (window.innerWidth <= 900) { // Only on mobile
-          const sections = ['home', 'solutions', 'projects', 'blog', 'about', 'contact'];
-          let currentSection = 'Navigation';
-
-          sections.forEach(section => {
-            const element = document.getElementById(section);
-            if (element) {
-              const rect = element.getBoundingClientRect();
-              if (rect.top <= 150 && rect.bottom >= 150) {
-                currentSection = section.charAt(0).toUpperCase() + section.slice(1);
-              }
-            }
-          });
-
-          document.querySelector('.current-section span:first-child').textContent = currentSection;
-        }
-      });
-
-      // Close mobile menu when a link is clicked
-      document.querySelectorAll('.mobile-nav-items a').forEach(link => {
-        link.addEventListener('click', function() {
-          document.querySelector('.mobile-breadcrumbs').classList.remove('active');
-        });
-      });
     });
   </script>
 </head>
 <body>
   <div class="hero-wrapper" style="height:100vh;display:flex;flex-direction:column;margin:0;padding:0">
     <div class="container" style="flex:1;display:flex;flex-direction:column;max-width:none;margin:0;padding:0">
-      <header class="header" style="padding:2rem 4rem;position:fixed;top:0;left:0;right:0;z-index:100">
-      <div class="brand" style="mix-blend-mode:exclusion">
-        <img src="/assets/images/logo.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:100px;background:none;box-shadow:none;border-radius:0;padding:0" />
-        <div>
-          <h1 style="margin:0;font-size:1.8rem;color:white">House In Meta</h1>
-          <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
-        </div>
-      </div>
-
-        <!-- Mobile Breadcrumbs -->
-        <div class="mobile-breadcrumbs" style="display:none;width:100%;margin:1rem 0;padding:8px 16px;background:rgba(255,255,255,0.1);border-radius:8px;backdrop-filter:blur(5px)">
-          <div class="current-section" style="display:flex;align-items:center;justify-content:space-between;color:white;cursor:pointer" onclick="this.parentElement.classList.toggle('active')">
-            <span>Navigation</span>
-            <span style="transform:rotate(0deg);transition:transform 0.3s">▼</span>
-          </div>
-          <div class="mobile-nav-items" style="display:none;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.1)">
-            <a href="#home" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Home</a>
-            <a href="#solutions" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Solutions</a>
-            <a href="#projects" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Projects</a>
-            <a href="#blog" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Blog</a>
-            <a href="#about" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">About</a>
-            <a href="#contact" style="display:block;color:white;text-decoration:none;padding:8px 0;opacity:0.9">Contact</a>
+      <header class="header" style="padding:2rem 4rem;position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center">
+        <div class="brand" style="mix-blend-mode:exclusion;display:flex;align-items:center;gap:1rem">
+          <img src="/assets/images/logo.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:100px;background:none;box-shadow:none;border-radius:0;padding:0" />
+          <div>
+            <h1 style="margin:0;font-size:1.8rem;color:white">House In Meta</h1>
+            <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
           </div>
         </div>
 
@@ -434,28 +445,5 @@
     <footer class="footer">© House in Meta</footer>
   </div>
   <script src="/assets/js/main.js"></script>
-  <script>
-    let currentSlideIndex = 0;
-    const slides = document.querySelectorAll('.slideshow-image');
-    const dots = document.querySelectorAll('.slide-dot');
-
-    function currentSlide(n) {
-      showSlides(currentSlideIndex = n);
-    }
-
-    function showSlides(n) {
-      slides.forEach(slide => slide.classList.remove('active'));
-      dots.forEach(dot => dot.classList.remove('active'));
-
-      slides[n].classList.add('active');
-      dots[n].classList.add('active');
-    }
-
-    // Auto advance slides
-    setInterval(() => {
-      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-      showSlides(currentSlideIndex);
-    }, 5000); // Change slide every 5 seconds
-  </script>
 </body>
 </html>

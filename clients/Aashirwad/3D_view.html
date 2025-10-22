@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>2D View</title>
+  <style>
+    body {
+      text-align: center;
+      background: #f0f0f0;
+    }
+       img {
+      display: block;
+      margin: 30px auto 0 auto;
+      max-width: 100vw;
+      max-height: 80vh;
+      width: auto;
+      height: auto;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="title">3D Floor Plan</h2>
+  <img id="floor-image" src="" alt="2D Floor Plan">
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const aptId = params.get('id'); // e.g., A-102
+    if (aptId) {
+      document.getElementById('title').textContent = `3D Floor Plan`;
+      document.getElementById('floor-image').src = `https://apt-hsim-models.s3.eu-west-3.amazonaws.com/apts/3D_plan.jpg`;
+    }
+  </script>
+</body>
+</html>

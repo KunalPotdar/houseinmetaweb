@@ -56,9 +56,9 @@ controls.minDistance = 5;
 controls.maxDistance = 20;
 controls.minZoom = 2.5;
 controls.maxZoom = 8.5;
-controls.minPolarAngle = 1.5; // Prevent looking up too high
-controls.maxPolarAngle = 1.5; // Prevent looking down too low
-controls.autoRotate = true;   // Enable auto rotation
+controls.minPolarAngle = 1.2; // Prevent looking up too high
+controls.maxPolarAngle = 1.0; // Prevent looking down too low
+controls.autoRotate = false;   // Enable auto rotation
 controls.autoRotateSpeed = 1.2; // Optional: set rotation speed
 controls.target.set(0, 0, 0); // Ensure this is the model's center
 controls.rotateSpeed = 0.6;   // Lower value for smoother rotation
@@ -140,7 +140,7 @@ scene.add(sky);
 
 const uniforms = sky.material.uniforms;
 uniforms['turbidity'].value = 5;        
-uniforms['rayleigh'].value = 2;        // Less blue, more warm
+uniforms['rayleigh'].value = 4;        // Less blue, more warm
 uniforms['mieCoefficient'].value = 0.02; // More sun haze
 uniforms['mieDirectionalG'].value = 0.85;// More forward scattering
 

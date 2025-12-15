@@ -470,17 +470,20 @@
           <img src="/assets/images/logo.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:100px;background:none;box-shadow:none;border-radius:0;padding:0" />
           <div>
             <h1 style="margin:0;font-size:1.8rem;color:white">House In Meta</h1>
-            <div style="font-size:1rem;color:white">Your Home, Forever Yours !</div>
+            <div style="font-size:1rem;color:white" data-i18n="common.tagline">Your Home, Forever Yours !</div>
           </div>
         </div>
 
-        <nav style="mix-blend-mode:difference">
-          <a href="#home" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Home</a>
-          <a href="#solutions" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Solutions</a>
-          <a href="#projects" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Projects</a>
-          <a href="#blog" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Blog</a>
-          <a href="#about" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">About</a>
-          <a href="#contact" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px">Contact</a>
+        <nav style="mix-blend-mode:difference;display:flex;align-items:center;gap:0.5rem">
+          <a href="#home" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.home">Home</a>
+          <a href="#solutions" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.solutions">Solutions</a>
+          <a href="#projects" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.projects">Projects</a>
+          <a href="#blog" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.blog">Blog</a>
+          <a href="#about" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.about">About</a>
+          <a href="#contact" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.contact">Contact</a>
+          <button id="langToggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:0.5rem 1rem;border-radius:20px;cursor:pointer;font-size:0.9rem;font-weight:500;transition:all 0.3s;backdrop-filter:blur(10px);display:flex;align-items:center;gap:0.5rem" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'" aria-label="Switch to French">
+            <span class="lang-flag">🇫🇷</span> <span class="lang-code">FR</span>
+          </button>
         </nav>
       </header>
 
@@ -488,13 +491,13 @@
         <section id="home" class="hero-section" style="text-align:center;max-width:1400px;margin:0 auto">
           <div class="hero-content" style="opacity:0;animation:fadeIn 1s ease-out 0.5s forwards">
             <h1 style="font-size:5rem;margin:0 0 2rem;font-weight:700;letter-spacing:-0.02em;line-height:1.1">
-              Virtual Real Estates<br>
-              <span style="color:var(--accent)">Reveal before Build</span>
+              <span data-i18n="hero.title1">Virtual Real Estates</span><br>
+              <span style="color:var(--accent)" data-i18n="hero.title2">Reveal before Build</span>
             </h1>
-            <p style="font-size:1.5rem;line-height:1.6;margin:2rem auto;max-width:800px;font-weight:300">
+            <p style="font-size:1.5rem;line-height:1.6;margin:2rem auto;max-width:800px;font-weight:300" data-i18n="hero.description">
               Transform your architectural vision into immersive digital experiences. Let clients explore your properties in stunning detail, anytime, anywhere.</p>
             <div style="margin-top:3rem">
-              <a href="#contact" style="display:inline-block;padding:1.2rem 3rem;background:white;color:black;text-decoration:none;font-size:1.1rem;font-weight:500;border-radius:3px;transition:transform 0.3s ease">Start Your Project</a>
+              <a href="#contact" style="display:inline-block;padding:1.2rem 3rem;background:white;color:black;text-decoration:none;font-size:1.1rem;font-weight:500;border-radius:3px;transition:transform 0.3s ease" data-i18n="hero.cta">Start Your Project</a>
             </div>
           </div>
         </section>
@@ -506,13 +509,13 @@
     <section class="card" style="padding:0;border-radius:12px;margin:-4rem auto 4rem;position:relative;z-index:3;box-shadow:0 4px 24px rgba(0,0,0,0.1);display:flex;min-height:600px;overflow:hidden">
       <!-- Left side content -->
       <div style="flex:1;padding:4rem;max-width:50%;display:flex;flex-direction:column;justify-content:center">
-        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Why House In Meta?</h2>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="why.title">Why House In Meta?</h2>
         <div style="text-align:center">
-          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem">
+          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem" data-i18n="why.intro">
             For real estate developers, every project is more than just construction — it's the art of bringing spaces to life and inspiring buyers' imagination.
           </p>
 
-          <p class="muted" style="margin-bottom:2rem;font-size:1.4rem">
+          <p class="muted" style="margin-bottom:2rem;font-size:1.4rem" data-i18n="why.description">
             At HouseInMeta, we transform your architectural vision into an immersive, web-based 3D experience, enabling clients and investors to explore your properties anytime, anywhere.
           </p>
           <style>
@@ -526,13 +529,13 @@
           </style>
           <div style="display:flex;justify-content:center;gap:4rem;margin:3rem 0">
             <div style="text-align:center">
-              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite">Showcase</span>
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite" data-i18n="why.keyword1">Showcase</span>
             </div>
             <div style="text-align:center">
-              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 3s">Engage</span>
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 3s" data-i18n="why.keyword2">Engage</span>
             </div>
             <div style="text-align:center">
-              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 6s">Accelerate</span>
+              <span style="color:var(--accent);font-weight:700;font-size:1.6rem;display:block;animation:popLoop 9s ease-out infinite 6s" data-i18n="why.keyword3">Accelerate</span>
             </div>
           </div>
         </div>
@@ -556,29 +559,29 @@
 
         <!-- Right side content -->
         <div style="flex:3;padding:3rem 6rem;display:flex;flex-direction:column;justify-content:center">
-          <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Our Solutions</h2>
+          <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="solutions.title">Our Solutions</h2>
           <div style="display:flex;flex-direction:column;gap:1.2rem">
             <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem">3D Real Estate Configurator</h3>
-              <p class="muted" style="margin-bottom:0">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
+              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.configurator.title">3D Real Estate Configurator</h3>
+              <p class="muted" style="margin-bottom:0" data-i18n="solutions.configurator.desc">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
             </div>
             
             <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem">3D Exteriors</h3>
-              <p class="muted" style="margin-bottom:0">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
+              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.exteriors.title">3D Exteriors</h3>
+              <p class="muted" style="margin-bottom:0" data-i18n="solutions.exteriors.desc">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
             </div>
             
             <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem">3D Immersive Walkthroughs</h3>
-              <p class="muted" style="margin-bottom:0">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
+              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.walkthroughs.title">3D Immersive Walkthroughs</h3>
+              <p class="muted" style="margin-bottom:0" data-i18n="solutions.walkthroughs.desc">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
             </div>
           </div>
         </div>
       </section>
 
       <section id="blog" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Discover our Blogs</h2>
-        <p class="muted" style="margin-bottom:2rem">Insights and updates from the world of virtual real estate</p>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="blog.title">Discover our Blogs</h2>
+        <p class="muted" style="margin-bottom:2rem" data-i18n="blog.subtitle">Insights and updates from the world of virtual real estate</p>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:2rem">
           <!-- Blog Post 1 -->
@@ -587,34 +590,34 @@
               onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" 
               onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/image-1.png" alt="Virtual Reality in Real Estate" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">The Role of 3D Models and Virtual Tours in Real Estate</h3>
-            <p class="muted" style="margin:0.5rem 0">Discover How 3D models can be leveraged in Real Estate.</p>
-            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
+            <h3 style="margin:0.5rem 0" data-i18n="blog.post1.title">The Role of 3D Models and Virtual Tours in Real Estate</h3>
+            <p class="muted" style="margin:0.5rem 0" data-i18n="blog.post1.desc">Discover How 3D models can be leveraged in Real Estate.</p>
+            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)" data-i18n="blog.readmore">Read More</div>
           </div>
         </a>
         <a href="https://houseinmetablog.wordpress.com/2025/06/20/experience-homeownership-360-tours-for-global-buyers/" target="_blank" style="text-decoration:none;color:inherit;">
           <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/image-2.png" alt="3D Visualization Tips" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">Experience Homeownership: 360° Tours for Global Buyers</h3>
-            <p class="muted" style="margin:0.5rem 0">Explore how 360° Virtual Towers bridges dreams to decision.</p>
-            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
+            <h3 style="margin:0.5rem 0" data-i18n="blog.post2.title">Experience Homeownership: 360° Tours for Global Buyers</h3>
+            <p class="muted" style="margin:0.5rem 0" data-i18n="blog.post2.desc">Explore how 360° Virtual Towers bridges dreams to decision.</p>
+            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)" data-i18n="blog.readmore">Read More</div>
           </div>
         </a>
           <!-- Blog Post 3 -->
         <a href="https://houseinmetablog.wordpress.com/2025/07/01/why-real-estate-developers-should-embrace-3d-360-web-visualization/" target="_blank" style="text-decoration:none;color:inherit;">
           <div class="card" style="background:var(--accent);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.03)'">
             <img src="/assets/images/image-3.png" alt="Digital Twin Technology" style="width:100%;height:200px;object-fit:cover;border-radius:8px;margin-bottom:1rem">
-            <h3 style="margin:0.5rem 0">Why Real Estate Developers Should Embrace 3D + 360° Web Visualization</h3>
-            <p class="muted" style="margin:0.5rem 0">The Future of Property Marketing Starts Online and In 3D</p>
-            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Read More →</div>
+            <h3 style="margin:0.5rem 0" data-i18n="blog.post3.title">Why Real Estate Developers Should Embrace 3D + 360° Web Visualization</h3>
+            <p class="muted" style="margin:0.5rem 0" data-i18n="blog.post3.desc">The Future of Property Marketing Starts Online and In 3D</p>
+            <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)" data-i18n="blog.readmore">Read More</div>
           </div>
         </div>
       </a>
       </section>
 
       <section id="projects" class="card" style="margin-bottom:4rem">
-      <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Our Featured Customer Story</h2>
-      <p class="muted" style="margin-bottom:2rem">Real results from our immersive 3D solutions</p>
+      <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="projects.title">Our Featured Customer Story</h2>
+      <p class="muted" style="margin-bottom:2rem" data-i18n="projects.subtitle">Real results from our immersive 3D solutions</p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem">
         
@@ -628,9 +631,9 @@
                 alt="Aashirwad Project Thumbnail" 
                 style="width:100%;height:400px;object-fit:cover;">
             <div style="padding:1rem;">
-              <h3>Premium Property Showcase</h3>
-              <p class="muted">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
-              <div style="margin-top:0.5rem;color:rgb(255, 253, 253);font-weight:500;">View Project →</div>
+              <h3 data-i18n="projects.featured.title">Premium Property Showcase</h3>
+              <p class="muted" data-i18n="projects.featured.desc">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
+              <div style="margin-top:0.5rem;color:rgb(255, 253, 253);font-weight:500;" data-i18n="projects.view">View Project</div>
             </div>
           </div>
         </a>
@@ -638,28 +641,28 @@
       </section>
 
       <section id="about" class="card" style="margin-bottom:4rem">
-        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Industry Expertise</h2>
-        <p class="muted" style="margin-bottom:2rem">Transforming real estate visualization since 2023</p>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="about.title">Industry Expertise</h2>
+        <p class="muted" style="margin-bottom:2rem" data-i18n="about.subtitle">Transforming real estate visualization since 2023</p>
         <div style="display:grid;grid-template-columns:1fr auto;gap:2rem;margin-top:1rem">
           <div>
-            <p>We specialize in creating immersive 3D experiences that revolutionize how properties are showcased online. Our team combines expertise in architectural visualization, WebGL development, and user experience design to deliver solutions that drive engagement and accelerate sales.</p>
-            <p class="muted">Founded in 2023, we've helped numerous clients transform their traditional showcases into interactive 3D experiences.</p>
+            <p data-i18n="about.intro">We specialize in creating immersive 3D experiences that revolutionize how properties are showcased online. Our team combines expertise in architectural visualization, WebGL development, and user experience design to deliver solutions that drive engagement and accelerate sales.</p>
+            <p class="muted" data-i18n="about.founded">Founded in 2023, we've helped numerous clients transform their traditional showcases into interactive 3D experiences.</p>
           </div>
           <div style="background:var(--accent);padding:1.5rem;border-radius:8px">
-            <h4 style="margin-top:0">Quick Facts</h4>
+            <h4 style="margin-top:0" data-i18n="about.facts.title">Quick Facts</h4>
             <ul style="margin:0;padding-left:1.2rem">
-              <li>15+ Years Experience</li>
-              <li>Skilled</li>
-              <li>Strong Work ethics</li>
-              <li>Quality is Our no. 1 priority</li>
+              <li data-i18n="about.facts.experience">15+ Years Experience</li>
+              <li data-i18n="about.facts.skilled">Skilled</li>
+              <li data-i18n="about.facts.ethics">Strong Work ethics</li>
+              <li data-i18n="about.facts.quality">Quality is Our no. 1 priority</li>
             </ul>
           </div>
         </div>
 
         <!-- Careers Subsection -->
         <div style="margin-top:3rem;padding-top:3rem;border-top:2px solid rgba(255,255,255,0.1)">
-          <h3 style="font-size:2rem;margin:0 0 1.5rem">Join Our Team  </h3>
-          <p class="muted" style="margin-bottom:2rem">We're looking for talented individuals to help shape the future of real estate visualization. Freelancers and independent creators are welcome!</p>
+          <h3 style="font-size:2rem;margin:0 0 1.5rem" data-i18n="about.careers.title">Join Our Team  </h3>
+          <p class="muted" style="margin-bottom:2rem" data-i18n="about.careers.subtitle">We're looking for talented individuals to help shape the future of real estate visualization. Freelancers and independent creators are welcome!</p>
           
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem">
             <!-- Job Opening Card -->
@@ -670,17 +673,17 @@
                 <div style="display:flex;align-items:start;gap:1rem;margin-bottom:1rem">
                   <span style="font-size:2rem"></span>
                   <div>
-                    <h4 style="margin:0 0 0.5rem;font-size:1.3rem">3D Creative Artist</h4>
-                    <p class="muted" style="margin:0;font-size:0.9rem">Full-time / Freelance • Remote</p>
+                    <h4 style="margin:0 0 0.5rem;font-size:1.3rem" data-i18n="about.careers.job.title">3D Creative Artist</h4>
+                    <p class="muted" style="margin:0;font-size:0.9rem" data-i18n="about.careers.job.type">Full-time / Freelance • Remote</p>
                   </div>
                 </div>
-                <p style="margin:1rem 0;line-height:1.6">Join our team to create stunning 3D visualizations, immersive walkthroughs, and photorealistic renders for real estate projects.</p>
+                <p style="margin:1rem 0;line-height:1.6" data-i18n="about.careers.job.desc">Join our team to create stunning 3D visualizations, immersive walkthroughs, and photorealistic renders for real estate projects.</p>
                 <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0">
-                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem">3D Modeling</span>
-                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem">Rendering</span>
-                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem">Walkthroughs</span>
+                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem" data-i18n="about.careers.job.skill1">3D Modeling</span>
+                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem" data-i18n="about.careers.job.skill2">Rendering</span>
+                  <span style="padding:0.3rem 0.8rem;background:rgba(255,255,255,0.1);border-radius:20px;font-size:0.85rem" data-i18n="about.careers.job.skill3">Walkthroughs</span>
                 </div>
-                <div style="margin-top:1rem;color:var(--accent);font-weight:500">View Details →</div>
+                <div style="margin-top:1rem;color:var(--accent);font-weight:500" data-i18n="about.careers.job.details">View Details</div>
               </div>
             </a>
           </div>
@@ -688,18 +691,18 @@
       </section>
 
       <section id="contact" class="card">
-        <h2 style="font-size:2.5rem;margin:0 0 1.5rem">Trusted Partner in Your Success !</h2>
-        <p class="muted" style="margin-bottom:2rem">Let's discuss how 3D visualization can enhance your property marketing</p>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="contact.title">Trusted Partner in Your Success !</h2>
+        <p class="muted" style="margin-bottom:2rem" data-i18n="contact.subtitle">Let's discuss how 3D visualization can enhance your property marketing</p>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;margin-top:1rem">
           <div>
-            <p class="muted">Ready to showcase your properties in stunning 3D? Whether you're a real estate agency, developer, or individual property owner, we'll help you create immersive digital experiences that captivate buyers.</p>
+            <p class="muted" data-i18n="contact.intro">Ready to showcase your properties in stunning 3D? Whether you're a real estate agency, developer, or individual property owner, we'll help you create immersive digital experiences that captivate buyers.</p>
             <p style="margin-top:1.5rem">
-              <strong>Email:</strong> <a href="mailto:houseinmeta@gmail.com" style="color:var(--accent)">houseinmeta@gmail.com</a>
+              <strong data-i18n="contact.email">Email</strong>: <a href="mailto:houseinmeta@gmail.com" style="color:var(--accent)">houseinmeta@gmail.com</a>
             </p>
           </div>
           <div style="background:var(--accent);padding:1.5rem;border-radius:8px">
-            <h4 style="margin-top:0">Location</h4>
-            <p class="muted" style="margin:0">Paris, France<br>Available Worldwide</p>
+            <h4 style="margin-top:0" data-i18n="contact.location">Location</h4>
+            <p class="muted" style="margin:0"><span data-i18n="contact.paris">Paris, France</span><br><span data-i18n="contact.available">Available Worldwide</span></p>
           </div>
         </div>
       </section>
@@ -708,5 +711,6 @@
     <footer class="footer">© House in Meta</footer>
   </div>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/i18n.js"></script>
 </body>
 </html>

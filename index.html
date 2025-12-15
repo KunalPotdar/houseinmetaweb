@@ -272,6 +272,13 @@
         font-size: 0.9rem !important;
       }
       
+      /* Mobile controls container */
+      .mobile-controls {
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
       /* Mobile menu button */
       .mobile-menu-toggle {
         display: block !important;
@@ -290,6 +297,13 @@
         justify-content: center;
       }
       
+      /* Language toggle on mobile - visible outside menu */
+      .header #langToggle {
+        display: flex !important;
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.8rem !important;
+      }
+      
       /* Hide desktop nav on mobile, show mobile nav */
       nav {
         display: none !important;
@@ -303,22 +317,39 @@
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        background: rgba(0,0,0,0.95) !important;
+        background: rgba(0,0,0,0.98) !important;
         backdrop-filter: blur(20px) !important;
         z-index: 1000 !important;
-        padding: 2rem !important;
-        gap: 2rem !important;
+        padding: 5rem 2rem 2rem !important;
+        gap: 1.5rem !important;
         align-items: center !important;
         justify-content: center !important;
+        mix-blend-mode: normal !important;
       }
       
       nav.mobile-nav-open a {
-        font-size: 1.5rem !important;
+        font-size: 1.8rem !important;
         margin: 0 !important;
+        padding: 0.8rem 1.5rem !important;
+        color: white !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        letter-spacing: 1px !important;
+        transition: all 0.3s !important;
+        border-radius: 8px !important;
+        width: 80% !important;
+        max-width: 300px !important;
+        text-align: center !important;
       }
       
+      nav.mobile-nav-open a:hover {
+        background: rgba(255,255,255,0.1) !important;
+        transform: scale(1.05) !important;
+      }
+      
+      /* Hide language toggle inside mobile menu */
       nav.mobile-nav-open #langToggle {
-        margin-top: 1rem !important;
+        display: none !important;
       }
       
       .mobile-close-btn {
@@ -578,15 +609,17 @@
           <a href="#blog" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.blog">Blog</a>
           <a href="#about" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.about">About</a>
           <a href="#contact" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.contact">Contact</a>
+        </nav>
+        
+        <!-- Desktop & Mobile Language Toggle + Mobile Menu -->
+        <div class="mobile-controls" style="display:flex;align-items:center;gap:0.5rem">
           <button id="langToggle" onclick="toggleLanguage()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:0.5rem 1rem;border-radius:20px;cursor:pointer;font-size:0.9rem;font-weight:500;transition:all 0.3s;backdrop-filter:blur(10px);display:flex;align-items:center;gap:0.5rem" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'" aria-label="Switch to French">
             <span class="lang-flag">🇫🇷</span> <span class="lang-code">FR</span>
           </button>
-        </nav>
-        
-        <!-- Mobile Menu Toggle Button -->
-        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" style="display:none" aria-label="Open menu">
-          ☰
-        </button>
+          <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" style="display:none" aria-label="Open menu">
+            ☰
+          </button>
+        </div>
       </header>
 
       <main style="flex:1;display:flex;align-items:center;justify-content:center;padding:0 2rem">

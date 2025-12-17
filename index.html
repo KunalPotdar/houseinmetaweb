@@ -514,7 +514,6 @@
       // Header hide/show on scroll
       const header = document.querySelector('.header');
       let lastScrollTop = 0;
-      let scrollTimer = null;
 
       window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -527,7 +526,7 @@
         }
 
         // Hide/show header based on scroll direction
-        if (scrollTop > 100) { // Start hiding after scrolling 100px
+        if (scrollTop > 100) {
           if (scrollTop > lastScrollTop) {
             // Scrolling down - hide header
             header.style.transform = 'translateY(-100%)';
@@ -552,32 +551,8 @@
           behavior: 'smooth'
         });
       });
-    });
-    
-    // Mobile menu toggle function
-    function toggleMobileMenu() {
-      const nav = document.querySelector('nav');
-      const isOpen = nav.classList.contains('mobile-nav-open');
-      
-      if (isOpen) {
-        nav.classList.remove('mobile-nav-open');
-        // Remove close button if exists
-        const closeBtn = nav.querySelector('.mobile-close-btn');
-        if (closeBtn) closeBtn.remove();
-      } else {
-        nav.classList.add('mobile-nav-open');
-        // Add close button
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'mobile-close-btn';
-        closeBtn.innerHTML = '✕';
-        closeBtn.setAttribute('aria-label', 'Close menu');
-        closeBtn.onclick = toggleMobileMenu;
-        nav.insertBefore(closeBtn, nav.firstChild);
-      }
-    }
-    
-    // Close mobile menu when clicking on nav links
-    document.addEventListener('DOMContentLoaded', function() {
+
+      // Close mobile menu when clicking on nav links
       const navLinks = document.querySelectorAll('nav a');
       navLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -588,6 +563,26 @@
         });
       });
     });
+    
+    // Mobile menu toggle function
+    function toggleMobileMenu() {
+      const nav = document.querySelector('nav');
+      const isOpen = nav.classList.contains('mobile-nav-open');
+      
+      if (isOpen) {
+        nav.classList.remove('mobile-nav-open');
+        const closeBtn = nav.querySelector('.mobile-close-btn');
+        if (closeBtn) closeBtn.remove();
+      } else {
+        nav.classList.add('mobile-nav-open');
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'mobile-close-btn';
+        closeBtn.innerHTML = '✕';
+        closeBtn.setAttribute('aria-label', 'Close menu');
+        closeBtn.onclick = toggleMobileMenu;
+        nav.insertBefore(closeBtn, nav.firstChild);
+      }
+    }
   </script>
 </head>
 <body>
@@ -597,8 +592,8 @@
         <div class="brand" style="mix-blend-mode:exclusion;display:flex;align-items:center;gap:1rem">
           <img src="/assets/images/logo.png" alt="House in Meta" class="logo logo-flip" style="width:auto;height:100px;background:none;box-shadow:none;border-radius:0;padding:0" />
           <div>
-            <h1 style="margin:0;font-size:1.8rem;color:white">House In Meta</h1>
-            <div style="font-size:1rem;color:white" data-i18n="common.tagline">Your Home, Forever Yours !</div>
+            <h1 style="margin:0;font-size:1.4rem;color:white">House In Meta</h1>
+            <div style="font-size:0.8rem;color:white" data-i18n="common.tagline">Your Home, Forever Yours !</div>
           </div>
         </div>
 
@@ -646,8 +641,12 @@
       <div style="flex:1;padding:4rem;max-width:50%;display:flex;flex-direction:column;justify-content:center">
         <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="why.title">Why House In Meta?</h2>
         <div style="text-align:center">
-          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem" data-i18n="why.intro">
+          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem" data-i18n="why.introDevelopers">
             For real estate developers, every project is more than just construction — it's the art of bringing spaces to life and inspiring buyers' imagination.
+          </p>
+          
+          <p class="muted" style="font-size:1.4rem;line-height:1.6;margin-bottom:2rem" data-i18n="why.introBuyers">
+            For Home Buyers, home is biggest investment of their life. We help you experience and explore your dream home before it is built.
           </p>
 
           <p class="muted" style="margin-bottom:2rem;font-size:1.4rem" data-i18n="why.description">

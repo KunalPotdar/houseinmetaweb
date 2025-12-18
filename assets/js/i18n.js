@@ -14,7 +14,7 @@ const translations = {
     // Hero Section
     'hero.title1': '3D Real Estates',
     'hero.title2': 'Reveal before Build',
-    'hero.description': 'We offer to manifest your Dream Home with the power of our 3D visualization solutions.',
+    'hero.description': 'Manifest your dream home with the power of our 3D visualization solutions.',
     'hero.cta': 'Start Your Project',
     
     // Why Section
@@ -101,7 +101,7 @@ const translations = {
     // Hero Section
     'hero.title1': 'Immobilier 3D',
     'hero.title2': 'Voyez avant de bâtir',
-    'hero.description': 'Nous offrons de concrétiser votre maison de rêve avec nos solutions de visualisation 3D.',
+    'hero.description': 'Concrétisez votre maison de rêve avec la puissance de nos solutions de visualisation 3D.',
     'hero.cta': 'Démarrer Votre Projet',
     
     // Why Section
@@ -188,7 +188,7 @@ const translations = {
     // Hero Section
     'hero.title1': '3D रियल एस्टेट',
     'hero.title2': 'बनाने से पहले दिखाएं',
-    'hero.description': 'हम अपनी 3D विज़ुअलाइज़ेशन सर्विस के साथ आपके सपनों का घर बनाने का ऑफ़र देते हैं।',
+    'hero.description': 'हमारे 3D विज़ुअलाइज़ेशन समाधानों की शक्ति से अपने सपनों का घर साकार करें।',
     'hero.cta': 'अपना प्रोजेक्ट शुरू करें',
     
     // Why Section
@@ -267,7 +267,7 @@ const translations = {
 // Language state
 let currentLang = localStorage.getItem('houseInMetaLang') || 'en';
 
-// Toggle language function
+// Toggle language function (kept for backwards compatibility)
 function toggleLanguage() {
   if (currentLang === 'en') {
     currentLang = 'fr';
@@ -276,6 +276,13 @@ function toggleLanguage() {
   } else {
     currentLang = 'en';
   }
+  localStorage.setItem('houseInMetaLang', currentLang);
+  updatePageLanguage();
+}
+
+// Change language function for dropdown
+function changeLanguage(lang) {
+  currentLang = lang;
   localStorage.setItem('houseInMetaLang', currentLang);
   updatePageLanguage();
 }
@@ -300,25 +307,16 @@ function updatePageLanguage() {
     }
   });
   
-  // Update language toggle button
-  updateLanguageButton();
+  // Update language dropdown
+  updateLanguageDropdown();
 }
 
-// Update language button appearance
-function updateLanguageButton() {
-  const langBtn = document.getElementById('langToggle');
-  if (!langBtn) return;
+// Update language dropdown selection
+function updateLanguageDropdown() {
+  const langDropdown = document.getElementById('langToggle');
+  if (!langDropdown) return;
   
-  if (currentLang === 'en') {
-    langBtn.innerHTML = '<span class="lang-flag">🇫🇷</span> <span class="lang-code">FR</span>';
-    langBtn.setAttribute('aria-label', 'Passer au français');
-  } else if (currentLang === 'fr') {
-    langBtn.innerHTML = '<span class="lang-flag">🇮🇳</span> <span class="lang-code">HI</span>';
-    langBtn.setAttribute('aria-label', 'हिंदी में बदलें');
-  } else {
-    langBtn.innerHTML = '<span class="lang-flag">🇬🇧</span> <span class="lang-code">EN</span>';
-    langBtn.setAttribute('aria-label', 'Switch to English');
-  }
+  langDropdown.value = currentLang;
 }
 
 // Initialize on page load
@@ -330,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 if (typeof window !== 'undefined') {
   window.i18n = {
     toggleLanguage,
+    changeLanguage,
     updatePageLanguage,
     getCurrentLang: () => currentLang,
     translate: (key) => translations[currentLang][key] || key

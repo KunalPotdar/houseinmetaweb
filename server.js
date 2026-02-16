@@ -42,21 +42,38 @@ const upload = multer({
 // GMAIL CONFIGURATION
 // ============================================
 
-// Create Gmail transporter using OAuth2
+// Check if Gmail credentials are set
+if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+  console.warn('⚠️  WARNING: Gmail credentials not set in environment variables');
+  console.warn('   Set GMAIL_USER and GMAIL_APP_PASSWORD in Railway dashboard');
+}
+
+// Create Gmail transporter with SMTP settings
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // Use TLS, not SSL
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASSWORD // App-specific password for Gmail
-  }
+  },
+  pool: {
+    maxConnections: 5,
+    maxMessages: 100,
+    rateDelta: 20000,
+    rateLimit: 5 // 5 messages per 20 seconds
+  },
+  connectionTimeout: 10000, // 10s timeout
+  socketTimeout: 10000      // 10s timeout
 });
 
-// Verify Gmail connection
+// Verify Gmail connection (don't block startup)
 transporter.verify((error, success) => {
   if (error) {
-    console.error('Gmail configuration error:', error);
+    console.error('❌ Gmail configuration error:', error.message);
+    console.log('   Check that GMAIL_USER and GMAIL_APP_PASSWORD are set correctly');
   } else {
-    console.log('✓ Gmail transporter configured successfully');
+    console.log('✓ Gmail transporter verified successfully');
   }
 });
 

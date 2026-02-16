@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Dream Home 3D by HouseInMeta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 30px;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .last-updated {
+            background: #f0f2ff;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            color: #003d82;
+            font-weight: 500;
+        }
+
+        .toc {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #667eea;
+        }
+
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        section h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        section h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        section p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        section ul, section ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        section li {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .highlight strong {
+            color: #856404;
+        }
+
+        .contact-section {
+            background: #e8f4fd;
+            border: 1px solid #b3d9f2;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .contact-section h3 {
+            color: #003d82;
+            margin-top: 0;
+        }
+
+        .contact-section p {
+            color: #003d82;
+        }
+
+        .contact-section a {
+            color: #003d82;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid #003d82;
+        }
+
+        .contact-section a:hover {
+            background: #003d82;
+            color: white;
+            border-bottom: none;
+            padding: 2px 5px;
+        }
+
+        .data-rights {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .data-rights strong {
+            color: #155724;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            color: #666;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        table tr:hover {
+            background: #f0f2ff;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #764ba2;
+        }
+
+        .compliance-badge {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .badge.active {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            section h2 {
+                font-size: 1.4em;
+            }
+
+            section h3 {
+                font-size: 1.1em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-button">← Back</a>
+
+        <header>
+            <h1>🔒 Privacy Policy</h1>
+            <p>Dream Home 3D by HouseInMeta</p>
+        </header>
+
+        <div class="last-updated">
+            <strong>Last Updated:</strong> January 2024<br>
+            <strong>Version:</strong> 1.0<br>
+            <strong>Effective Date:</strong> January 2024
+        </div>
+
+        <div class="compliance-badge">
+            <span class="badge active">✓ GDPR Compliant</span>
+            <span class="badge active">✓ Privacy Focused</span>
+            <span class="badge">🇪🇺 EU Data Protection</span>
+        </div>
+
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#data-controller">2. Data Controller & Contact</a></li>
+                <li><a href="#data-collection">3. What Data We Collect</a></li>
+                <li><a href="#how-we-use">4. How We Use Your Data</a></li>
+                <li><a href="#legal-basis">5. Legal Basis for Processing</a></li>
+                <li><a href="#data-retention">6. Data Retention</a></li>
+                <li><a href="#data-sharing">7. Data Sharing & Third Parties</a></li>
+                <li><a href="#your-rights">8. Your Data Rights (GDPR)</a></li>
+                <li><a href="#security">9. Data Security</a></li>
+                <li><a href="#cookies">10. Cookies & Analytics</a></li>
+                <li><a href="#children">11. Children's Privacy</a></li>
+                <li><a href="#international">12. International Data Transfers</a></li>
+                <li><a href="#changes">13. Changes to This Policy</a></li>
+                <li><a href="#contact">14. Contact Us</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction</h2>
+            <p>
+                Welcome to <strong>Dream Home 3D</strong>, operated by <strong>HouseInMeta</strong>. We are committed to protecting your privacy and ensuring you have a positive experience on our website and when using our services.
+            </p>
+            <p>
+                This Privacy Policy explains:
+            </p>
+            <ul>
+                <li>What personal data we collect from you</li>
+                <li>Why we collect it</li>
+                <li>How we use it</li>
+                <li>How long we keep it</li>
+                <li>Your rights regarding your data</li>
+            </ul>
+            <p>
+                This policy is compliant with the <strong>General Data Protection Regulation (GDPR)</strong> and applies to all users of our Dream Home 3D service.
+            </p>
+        </section>
+
+        <section id="data-controller">
+            <h2>2. Data Controller & Contact Information</h2>
+            <p>
+                <strong>Data Controller:</strong> HouseInMeta<br>
+                The organization responsible for deciding how your personal data is processed.
+            </p>
+
+            <div class="contact-section">
+                <h3>📧 How to Contact Us</h3>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:privacy@houseinmeta.com">privacy@houseinmeta.com</a>
+                </p>
+                <p>
+                    <strong>Address:</strong> [Your Company Address]
+                </p>
+                <p>
+                    <strong>Data Protection Officer (DPO):</strong> <a href="mailto:dpo@houseinmeta.com">dpo@houseinmeta.com</a>
+                </p>
+                <p>
+                    If you have any privacy concerns or questions, please don't hesitate to contact us.
+                </p>
+            </div>
+        </section>
+
+        <section id="data-collection">
+            <h2>3. What Data We Collect</h2>
+
+            <h3>Data You Provide Directly</h3>
+            <p>When you use Dream Home 3D, we collect:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Purpose</th>
+                        <th>Required?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>First Name</td>
+                        <td>Order identification & communication</td>
+                        <td>Yes *</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>Order identification & communication</td>
+                        <td>Yes *</td>
+                    </tr>
+                    <tr>
+                        <td>Email Address</td>
+                        <td>Order confirmation, project updates, support</td>
+                        <td>Yes *</td>
+                    </tr>
+                    <tr>
+                        <td>Phone Number</td>
+                        <td>Customer support & project contact</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Floor Plan Files</td>
+                        <td>3D conversion service delivery</td>
+                        <td>Yes *</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Information</td>
+                        <td>Processing your payment</td>
+                        <td>Yes *</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <strong>* = Required to use the service. Without this information, we cannot process your order.</strong>
+            </div>
+
+            <h3>Data Collected Automatically</h3>
+            <ul>
+                <li><strong>IP Address:</strong> Used to prevent fraud and understand usage patterns</li>
+                <li><strong>Browser Information:</strong> Device type, operating system, browser type</li>
+                <li><strong>Usage Data:</strong> Pages visited, time spent, click patterns</li>
+                <li><strong>Cookies:</strong> Session tracking and preferences (see section 10)</li>
+            </ul>
+        </section>
+
+        <section id="how-we-use">
+            <h2>4. How We Use Your Data</h2>
+
+            <h3>Primary Uses</h3>
+            <ul>
+                <li><strong>Service Delivery:</strong> Processing your 2D to 3D conversion order</li>
+                <li><strong>Order Management:</strong> Sending invoices, confirmations, and project updates</li>
+                <li><strong>Customer Support:</strong> Responding to inquiries and providing technical help</li>
+                <li><strong>Payment Processing:</strong> Securely handling your payment information</li>
+            </ul>
+
+            <h3>Secondary Uses</h3>
+            <ul>
+                <li><strong>Quality Improvement:</strong> Analyzing service usage to improve our platform</li>
+                <li><strong>Fraud Prevention:</strong> Detecting and preventing fraudulent activities</li>
+                <li><strong>Legal Compliance:</strong> Fulfilling legal and regulatory requirements</li>
+                <li><strong>Marketing (Optional):</strong> Sending newsletters and service updates (only with your consent)</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>We will NEVER:</strong> Sell your data to third parties, share it without consent, or use it for purposes other than those stated above.
+            </div>
+        </section>
+
+        <section id="legal-basis">
+            <h2>5. Legal Basis for Processing (GDPR Article 6)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Legal Basis</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Name, Email, Phone</td>
+                        <td>Contract Performance</td>
+                        <td>Necessary to deliver the service you purchased</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Information</td>
+                        <td>Contract Performance</td>
+                        <td>Required to process your payment</td>
+                    </tr>
+                    <tr>
+                        <td>Floor Plans</td>
+                        <td>Contract Performance</td>
+                        <td>Required to create your 3D conversion</td>
+                    </tr>
+                    <tr>
+                        <td>Usage Analytics</td>
+                        <td>Legitimate Interest</td>
+                        <td>To improve our service quality and user experience</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing Emails</td>
+                        <td>Consent</td>
+                        <td>Only sent if you explicitly opted in</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="data-retention">
+            <h2>6. Data Retention</h2>
+
+            <h3>How Long We Keep Your Data</h3>
+
+            <ul>
+                <li><strong>Order & Personal Data:</strong> Kept for 3 years after service completion (for tax/legal compliance)</li>
+                <li><strong>Payment Information:</strong> Not stored by us (handled by secure payment processors)</li>
+                <li><strong>Floor Plans:</strong> Kept for 2 years, then deleted unless you request otherwise</li>
+                <li><strong>Marketing Opt-in Records:</strong> Kept until you unsubscribe</li>
+                <li><strong>Backup Data:</strong> Retained for up to 90 days for disaster recovery</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Right to Deletion:</strong> You can request deletion of your data at any time. We will comply within 30 days unless there's a legal reason to retain it.
+            </div>
+        </section>
+
+        <section id="data-sharing">
+            <h2>7. Data Sharing & Third Parties</h2>
+
+            <h3>Who We Share Your Data With</h3>
+
+            <h4>Essential Service Providers (Contractually Bound)</h4>
+            <ul>
+                <li><strong>Payment Processors:</strong> (e.g., Stripe, PayPal) - for secure payment processing</li>
+                <li><strong>Email Service Providers:</strong> (e.g., SendGrid, Mailchimp) - for order confirmations</li>
+                <li><strong>Cloud Storage:</strong> (e.g., AWS, Google Cloud) - for secure file storage</li>
+                <li><strong>3D Conversion Partners:</strong> Technical partners needed to process your files</li>
+            </ul>
+
+            <div class="data-rights">
+                <strong>✓ Data Processing Agreements (DPA):</strong> All third-party vendors are bound by Data Processing Agreements ensuring GDPR compliance.
+            </div>
+
+            <h4>We DO NOT Share Data With:</h4>
+            <ul>
+                <li>Advertisers or marketing companies</li>
+                <li>Data brokers or analytics companies (except anonymized usage data)</li>
+                <li>Social media platforms</li>
+                <li>Any other business for profit or marketing purposes</li>
+            </ul>
+
+            <h3>Legal Requirements</h3>
+            <p>
+                We may disclose your data when required by law, such as:
+            </p>
+            <ul>
+                <li>Court orders or government requests</li>
+                <li>Fraud investigation or prevention</li>
+                <li>Public safety concerns</li>
+            </ul>
+        </section>
+
+        <section id="your-rights">
+            <h2>8. Your Data Rights (GDPR Articles 15-21)</h2>
+
+            <p>
+                Under GDPR, you have the following rights. To exercise any of these, contact us at <a href="mailto:privacy@houseinmeta.com">privacy@houseinmeta.com</a>:
+            </p>
+
+            <h3>1. Right to Access (Article 15)</h3>
+            <p>
+                <strong>What it means:</strong> You can request a copy of all personal data we hold about you.
+            </p>
+            <p>
+                <strong>How to request:</strong> Email privacy@houseinmeta.com with "Data Access Request" in the subject.
+            </p>
+            <p>
+                <strong>Response time:</strong> We will provide your data within 30 days.
+            </p>
+
+            <h3>2. Right to Rectification (Article 16)</h3>
+            <p>
+                <strong>What it means:</strong> You can correct or update inaccurate personal data.
+            </p>
+            <p>
+                <strong>How to request:</strong> Contact us with corrections needed.
+            </p>
+            <p>
+                <strong>Response time:</strong> Changes made immediately.
+            </p>
+
+            <h3>3. Right to Erasure (Article 17)</h3>
+            <p>
+                <strong>What it means:</strong> You can request deletion of your personal data (Right to be Forgotten).
+            </p>
+            <p>
+                <strong>Exceptions:</strong> Data may be retained if required by law or for legitimate business purposes.
+            </p>
+            <p>
+                <strong>How to request:</strong> Email privacy@houseinmeta.com with "Deletion Request" in the subject.
+            </p>
+            <p>
+                <strong>Response time:</strong> We will delete your data within 30 days.
+            </p>
+
+            <h3>4. Right to Data Portability (Article 20)</h3>
+            <p>
+                <strong>What it means:</strong> You can receive your data in a structured, machine-readable format (JSON/CSV).
+            </p>
+            <p>
+                <strong>How to request:</strong> Email privacy@houseinmeta.com with "Data Export Request" in the subject.
+            </p>
+            <p>
+                <strong>Response time:</strong> We will provide your data export within 30 days.
+            </p>
+
+            <h3>5. Right to Object (Article 21)</h3>
+            <p>
+                <strong>What it means:</strong> You can object to processing of your data (especially marketing).
+            </p>
+            <p>
+                <strong>How to request:</strong> Click "Unsubscribe" in marketing emails or email us directly.
+            </p>
+            <p>
+                <strong>Response time:</strong> We will stop processing within 10 days.
+            </p>
+
+            <h3>6. Right to Restrict Processing (Article 18)</h3>
+            <p>
+                <strong>What it means:</strong> You can request we limit how we use your data.
+            </p>
+            <p>
+                <strong>How to request:</strong> Email privacy@houseinmeta.com with "Restrict Processing Request" in the subject.
+            </p>
+
+            <div class="data-rights">
+                <strong>✓ No Discrimination:</strong> We will not refuse service or discriminate against you for exercising your rights.
+            </div>
+        </section>
+
+        <section id="security">
+            <h2>9. Data Security</h2>
+
+            <h3>How We Protect Your Data</h3>
+
+            <ul>
+                <li><strong>HTTPS Encryption:</strong> All data is encrypted in transit (TLS 1.2+)</li>
+                <li><strong>Database Encryption:</strong> Sensitive data is encrypted at rest</li>
+                <li><strong>Secure Servers:</strong> Data hosted on secure, monitored infrastructure</li>
+                <li><strong>Access Controls:</strong> Only authorized employees can access personal data</li>
+                <li><strong>Regular Audits:</strong> We conduct security assessments regularly</li>
+                <li><strong>Employee Training:</strong> Our team is trained in data protection practices</li>
+            </ul>
+
+            <h3>What You Should Do</h3>
+            <ul>
+                <li>Use a strong, unique password for your account</li>
+                <li>Don't share your login credentials</li>
+                <li>Log out when finished</li>
+                <li>Report any suspicious activity to us immediately</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>⚠️ Limitations:</strong> While we implement robust security measures, no system is 100% secure. We cannot guarantee absolute security of all transmitted data.
+            </div>
+        </section>
+
+        <section id="cookies">
+            <h2>10. Cookies & Analytics</h2>
+
+            <h3>What Are Cookies?</h3>
+            <p>
+                Cookies are small text files stored on your device that help us remember your preferences and improve your experience.
+            </p>
+
+            <h3>Cookies We Use</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cookie Type</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Session Cookies</td>
+                        <td>Remember your login and preferences</td>
+                        <td>Until you close browser</td>
+                    </tr>
+                    <tr>
+                        <td>Persistent Cookies</td>
+                        <td>Remember preferences across visits</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics Cookies</td>
+                        <td>Understand how you use the site</td>
+                        <td>2 years</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>How to Control Cookies</h3>
+            <p>
+                You can control cookies through your browser settings:
+            </p>
+            <ul>
+                <li>Chrome: Settings → Privacy and security → Cookies</li>
+                <li>Firefox: Preferences → Privacy → Cookies</li>
+                <li>Safari: Preferences → Privacy → Cookies</li>
+                <li>Edge: Settings → Privacy → Cookies</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Note:</strong> Disabling cookies may affect your ability to use certain features of our website.
+            </div>
+        </section>
+
+        <section id="children">
+            <h2>11. Children's Privacy</h2>
+
+            <p>
+                <strong>Dream Home 3D is not intended for children under 16 years old.</strong> We do not knowingly collect personal data from children under 16.
+            </p>
+
+            <p>
+                If you believe we have collected data from a child under 16, please contact us immediately at <a href="mailto:privacy@houseinmeta.com">privacy@houseinmeta.com</a>, and we will delete the information.
+            </p>
+
+            <p>
+                In the EU, children under 16 cannot provide valid consent for data processing. Parents or guardians must provide consent on their behalf.
+            </p>
+        </section>
+
+        <section id="international">
+            <h2>12. International Data Transfers</h2>
+
+            <p>
+                If you are located outside the EU/EEA, your data may be transferred to and processed in different countries.
+            </p>
+
+            <h3>Data Transfer Mechanisms</h3>
+            <p>
+                We use appropriate safeguards for international transfers:
+            </p>
+            <ul>
+                <li>Standard Contractual Clauses (SCCs)</li>
+                <li>Data Processing Agreements with partners</li>
+                <li>Privacy Shield compliance (where applicable)</li>
+                <li>Adequacy decisions</li>
+            </ul>
+
+            <p>
+                By using Dream Home 3D, you consent to the transfer of your data as described in this policy.
+            </p>
+        </section>
+
+        <section id="changes">
+            <h2>13. Changes to This Policy</h2>
+
+            <p>
+                We may update this Privacy Policy from time to time to reflect:
+            </p>
+            <ul>
+                <li>Changes in our practices</li>
+                <li>New legal requirements</li>
+                <li>Feedback from users</li>
+                <li>Improved data protection measures</li>
+            </ul>
+
+            <p>
+                <strong>When changes are made:</strong>
+            </p>
+            <ul>
+                <li>We will update the "Last Updated" date at the top of this page</li>
+                <li>For material changes, we will notify users by email</li>
+                <li>Continued use of the service constitutes acceptance of changes</li>
+            </ul>
+
+            <p>
+                Please review this policy periodically to stay informed about how we protect your privacy.
+            </p>
+        </section>
+
+        <section id="contact">
+            <h2>14. Contact Us</h2>
+
+            <div class="contact-section">
+                <h3>📧 Privacy Questions?</h3>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:privacy@houseinmeta.com">privacy@houseinmeta.com</a>
+                </p>
+                <p>
+                    <strong>Data Protection Officer:</strong> <a href="mailto:dpo@houseinmeta.com">dpo@houseinmeta.com</a>
+                </p>
+                <p>
+                    <strong>Mailing Address:</strong><br>
+                    HouseInMeta<br>
+                    [Your Company Address]<br>
+                    [City, Country]
+                </p>
+                <p>
+                    <strong>Response Time:</strong> We aim to respond to all privacy inquiries within 5 business days.
+                </p>
+            </div>
+
+            <h3>🏛️ Supervisory Authority</h3>
+            <p>
+                If you believe we have violated your privacy rights, you have the right to lodge a complaint with your national data protection authority:
+            </p>
+            <ul>
+                <li><strong>EU:</strong> <a href="https://edpb.ec.europa.eu/about-edpb/board/members_en" target="_blank">European Data Protection Board (EDPB)</a></li>
+                <li><strong>UK:</strong> <a href="https://ico.org.uk/" target="_blank">Information Commissioner's Office (ICO)</a></li>
+                <li><strong>Germany:</strong> <a href="https://www.bfdi.bund.de/" target="_blank">Bundesbeauftragte für Datenschutz (BfDI)</a></li>
+            </ul>
+        </section>
+
+        <div class="footer">
+            <p>
+                © 2024 HouseInMeta. All rights reserved.<br>
+                This Privacy Policy is subject to change without notice.
+            </p>
+            <p>
+                <strong>Version:</strong> 1.0 | <strong>Last Updated:</strong> January 2024
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Home 3D - HouseInMeta</title>
+    <!-- Stripe SDK -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('/assets/images/CozyHome.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 12px;
+            min-height: 400px;
+            justify-content: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            height: 60px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #667eea, 0 0 40px rgba(102, 126, 234, 0.6), 2px 2px 8px rgba(0,0,0,0.3);
+            color: white;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            text-shadow: 0 0 15px #667eea, 0 0 30px rgba(102, 126, 234, 0.5), 1px 1px 4px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-radius: 16px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .upload-section h2 {
+            color: #1a1a2e;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 50px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+            box-shadow: 0 20px 48px rgba(102, 126, 234, 0.25);
+            transform: translateY(-8px);
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+            transform: scale(1.02);
+            box-shadow: 0 20px 48px rgba(102, 126, 234, 0.3);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-area p {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .upload-area p:last-child {
+            color: #999;
+            font-size: 0.9em;
+            font-weight: 400;
+        }
+
+        .upload-area .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid transparent;
+            padding: 14px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #5a3a8a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .supported-formats {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+            color: #1a1a2e;
+            border-left: 4px solid #667eea;
+        }
+
+        .supported-formats strong {
+            display: block;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .supported-formats small {
+            display: block;
+            color: #999;
+            margin-top: 8px;
+            font-size: 0.85em;
+        }
+
+        .project-info-form {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.03) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .project-info-form h3 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e0e0ff;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.15);
+        }
+
+        .file-item .file-name {
+            color: #333;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .file-item .remove-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .file-item .remove-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .packages-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-radius: 16px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .packages-section h2 {
+            color: #1a1a2e;
+            margin-bottom: 50px;
+            font-size: 2em;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 100%;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+        }
+
+        .package-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 20px 48px rgba(102, 126, 234, 0.25);
+            transform: translateY(-12px);
+        }
+
+        .package-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            box-shadow: 0 20px 48px rgba(102, 126, 234, 0.3);
+            transform: translateY(-8px);
+        }
+
+        .package-card.featured {
+            border-color: #764ba2;
+            box-shadow: 0 20px 48px rgba(118, 75, 162, 0.25);
+        }
+
+        .package-card.featured::before {
+            content: "🌟 POPULAR";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+
+        .package-card.featured {
+            transform: scale(1.05);
+        }
+
+        .package-card.featured:hover {
+            transform: scale(1.05) translateY(-12px);
+        }
+
+        .package-icon {
+            font-size: 4em;
+            margin: 30px 0 15px 0;
+            display: block;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .package-name {
+            font-size: 1.5em;
+            color: #1a1a2e;
+            margin: 15px 30px 10px 30px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .package-description {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0 30px 25px 30px;
+            line-height: 1.5;
+            min-height: 45px;
+        }
+
+        .package-price {
+            font-size: 2.8em;
+            color: #667eea;
+            margin: 20px 30px 5px 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .package-price .currency {
+            font-size: 0.5em;
+            vertical-align: super;
+            margin-right: 3px;
+        }
+
+        .package-period {
+            font-size: 0.9em;
+            color: #999;
+            margin: 0 30px 30px 30px;
+            font-weight: 500;
+        }
+
+        .package-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+            margin: 25px 0;
+        }
+
+        .package-features {
+            text-align: left;
+            margin: 0 30px 30px 30px;
+            padding: 0;
+            border: none;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature {
+            color: #555;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .feature::before {
+            content: "▸";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.3em;
+            flex-shrink: 0;
+            margin-top: -2px;
+        }
+
+        .package-btn {
+            width: calc(100% - 60px);
+            padding: 14px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin: 0 30px 30px 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .package-card:not(.selected) .package-btn {
+            background: #f0f2ff;
+            color: #667eea;
+            border-color: #e0e0ff;
+        }
+
+        .package-card:not(.selected) .package-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .package-card.selected .package-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .package-card.selected .package-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #5a3a8a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .checkout-section {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        .checkout-section h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+
+        .order-summary {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #667eea;
+            padding-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .summary-label {
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .payment-methods h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .payment-option label {
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .payment-icon {
+            font-size: 1.5em;
+            margin-right: 12px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 30px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }        .checkbox-group label {
+            cursor: pointer;
+            color: #666;
+        }
+
+        .user-info-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .user-info-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #ff6b6b;
+        }
+
+        .form-error {
+            color: #ff6b6b;
+            font-size: 0.85em;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .gdpr-notice {
+            background: #e8f4fd;
+            border: 1px solid #b3d9f2;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #003d82;
+        }
+
+        .gdpr-notice strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .consent-checkbox {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .consent-checkbox input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .consent-checkbox label {
+            cursor: pointer;
+            color: #666;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .consent-checkbox label a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .consent-checkbox label a:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .submit-section {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+
+        .submit-section .btn-primary {
+            grid-column: auto;
+            width: auto;
+            padding: 12px 40px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .packages-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .package-card.featured {
+                grid-column: 1 / -1;
+                max-width: 50%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .package-card.featured {
+                grid-column: auto;
+                max-width: 100%;
+                transform: scale(1) !important;
+            }
+
+            .package-card.featured:hover {
+                transform: translateY(-12px) !important;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .packages-section {
+                padding: 30px 20px;
+            }
+
+            .packages-section h2 {
+                font-size: 1.5em;
+            }
+
+            .package-name {
+                font-size: 1.2em;
+                margin: 12px 20px 8px 20px;
+            }
+
+            .package-price {
+                font-size: 2em;
+                margin: 15px 20px 3px 20px;
+            }
+
+            .package-features {
+                margin: 0 20px 20px 20px;
+            }
+
+            .package-btn {
+                width: calc(100% - 40px);
+                margin: 0 20px 20px 20px;
+                padding: 12px 15px;
+            }
+
+            .upload-section {
+                padding: 30px 20px;
+            }
+
+            .upload-section h2 {
+                font-size: 1.5em;
+                margin-bottom: 30px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+                margin-bottom: 20px;
+            }
+
+            .upload-icon {
+                font-size: 3em;
+            }
+
+            .supported-formats {
+                font-size: 0.9em;
+            }
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading p {
+            margin-top: 15px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Step Progress Styles */
+        .steps-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px;
+            margin-bottom: 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .steps-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-circle {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .step-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .step-text {
+            font-size: 1em;
+            font-weight: 700;
+            color: white;
+            max-width: 120px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .step-description {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .step-arrow {
+            position: relative;
+            flex: 0.8;
+            height: 3px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+            margin: 0 -5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-arrow::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .step-arrow::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid rgba(255, 255, 255, 0.6);
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .step-arrow:hover::after {
+            border-left-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .step-arrow-label {
+            position: absolute;
+            top: -25px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 4px 12px;
+            font-size: 0.7em;
+            color: white;
+            font-weight: 700;
+            white-space: nowrap;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1200px) {
+            .step {
+                min-width: 110px;
+            }
+
+            .step-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+                margin-bottom: 12px;
+            }
+
+            .step-text {
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .steps-wrapper {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .step {
+                width: 100%;
+            }
+
+            .step-arrow {
+                width: 3px;
+                height: 40px;
+                margin: 10px 0;
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+            }
+
+            .step-arrow::before {
+                width: 2px;
+                height: auto;
+                top: 0;
+                bottom: 0;
+                left: auto;
+                right: auto;
+                background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), transparent);
+            }
+
+            .step-arrow::after {
+                right: auto;
+                bottom: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: 7px solid transparent;
+                border-right: 7px solid transparent;
+                border-top: 15px solid rgba(255, 255, 255, 0.6);
+            }
+
+            .step-arrow:hover::after {
+                border-top-color: rgba(255, 255, 255, 0.9);
+            }
+
+            .step-arrow-label {
+                top: 50%;
+                left: -60px;
+                transform: translateY(-50%);
+            }
+
+            .step-circle {
+                width: 65px;
+                height: 65px;
+                font-size: 1.6em;
+            }
+
+            .step-text {
+                font-size: 1em;
+            }
+
+            .steps-container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>    <div class="container">        <header>
+            <img src="/assets/images/logo.png" alt="HouseInMeta Logo" class="logo">
+            <h1>Visualize your "Dream" Home in 3D</h1>
+            <p>Transform your 2D floor plans into immersive 3D experiences with HouseInMeta</p>
+        </header>
+
+        <!-- Steps Progress Indicator -->
+        <div class="steps-container">
+            <div class="steps-wrapper">
+                <!-- Step 1 -->
+                <div class="step">
+                    <div class="step-circle">1</div>
+                    <div class="step-text">Choose Package</div>
+                </div>
+
+                <!-- Arrow 1 -->
+                <div class="step-arrow">
+                    <span class="step-arrow-label">Select</span>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step">
+                    <div class="step-circle">2</div>
+                    <div class="step-text">Upload Floor Plan</div>
+                </div>
+
+                <!-- Arrow 2 -->
+                <div class="step-arrow">
+                    <span class="step-arrow-label">Upload</span>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-text">Response from Us</div>
+                </div>
+
+                <!-- Arrow 3 -->
+                <div class="step-arrow">
+                    <span class="step-arrow-label">Process</span>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-text">Experience Your Dream Home</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Packages Section - Centered -->
+        <div class="packages-section">
+            <h2>Step 1: Choose Your Package</h2>
+            
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Packages will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2>Step 2: Upload Your Plans</h2>
+
+                <div class="supported-formats">
+                    <strong>📄 Supported Formats</strong>
+                    PDF, DWG, JPG, PNG, ZIP
+                    <small>Max file size: 100MB per file</small>
+                </div>
+
+                <!-- Project Information Form -->
+                <div class="project-info-form">
+                    <h3>📋 Project Information</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="projectName">Project Name *</label>
+                            <input type="text" id="projectName" placeholder="Enter project name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="personName">Person Name *</label>
+                            <input type="text" id="personName" placeholder="Enter your name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectEmail">Email ID *</label>
+                        <input type="email" id="projectEmail" placeholder="Enter your email address" required>
+                    </div>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p><strong>Drag and drop your files here</strong></p>
+                    <p>or</p>
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Choose Files
+                    </button>
+                    <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.dwg,.jpg,.jpeg,.png,.zip">
+                </div>
+
+                <div class="file-list" id="fileList"></div>
+                <div class="error-message" id="uploadError"></div>
+
+                <!-- Submit Button -->
+                <div class="submit-section">
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateAndSend()">Generate & Send</button>
+                    <div class="loading" id="uploadLoading">
+                        <div class="spinner"></div>
+                        <p>Processing your request...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    <!-- External JavaScript Files -->
+    <script src="assets/js/packages.js"></script>
+    <script src="assets/js/file-upload.js"></script>
+    <script src="assets/js/order-summary.js"></script>
+    <script src="assets/js/form-validation.js"></script>
+    <script src="assets/js/floor-plan-submission.js"></script>
+    <script src="assets/js/stripe-payment.js"></script>
+    <script src="assets/js/order-processing.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

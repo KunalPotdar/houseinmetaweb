@@ -7,4 +7,13 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(nav.style.display==='block'){nav.style.display=''}else{nav.style.display='block'}
     })
   }
-})
+});
+
+// Main initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all components
+    initializeStripe();
+    renderPackages();
+    setupUploadArea();
+    updateOrderSummary();
+});

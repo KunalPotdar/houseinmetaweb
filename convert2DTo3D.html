@@ -12,14 +12,37 @@
             box-sizing: border-box;
         }        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background: #2a2a2a;
+            background-image: url('/assets/images/aex-1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, 
+                rgba(42,42,42,0.85) 0%, 
+                rgba(42,42,42,0.75) 100%
+            );
+            z-index: 0;
+            pointer-events: none;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }        header {
             text-align: center;
             color: white;
@@ -67,13 +90,15 @@
         }
 
         .upload-section {
-            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            background: rgba(248, 249, 255, 0.95);
             border-radius: 16px;
             padding: 50px 40px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             max-width: 100%;
             margin: 0 auto;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .upload-section h2 {
@@ -247,10 +272,12 @@
         }
 
         .packages-section {
-            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            background: rgba(248, 249, 255, 0.95);
             border-radius: 16px;
             padding: 50px 40px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .packages-section h2 {
@@ -1132,7 +1159,7 @@
 
         <!-- Packages Section - Centered -->
         <div class="packages-section">
-            <h2>Step 1: Choose Your Package</h2>
+            <h2 data-i18n="convert2d.step1">Step 1: Choose Your Package</h2>
             
             <div class="packages-grid" id="packagesGrid">
                 <!-- Packages will be populated by JavaScript -->
@@ -1142,40 +1169,40 @@
         <div class="main-content">
             <!-- Upload Section -->
             <div class="upload-section">
-                <h2>Step 2: Upload Your Plans</h2>
+                <h2 data-i18n="convert2d.step2">Step 2: Upload Your Plans</h2>
 
                 <div class="supported-formats">
-                    <strong>📄 Supported Formats</strong>
-                    PDF, DWG, JPG, PNG, ZIP
-                    <small>Max file size: 100MB per file</small>
+                    <strong data-i18n="convert2d.supportedFormats">📄 Supported Formats</strong>
+                    <span data-i18n="convert2d.supportedTypes">PDF, DWG, JPG, PNG, ZIP</span>
+                    <small data-i18n="convert2d.maxFileSize">Max file size: 100MB per file</small>
                 </div>
 
                 <!-- Project Information Form -->
                 <div class="project-info-form">
-                    <h3>📋 Project Information</h3>
+                    <h3 data-i18n="convert2d.projectInfo">📋 Project Information</h3>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="projectName">Project Name *</label>
+                            <label for="projectName" data-i18n="convert2d.projectName">Project Name *</label>
                             <input type="text" id="projectName" placeholder="Enter project name" required>
                         </div>
                         <div class="form-group">
-                            <label for="personName">Person Name *</label>
+                            <label for="personName" data-i18n="convert2d.personName">Person Name *</label>
                             <input type="text" id="personName" placeholder="Enter your name" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="projectEmail">Email ID *</label>
+                        <label for="projectEmail" data-i18n="convert2d.emailId">Email ID *</label>
                         <input type="email" id="projectEmail" placeholder="Enter your email address" required>
                     </div>
                 </div>
                 
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📁</div>
-                    <p><strong>Drag and drop your files here</strong></p>
-                    <p>or</p>
-                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <p><strong data-i18n="convert2d.dragDropText">Drag and drop your files here</strong></p>
+                    <p data-i18n="convert2d.or">or</p>
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()" data-i18n="convert2d.chooseFiles">
                         Choose Files
                     </button>
                     <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.dwg,.jpg,.jpeg,.png,.zip">
@@ -1186,15 +1213,16 @@
 
                 <!-- Submit Button -->
                 <div class="submit-section">
-                    <button class="btn btn-primary" id="generateBtn" onclick="generateAndSend()">Generate & Send</button>
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateAndSend()" data-i18n="convert2d.generate">Generate & Send</button>
                     <div class="loading" id="uploadLoading">
                         <div class="spinner"></div>
-                        <p>Processing your request...</p>
+                        <p data-i18n="convert2d.processing">Processing your request...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>    <!-- External JavaScript Files -->
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/packages.js"></script>
     <script src="assets/js/file-upload.js"></script>
     <script src="assets/js/order-summary.js"></script>

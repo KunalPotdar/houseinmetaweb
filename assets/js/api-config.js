@@ -1,16 +1,17 @@
 // House In Meta - API Configuration
 // Configure your backend URL here
 
-// Development: http://localhost:3000
-// Production: https://your-domain.com
+// FRONTEND: https://houseinmeta.com (Static hosting)
+// BACKEND Development: http://localhost:3000 (Local Node.js server)
+// BACKEND Production: https://houseinmetaweb-production.up.railway.app (Railway deployment)
 
 const API_CONFIG = {
-  // Set this to your backend server URL
-  // For local development: 'http://localhost:3000'
-  // For production: 'https://yourdomain.com'
-  baseURL: typeof window !== 'undefined' && window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000' 
-    : window.location.origin,
+  // Backend Server Configuration
+  // Development: http://localhost:3000
+  // Production: https://houseinmetaweb-production.up.railway.app
+  baseURL: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:3000'
+    : 'https://houseinmetaweb-production.up.railway.app',
   
   // API Endpoints
   endpoints: {

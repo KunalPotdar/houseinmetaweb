@@ -84,7 +84,8 @@ function sendOrderToBackend(orderData, paymentProcessor) {
         emailTemplate: 'order_confirmation'
     };
 
-    return fetch('/api/orders', {
+    // Use Lambda fetch format
+    return fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.orders}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -120,7 +121,8 @@ function sendOrderConfirmationEmail(orderData) {
         paymentMethod: orderData.paymentMethod
     };
 
-    return fetch('/api/send-email', {
+    // Use Lambda fetch format
+    return fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.sendEmail}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

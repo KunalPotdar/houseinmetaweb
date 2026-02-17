@@ -23,11 +23,11 @@ app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use(express.static('.'));
 
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  next();
-});
+// Request logging middleware (optional)
+// app.use((req, res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+//   next();
+// });
 
 // Configure multer for in-memory file uploads
 const upload = multer({ 
@@ -41,14 +41,6 @@ const upload = multer({
 // ============================================
 // GMAIL CONFIGURATION
 // ============================================
-
-let emailServiceReady = false;
-
-// Check if Gmail credentials are set
-if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-  console.warn('⚠️  Gmail credentials not set - Email service disabled');
-  console.warn('   Set GMAIL_USER and GMAIL_APP_PASSWORD to enable email');
-}
 
 // Create Gmail transporter with SMTP settings
 const transporter = nodemailer.createTransport({
@@ -74,21 +66,16 @@ const transporter = nodemailer.createTransport({
 
 // Test Gmail connection asynchronously without blocking startup
 setTimeout(() => {
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error('❌ Gmail SMTP Error:', error.message);
-      console.log('💡 Tips: If timeout, try:');
-      console.log('   1. Check GMAIL_USER and GMAIL_APP_PASSWORD are set');
-      console.log('   2. Use App Password (not regular password)');
-      console.log('   3. Enable 2-Factor Authentication on Gmail');
-      console.log('   4. Allow less secure apps: https://myaccount.google.com/apppasswords');
-      console.log('   5. Wait a few minutes and Railway will retry');
-    } else {
-      emailServiceReady = true;
-      console.log('✓ Gmail service ready');
-    }
-  });
-}, 2000);
+  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    transporter.verify((error) => {
+      if (error) {
+        console.error('Gmail SMTP Error:', error.message);
+      } else {
+        console.log('Gmail service ready');
+      }
+    });
+  }
+}, 1000);
 
 // ============================================
 // EMAIL TEMPLATE FUNCTION
@@ -359,7 +346,6 @@ app.post('/api/create-payment-intent', async (req, res) => {
       currency: currency,
       payment_method: paymentMethodId,
       confirm: true,
-      return_url: `${process.env.CLIENT_URL}/convert2DTo3D.html`,
       metadata: {
         orderId: orderData.orderId,
         customerEmail: orderData.user.email,
@@ -383,19 +369,7 @@ app.post('/api/orders', async (req, res) => {
     const orderData = req.body;
 
     // Log order (in production, save to database)
-    console.log('Order received:', {
-      orderId: orderData.orderId,
-      customer: `${orderData.user.firstName} ${orderData.user.lastName}`,
-      email: orderData.user.email,
-      package: orderData.package,
-      total: orderData.total,
-      filesCount: orderData.filesCount
-    });
-
-    // If sendEmail flag is set, also trigger email
-    if (orderData.sendEmail) {
-      console.log('Email notification queued for:', orderData.user.email);
-    }
+    console.log('Order received:', orderData.orderId);
 
     res.json({
       success: true,
@@ -471,17 +445,14 @@ app.post('/api/send-email', async (req, res) => {
           )
         ]);
 
-        console.log('✓ Email sent successfully');
-        console.log(`  To: ${to}`);
-        console.log(`  Order: ${orderId}`);
+        console.log('Email sent:', orderId);
         emailSent = true;
       } catch (emailErr) {
         emailError = emailErr.message;
-        console.warn('⚠️  Email delivery failed:', emailErr.message);
-        console.log('   Order saved successfully. Email will be retried later.');
+        console.warn('Email delivery failed:', emailErr.message);
       }
     } else {
-      console.warn('⚠️  Gmail not configured - skipping email');
+      console.warn('Gmail not configured - skipping email');
     }
 
     // Always return success since order is saved
@@ -495,7 +466,7 @@ app.post('/api/send-email', async (req, res) => {
       emailError: emailError
     });
   } catch (error) {
-    console.error('✗ Send email endpoint error:', error);
+    console.error('Send email error:', error);
     
     // Still return success if order was saved
     res.json({
@@ -512,14 +483,8 @@ app.post('/api/send-email', async (req, res) => {
 
 app.post('/api/submit-floor-plan', upload.array('files', 10), async (req, res) => {
   try {
-    console.log('Floor plan submission request received');
-    console.log('Body:', req.body);
-    console.log('Files:', req.files ? `${req.files.length} files` : 'No files');
-
     const { projectName, personName, projectEmail } = req.body;
     const files = req.files || [];
-
-    console.log('Extracted data:', { projectName, personName, projectEmail, filesCount: files.length });
 
     // Validate required fields
     if (!projectName || !personName || !projectEmail) {
@@ -696,75 +661,15 @@ app.post('/api/submit-floor-plan', upload.array('files', 10), async (req, res) =
       </html>
     `;
 
-    // Send email to customer
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: projectEmail,
-      subject: `Floor Plan Submission Received - ${projectName}`,
-      html: emailHTML,
-      attachments: attachments,
-      replyTo: process.env.SUPPORT_EMAIL || 'support@houseinmeta.com'
-    });
-
-    // Send notification email to admin/team
-    const adminEmailHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; }
-          .section { margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #667eea; border-radius: 4px; }
-          .section h3 { color: #667eea; margin: 0 0 10px 0; font-weight: 600; }
-          .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-          .info-label { font-weight: 600; color: #555; }
-          .info-value { color: #333; }
-        </style>
-      </head>
-      <body>
-        <h2>📥 New Floor Plan Submission</h2>
-        <div class="section">
-          <h3>Submission Details</h3>
-          <div class="info-row">
-            <span class="info-label">Project Name:</span>
-            <span class="info-value">${projectName}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Person Name:</span>
-            <span class="info-value">${personName}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Email:</span>
-            <span class="info-value">${projectEmail}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Number of Files:</span>
-            <span class="info-value">${files.length}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Submission Time:</span>
-            <span class="info-value">${new Date().toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="section">
-          <h3>📁 Files Included</h3>
-          <ul>
-            ${files.map(f => `<li>${f.originalname} (${(f.size / 1024 / 1024).toFixed(2)} MB)</li>`).join('')}
-          </ul>
-        </div>
-      </body>
-      </html>
-    `;
-
-    // Send to admin email
-    const adminEmail = 'houseinmeta@gmail.com';
-    if (adminEmail !== projectEmail) {
+    // Send email to customer with attachments
+    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
       await transporter.sendMail({
         from: process.env.GMAIL_USER,
-        to: adminEmail,
-        subject: `[NEW SUBMISSION] Floor Plan - ${projectName} from ${personName}`,
-        html: adminEmailHTML,
-        attachments: attachments
+        to: projectEmail,
+        subject: `Floor Plan Submission Received - ${projectName}`,
+        html: emailHTML,
+        attachments: attachments,
+        replyTo: process.env.SUPPORT_EMAIL || 'support@houseinmeta.com'
       });
     }
 
@@ -784,49 +689,7 @@ app.post('/api/submit-floor-plan', upload.array('files', 10), async (req, res) =
   }
 });
 
-// Send Welcome Email (optional - when user first visits)
-app.post('/api/send-welcome-email', async (req, res) => {
-  try {
-    const { email, firstName } = req.body;
 
-    const welcomeHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Welcome to House In Meta! 🏠</h1>
-          </div>
-          <p>Hi ${firstName},</p>
-          <p>We're excited to help you transform your 2D floor plans into stunning 3D experiences!</p>
-          <p>Our service makes it easy to convert architectural drawings into interactive 3D models for presentations, virtual tours, and property showcasing.</p>
-          <p>Simply upload your floor plans, choose your package, and we'll handle the rest.</p>
-          <p>Best regards,<br/>House In Meta Team</p>
-        </div>
-      </body>
-      </html>
-    `;
-
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to: email,
-      subject: 'Welcome to House In Meta - Transform Your 2D Plans to 3D!',
-      html: welcomeHTML
-    });
-
-    res.json({ success: true, message: 'Welcome email sent' });
-  } catch (error) {
-    console.error('Welcome email error:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
 
 // Get order status (placeholder)
 app.get('/api/orders/:orderId', (req, res) => {
@@ -849,24 +712,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-app.listen(port, () => {
-  console.log('\n╔═══════════════════════════════════════════════════════════╗');
-  console.log('║      House In Meta - Backend Server (with Gmail)         ║');
-  console.log('╠═══════════════════════════════════════════════════════════╣');
-  console.log(`║ Server running on: http://localhost:${port}                    `);
-  console.log(`║ Environment: ${process.env.NODE_ENV || 'development'}                             `);
-  console.log(`║ Gmail User: ${process.env.GMAIL_USER || 'Not configured'}                     `);
-  console.log('║                                                           ║');
-  console.log('║ Endpoints:                                                ║');
-  console.log('║   POST   /api/submit-floor-plan       - Floor plan upload  ║');
-  console.log('║   POST   /api/send-email              - Send email         ║');
-  console.log('║   POST   /api/orders                  - Save order         ║');
-  console.log('║   POST   /api/create-payment-intent   - Stripe payment     ║');
-  console.log('║   POST   /api/send-welcome-email      - Welcome email      ║');
-  console.log('║   GET    /api/orders/:orderId         - Order status       ║');
-  console.log('║   GET    /api/health                  - Health check       ║');
-  console.log('╚═══════════════════════════════════════════════════════════╝\n');
-});
+// Start server (Lambda will ignore this, local only)
+if (!process.env.LAMBDA_FUNCTION_NAME) {
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
 
 module.exports = app;

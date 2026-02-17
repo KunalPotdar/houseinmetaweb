@@ -60,8 +60,9 @@ async function generateAndSend() {
       formData.append('files', uploadedFiles[i].file);
     }
 
-    // Send to backend (port 3000)
-    const response = await fetch('http://localhost:3000/api/submit-floor-plan', {
+    // Send to Lambda backend using API_CONFIG
+    const apiUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.submitFloorPlan}`;
+    const response = await fetch(apiUrl, {
       method: 'POST',
       body: formData
       // Don't set Content-Type header - browser will set it with boundary

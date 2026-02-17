@@ -61,7 +61,7 @@ async function generateAndSend() {
     }
 
     // Send to Lambda backend using API_CONFIG
-    const apiUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.submitFloorPlan}`;
+      const apiUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.submit}`;
     const response = await fetch(apiUrl, {
       method: 'POST',
       body: formData

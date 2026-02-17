@@ -30,7 +30,7 @@ const API_CONFIG = {
     paymentIntent: '/api/create-payment-intent',
     health: '/api/health',
     welcomeEmail: '/api/send-welcome-email',
-    submitFloorPlan: '/api/submit-floor-plan'
+    submit: '/api/submit'
   },
 
   // Timeout for API requests (ms)

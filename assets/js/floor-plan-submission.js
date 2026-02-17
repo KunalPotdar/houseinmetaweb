@@ -50,23 +50,42 @@ async function generateAndSend() {
     uploadLoading.style.display = 'flex';
 
     // Prepare FormData for multipart file upload
-    const formData = new FormData();
-    formData.append('projectName', projectName);
-    formData.append('personName', personName);
-    formData.append('projectEmail', projectEmail);
+      // Only support single file for backend compatibility
+      if (uploadedFiles.length !== 1) {
+        showError('Please upload exactly one PDF file.');
+        return;
+      }
+      const file = uploadedFiles[0].file;
+      if (file.type !== 'application/pdf') {
+        showError('Only PDF files are supported.');
+        return;
+      }
 
-    // Add all files from uploadedFiles array
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      formData.append('files', uploadedFiles[i].file);
-    }
+      // Read file as base64
+      const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-    // Send to Lambda backend using API_CONFIG
+      const pdfBase64 = await toBase64(file);
+
+      // Prepare JSON body for Lambda backend
+      const payload = {
+        projectName,
+        name: personName,
+        email: projectEmail,
+        pdfBase64
+      };
+
+      // Send to Lambda backend using API_CONFIG
       const apiUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.submit}`;
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      body: formData
-      // Don't set Content-Type header - browser will set it with boundary
-    });
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
     console.log('Response status:', response.status);
     console.log('Response headers:', response.headers);

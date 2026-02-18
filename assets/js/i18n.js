@@ -15,7 +15,7 @@ const translations = {
     'hero.title1': '3D Real Estates',
     'hero.title2': 'Reveal before Build',
     'hero.description': 'Manifest your dream home with the power of our 3D visualization solutions.',
-    'hero.cta': 'Start Your Project',
+    'hero.cta': 'Create your 3D Experience Here',
     
     // Why Section
     'why.title': 'Why House In Meta?',
@@ -107,7 +107,7 @@ const translations = {
     'convert2d.or': 'or',
     'convert2d.chooseFiles': 'Choose Files',
     'convert2d.uploadedFiles': 'Uploaded Files',
-    'convert2d.generate': 'Generate & Send',
+    'convert2d.generate': 'Send',
     'convert2d.remove': 'Remove',
     'convert2d.success': 'Floor plan submitted successfully! Check your email for confirmation.',
     'convert2d.error.selectPackage': 'Please select a package',
@@ -131,7 +131,7 @@ const translations = {
     'hero.title1': 'Immobilier 3D',
     'hero.title2': 'Voyez avant de bâtir',
     'hero.description': 'Concrétisez votre maison de rêve avec la puissance de nos solutions de visualisation 3D.',
-    'hero.cta': 'Démarrer Votre Projet',
+    'hero.cta': 'Créer votre Expérience 3D Maintenant',
     
     // Why Section
     'why.title': 'Pourquoi House In Meta ?',
@@ -223,7 +223,7 @@ const translations = {
     'convert2d.or': 'ou',
     'convert2d.chooseFiles': 'Choisir les Fichiers',
     'convert2d.uploadedFiles': 'Fichiers Téléchargés',
-    'convert2d.generate': 'Générer et Envoyer',
+    'convert2d.generate': 'Envoyer',
     'convert2d.remove': 'Supprimer',
     'convert2d.success': 'Plan d\'étage soumis avec succès ! Vérifiez votre e-mail pour la confirmation.',
     'convert2d.error.selectPackage': 'Veuillez sélectionner un forfait',
@@ -247,7 +247,7 @@ const translations = {
     'hero.title1': '3D रियल एस्टेट',
     'hero.title2': 'बनाने से पहले दिखाएं',
     'hero.description': 'हमारे 3D विज़ुअलाइज़ेशन समाधानों की शक्ति से अपने सपनों का घर साकार करें।',
-    'hero.cta': 'अपना प्रोजेक्ट शुरू करें',
+    'hero.cta': 'अपना 3D अनुभव यहां बनाएं',
     
     // Why Section
     'why.title': 'House In Meta क्यों?',

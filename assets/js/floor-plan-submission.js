@@ -90,32 +90,21 @@ async function generateAndSend() {
     console.log('Response status:', response.status);
     console.log('Response headers:', response.headers);
 
-    // Check if response is ok before parsing
-    if (!response.ok) {
-      const contentType = response.headers.get('content-type');
-      let errorData;
-      
-      if (contentType && contentType.includes('application/json')) {
-        errorData = await response.json();
-      } else {
-        const text = await response.text();
-        console.error('Server response:', text);
-        throw new Error(`Server error: ${response.status} ${response.statusText}. ${text.substring(0, 100)}`);
-      }
-      
-      throw new Error(errorData.error || `Failed to submit floor plan: ${response.statusText}`);
+    // Parse response as JSON
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error('Failed to parse response as JSON:', parseError);
+      console.error('Response status:', response.status);
+      const text = await response.text();
+      console.error('Response text:', text);
+      throw new Error(`Server returned invalid JSON: ${text.substring(0, 200)}`);
     }
 
-    const contentType = response.headers.get('content-type');
-    let data;
-    
-    if (contentType && contentType.includes('application/json')) {
-      data = await response.json();
-    } else {
-      const text = await response.text();
-      console.error('Unexpected response type:', contentType);
-      console.error('Response text:', text);
-      throw new Error('Server returned an invalid response format');
+    // Check if response is ok
+    if (!response.ok) {
+      throw new Error(data.error || `Failed to submit floor plan: ${response.statusText}`);
     }
 
     console.log('Response data:', data);

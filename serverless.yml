@@ -10,6 +10,25 @@ provider:
   timeout: 60
   httpApi:
     metrics: true
+    cors:
+      allowedOrigins:
+        - '*'
+        - 'https://www.houseinmeta.com'
+        - 'https://houseinmeta.com'
+        - 'http://localhost:3000'
+        - 'http://localhost:5173'
+      allowedHeaders:
+        - 'Content-Type'
+        - 'Authorization'
+        - 'X-Requested-With'
+      allowedMethods:
+        - 'GET'
+        - 'POST'
+        - 'PUT'
+        - 'DELETE'
+        - 'PATCH'
+        - 'OPTIONS'
+      maxAge: 86400
   environment:
     NODE_ENV: production
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}

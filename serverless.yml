@@ -10,18 +10,6 @@ provider:
   timeout: 60
   httpApi:
     metrics: true
-    cors:
-      allowedOrigins:
-        - '*'
-      allowedHeaders:
-        - Content-Type
-        - Authorization
-      allowedMethods:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - OPTIONS
   environment:
     NODE_ENV: production
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}

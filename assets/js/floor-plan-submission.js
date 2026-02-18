@@ -60,7 +60,7 @@ async function generateAndSend() {
         showError('Only PDF files are supported.');
         return;
       }
-
+      
       // Read file as base64
       const toBase64 = file => new Promise((resolve, reject) => {
         const reader = new FileReader();

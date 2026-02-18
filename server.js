@@ -18,7 +18,24 @@ const port = process.env.PORT || 3000;
 const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
 
 // Middleware
-app.use(cors());
+// CORS Configuration - explicitly configured for API Gateway Lambda integration
+app.use(cors({
+  origin: true, // Reflect the request origin (respects preflight)
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400 // 24 hours
+}));
+
+// Explicit OPTIONS handler for preflight requests
+app.options('*', cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400
+}));
+
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use(express.static('.'));
@@ -689,6 +706,214 @@ app.post('/api/submit-floor-plan', upload.array('files', 10), async (req, res) =
   }
 });
 
+// ============================================
+// FLOOR PLAN SUBMISSION WITH BASE64 PDF
+// ============================================
+// This endpoint accepts JSON payload with base64-encoded PDF (used by floor-plan-submission.js)
+
+app.post('/api/submit', async (req, res) => {
+  try {
+    const { projectName, name, email, pdfBase64 } = req.body;
+
+    // Validate required fields
+    if (!projectName || !name || !email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: projectName, name, email'
+      });
+    }
+
+    // Validate email
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email address'
+      });
+    }
+
+    // Validate PDF
+    if (!pdfBase64) {
+      return res.status(400).json({
+        success: false,
+        error: 'No PDF file provided'
+      });
+    }
+
+    // Convert base64 to buffer
+    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
+
+    // Validate PDF size (max 50MB)
+    if (pdfBuffer.length > 50 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        error: 'PDF file is too large (max 50MB)'
+      });
+    }
+
+    // Generate PDF filename
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const pdfFilename = `floorplan-${projectName.replace(/\s+/g, '_')}-${timestamp}.pdf`;
+
+    // Prepare attachment
+    const attachment = {
+      filename: pdfFilename,
+      content: pdfBuffer,
+      contentType: 'application/pdf'
+    };
+
+    // Generate email HTML
+    const emailHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+          }
+          .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+          }
+          .content {
+            padding: 30px;
+          }
+          .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+          }
+          .section h3 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+          }
+          .info-row:last-child {
+            border-bottom: none;
+          }
+          .info-label {
+            font-weight: 600;
+            color: #555;
+          }
+          .info-value {
+            color: #333;
+          }
+          .footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🏠 Floor Plan Submission Received</h1>
+          </div>
+          <div class="content">
+            <p>Hello ${name},</p>
+            <p>Thank you for submitting your project! We have received your floor plan and will process it shortly.</p>
+            
+            <div class="section">
+              <h3>📋 Project Details</h3>
+              <div class="info-row">
+                <span class="info-label">Project Name:</span>
+                <span class="info-value">${projectName}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Your Name:</span>
+                <span class="info-value">${name}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">${email}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Submission Time:</span>
+                <span class="info-value">${new Date().toLocaleString()}</span>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>📁 Floor Plan File</h3>
+              <p>File: <strong>${pdfFilename}</strong></p>
+              <p>Size: <strong>${(pdfBuffer.length / 1024 / 1024).toFixed(2)} MB</strong></p>
+            </div>
+
+            <div class="section">
+              <h3>⏱️ What's Next?</h3>
+              <p>Our team will review your floor plan and begin the 3D conversion process. You will receive updates via email about your project status within 24-48 hours.</p>
+            </div>
+
+            <div class="footer">
+              <p>Thank you for choosing House In Meta!</p>
+              <p>&copy; 2026 House In Meta. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Send email to customer with attachment
+    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+      await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: `Floor Plan Submission Received - ${projectName}`,
+        html: emailHTML,
+        attachments: [attachment],
+        replyTo: process.env.SUPPORT_EMAIL || 'support@houseinmeta.com'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Floor plan submitted successfully',
+      projectName: projectName,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Floor plan submission error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 
 // Get order status (placeholder)

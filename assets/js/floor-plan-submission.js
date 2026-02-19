@@ -120,38 +120,64 @@ async function generateAndSend() {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        timeout: 30000 // 30 second timeout for file processing
       });
 
     console.log('Response status:', response.status);
     console.log('Response statusText:', response.statusText);
     console.log('Response headers:', response.headers);
 
-    // Parse response as JSON
+    // Lambda function returns wrapped response with statusCode property
     let data;
+    let parsedBody;
+    
     try {
-      data = await response.json();
+      const responseText = await response.text();
+      console.log('Raw response:', responseText.substring(0, 500));
+      
+      // Try to parse as JSON
+      data = JSON.parse(responseText);
+      
+      // Handle Lambda response format { statusCode: 200, body: "..." }
+      if (data.statusCode && data.body) {
+        try {
+          parsedBody = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+        } catch (e) {
+          parsedBody = { message: data.body };
+        }
+      }
     } catch (parseError) {
       console.error('Failed to parse response as JSON:', parseError);
       console.error('Response status:', response.status);
-      const text = await response.text();
-      console.error('Response text:', text);
-      throw new Error(`Server returned invalid JSON (${response.status} ${response.statusText}): ${text.substring(0, 200)}`);
+      throw new Error(`Server returned invalid JSON (${response.status}): Unable to parse response`);
     }
 
-    // Check if response is ok
+    // Check HTTP status
     if (!response.ok) {
-      const errorMsg = data.error || response.statusText || 'Unknown error';
-      const fullError = `API Error (${response.status}): ${errorMsg}. Please check that:\n1. The API endpoint is properly configured\n2. Your network connection is stable\n3. The server is running and accessible`;
-      console.error('API Response:', { status: response.status, statusText: response.statusText, data });
+      // Check if we have Lambda error details
+      const lambdaStatus = data.statusCode || response.status;
+      const errorMsg = parsedBody?.error || parsedBody?.message || response.statusText || 'Unknown error';
+      
+      const fullError = `API Error (${lambdaStatus}): ${errorMsg}\n\nPlease verify:\n• Internet connection is stable\n• API endpoint is correctly configured\n• Lambda function is deployed and running`;
+      
+      console.error('API Response:', { lambdaStatus, errorMsg, data });
       throw new Error(fullError);
     }
 
+    // Verify success from Lambda response
     console.log('Response data:', data);
-
-    if (!data.success) {
-      throw new Error(data.error || 'Failed to submit floor plan');
+    
+    const successMsg = parsedBody?.message || data.message || 'Floor plan submitted successfully';
+    if (data.statusCode === 200 || response.ok) {
+      showSuccess(successMsg + '! Check your email for confirmation.');
+      clearForm();
+      uploadLoading.style.display = 'none';
+      generateBtn.disabled = false;
+      return;
     }
+    
+    throw new Error(successMsg);
 
     // Success - show confirmation message
     showSuccess(data.message || 'Floor plan submitted successfully! Check your email for confirmation.');
@@ -172,14 +198,16 @@ async function generateAndSend() {
     
     // Provide specific guidance based on error type
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      userMessage = 'Network error: Unable to reach the API. Please check your internet connection and try again.';
-    } else if (error.message.includes('API Error')) {
-      userMessage = error.message; // Use the detailed error from API
+      userMessage = 'Network error: Unable to reach the API.\n\n• Check your internet connection\n• Verify the API endpoint is accessible\n• Try again in a moment';
+    } else if (error.message.includes('API Error (5')) {
+      userMessage = 'Server error: The backend service encountered an issue.\n\n• This may be a temporary issue\n• Please try again in a few moments\n• If the problem persists, contact support';
+    } else if (error.message.includes('API Error (400')) {
+      userMessage = 'Validation error: Please ensure all fields are correctly filled:\n\n• Project name is not empty\n• A valid email address\n• A PDF file is uploaded\n• Check browser console for details';
     } else if (error.message.includes('invalid JSON')) {
-      userMessage = 'Server error: The API returned an invalid response. Please contact support.';
+      userMessage = 'Server communication error: Invalid response format.\n\nPlease:\n• Verify the API endpoint configuration\n• Check that the Lambda function is deployed\n• Contact support if the problem persists';
     }
     
-    showError(userMessage + ' (Check browser console for technical details)');
+    showError(userMessage);
     document.getElementById('uploadLoading').style.display = 'none';
     document.getElementById('generateBtn').disabled = false;
   }

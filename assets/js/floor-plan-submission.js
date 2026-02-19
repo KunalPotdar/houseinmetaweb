@@ -1,6 +1,39 @@
 // Floor Plan Submission Handler
 // Handles file uploads and form submission for 2D to 3D conversion
 
+// Diagnostic function to check API connectivity
+async function diagnoseAPI() {
+  console.log('=== API Connectivity Diagnostic ===');
+  console.log('API Base URL:', API_CONFIG.baseURL);
+  console.log('Endpoint:', API_CONFIG.endpoints.submit);
+  
+  try {
+    const healthUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.health}`;
+    console.log('Testing health endpoint:', healthUrl);
+    
+    const response = await fetch(healthUrl, { method: 'GET' });
+    console.log('Health check response:', response.status, response.statusText);
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('API is reachable:', data);
+      return true;
+    } else {
+      console.warn('API returned error status:', response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('API connectivity error:', error.message);
+    return false;
+  }
+}
+
+// Call diagnostic on page load
+window.addEventListener('load', () => {
+  console.log('Floor Plan Submission module loaded');
+  // Uncomment to auto-run diagnostics: diagnoseAPI();
+});
+
 async function generateAndSend() {
   try {
     // Get form values
@@ -81,6 +114,9 @@ async function generateAndSend() {
 
       // Send to Lambda backend using API_CONFIG
       const apiUrl = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.submit}`;
+      console.log('Submitting to API endpoint:', apiUrl);
+      console.log('Payload keys:', Object.keys(payload));
+      
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,6 +124,7 @@ async function generateAndSend() {
       });
 
     console.log('Response status:', response.status);
+    console.log('Response statusText:', response.statusText);
     console.log('Response headers:', response.headers);
 
     // Parse response as JSON
@@ -99,12 +136,15 @@ async function generateAndSend() {
       console.error('Response status:', response.status);
       const text = await response.text();
       console.error('Response text:', text);
-      throw new Error(`Server returned invalid JSON: ${text.substring(0, 200)}`);
+      throw new Error(`Server returned invalid JSON (${response.status} ${response.statusText}): ${text.substring(0, 200)}`);
     }
 
     // Check if response is ok
     if (!response.ok) {
-      throw new Error(data.error || `Failed to submit floor plan: ${response.statusText}`);
+      const errorMsg = data.error || response.statusText || 'Unknown error';
+      const fullError = `API Error (${response.status}): ${errorMsg}. Please check that:\n1. The API endpoint is properly configured\n2. Your network connection is stable\n3. The server is running and accessible`;
+      console.error('API Response:', { status: response.status, statusText: response.statusText, data });
+      throw new Error(fullError);
     }
 
     console.log('Response data:', data);
@@ -126,7 +166,20 @@ async function generateAndSend() {
   } catch (error) {
     console.error('Submission error:', error);
     console.error('Error stack:', error.stack);
-    showError(error.message || 'An error occurred while submitting your floor plan. Please try again. Check browser console for details.');
+    console.error('Error name:', error.name);
+    
+    let userMessage = error.message || 'An error occurred while submitting your floor plan.';
+    
+    // Provide specific guidance based on error type
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      userMessage = 'Network error: Unable to reach the API. Please check your internet connection and try again.';
+    } else if (error.message.includes('API Error')) {
+      userMessage = error.message; // Use the detailed error from API
+    } else if (error.message.includes('invalid JSON')) {
+      userMessage = 'Server error: The API returned an invalid response. Please contact support.';
+    }
+    
+    showError(userMessage + ' (Check browser console for technical details)');
     document.getElementById('uploadLoading').style.display = 'none';
     document.getElementById('generateBtn').disabled = false;
   }

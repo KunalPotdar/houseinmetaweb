@@ -11,15 +11,19 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 //renderer.setSize(rightPanel.clientWidth, rightPanel.clientHeight);
-renderer.setClearColor(0x000000);
+renderer.setClearColor(0xffffff);
 renderer.setPixelRatio(window.devicePixelRatio);
-
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.85;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.physicallyCorrectLights = true;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
 
 
 const aspect = window.innerWidth / window.innerHeight;
@@ -54,40 +58,35 @@ controls.addEventListener('unlock', () => {
 });
 // LIGHTS
 
-// Ambient Light - provides base lighting to all surfaces
-const hlight = new THREE.AmbientLight(0xFFFFFF, 2);
-scene.add(hlight);
+// Natural ambient lighting - strong for overall brightness
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
 
-// Main Directional Light (from above, like sunlight)
-const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 2);
-directionalLight.position.set(10, 20, 10);
-directionalLight.castShadow = true;
-scene.add(directionalLight);
+// Subtle directional light simulating natural daylight from above
+const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
+sunLight.position.set(50, 100, 30);
+sunLight.target.position.set(0, 0, 0);
+scene.add(sunLight);
 
-// Fill light from the left side
-const fillLightLeft = new THREE.DirectionalLight(0xFFFFFF, 1.5);
-fillLightLeft.position.set(-10, 10, 5);
-scene.add(fillLightLeft);
-
-// Fill light from the right side
-const fillLightRight = new THREE.DirectionalLight(0xFFFFFF, 1.5);
-fillLightRight.position.set(10, 10, -5);
-scene.add(fillLightRight);
-
-// Back light to illuminate rear faces
-const backLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-backLight.position.set(0, 5, -10);
-scene.add(backLight);
-
-// Hemisphere light for natural ambient feel
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
-hemiLight.position.set(0, 20, 0);
-scene.add(hemiLight);
+// Soft fill light for shadow areas
+const fillLight = new THREE.DirectionalLight(0xd0e8f2, 0.3);
+fillLight.position.set(-50, 50, -50);
+scene.add(fillLight);
 
 
 //const loader = new GLTFLoader().setPath('client/project2/apts/');
 const loader = new GLTFLoader();
-loader.load('./lodge.glb', (gltf) => {
+
+// Material refraction control settings
+const materialSettings = {
+  transmissionLevel: 0,    // 0 = opaque (no transparency), increase if you want glass-like effect
+  refractionIndex: 1.5,      // IOR (Index of Refraction) - 1.5 for glass, 1.33 for water
+  thickness: 0.3,            // Thickness for refraction effect
+  metalness: 0.05,            // Metallic properties (lower for less shiny)
+  roughness: 0.8             // Surface roughness (higher = more matte)
+};
+
+loader.load('./bois2.glb', (gltf) => {
   console.log('Apartment model');
   const mesh = gltf.scene;
 
@@ -95,11 +94,56 @@ loader.load('./lodge.glb', (gltf) => {
   const box = new THREE.Box3().setFromObject(mesh);
   const center = new THREE.Vector3();
   box.getCenter(center);
+  // Ensure natural colors by processing all materials
+  mesh.traverse((child) => {
+    if (child.isMesh && child.material) {
+      // Handle both single materials and arrays of materials
+      const materials = Array.isArray(child.material) ? child.material : [child.material];
+      materials.forEach((mat) => {
+        if (mat && mat.isMaterial) {
+          // Ensure proper color space for textures
+          if (mat.map) mat.map.colorSpace = THREE.SRGBColorSpace;
+          if (mat.normalMap) mat.normalMap.colorSpace = THREE.LinearSRGBColorSpace;
+          if (mat.roughnessMap) mat.roughnessMap.colorSpace = THREE.LinearSRGBColorSpace;
+          if (mat.metalnessMap) mat.metalnessMap.colorSpace = THREE.LinearSRGBColorSpace;
+          
+          // Apply material properties - preserve original texture values if they exist
+          if (!mat.roughnessMap) {
+            mat.roughness = materialSettings.roughness;
+          }
+          if (!mat.metalnessMap) {
+            mat.metalness = materialSettings.metalness;
+          }
+          
+          // Add refraction/transmission only for transparent materials (like glass)
+          // Only enable transmission if you want specific materials to be glass-like
+          if (mat.transmission !== undefined && materialSettings.transmissionLevel > 0) {
+            // Only apply to materials with "glass" or similar in the name
+            if (mat.name && (mat.name.toLowerCase().includes('glass') || 
+                             mat.name.toLowerCase().includes('window') || 
+                             mat.name.toLowerCase().includes('transparent'))) {
+              mat.transmission = materialSettings.transmissionLevel;
+              mat.ior = materialSettings.refractionIndex;
+              if (mat.thickness !== undefined) {
+                mat.thickness = materialSettings.thickness;
+              }
+            }
+          }
+          
+          mat.needsUpdate = true;
+        }
+      });
+    }
+  });
+  
   mesh.position.sub(center); // Recenter model
 
   // Optional: place bottom of model on ground
   box.setFromObject(mesh); // Recalculate after shift
   mesh.position.y -= box.min.y;
+  
+  // Ensure model is centered at origin
+  mesh.position.set(0, 0, 0);
 
   scene.add(mesh);
   

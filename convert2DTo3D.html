@@ -147,6 +147,41 @@
             letter-spacing: -0.5px;
         }
 
+        /* Selected Package Info Box */
+        #selectedPackageInfo {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        #selectedPackageInfo button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #selectedPackageInfo button:last-child {
+            background: #764ba2;
+        }
+
+        #selectedPackageInfo button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        #selectedPackageInfo button:last-child:hover {
+            background: #5a3a8a;
+        }
+
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 12px;
@@ -1142,12 +1177,197 @@
                 padding: 40px 20px;
             }
         }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                margin-bottom: 30px;
+                min-height: 300px;
+                padding: 20px 0;
+                border-radius: 8px;
+            }
+
+            .logo {
+                height: 45px;
+                margin-bottom: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5em;
+                margin-bottom: 8px;
+                line-height: 1.2;
+            }
+
+            header p {
+                font-size: 0.9em;
+            }
+
+            .upload-section,
+            .packages-section,
+            .checkout-section {
+                padding: 25px 15px;
+                border-radius: 12px;
+                margin-bottom: 30px;
+            }
+
+            .upload-section h2,
+            .packages-section h2,
+            .checkout-section h2 {
+                font-size: 1.3em;
+                margin-bottom: 25px;
+            }
+
+            .upload-area {
+                padding: 30px 20px;
+                margin-bottom: 20px;
+            }
+
+            .upload-icon {
+                font-size: 2.5em;
+                margin-bottom: 12px;
+            }
+
+            .packages-grid {
+                gap: 15px;
+            }
+
+            .package-card {
+                border-radius: 12px;
+            }
+
+            .package-icon {
+                font-size: 2.5em;
+                margin: 20px 0 10px 0;
+                height: 50px;
+            }
+
+            .package-name {
+                font-size: 1.2em;
+                margin: 10px 15px 8px 15px;
+            }
+
+            .package-description {
+                font-size: 0.8em;
+                margin: 0 15px 15px 15px;
+                min-height: auto;
+            }
+
+            .package-price {
+                font-size: 2em;
+                margin: 12px 15px 3px 15px;
+            }
+
+            .package-features {
+                margin: 0 15px 15px 15px;
+            }
+
+            .feature {
+                font-size: 0.85em;
+                margin-bottom: 10px;
+            }
+
+            .package-btn {
+                width: calc(100% - 30px);
+                padding: 12px 15px;
+                margin: 0 15px 15px 15px;
+                font-size: 0.85em;
+            }
+
+            .steps-container {
+                padding: 30px 15px;
+                margin-bottom: 30px;
+                border-radius: 12px;
+            }
+
+            .steps-wrapper {
+                gap: 5px;
+            }
+
+            .step {
+                min-width: 80px;
+            }
+
+            .step-circle {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3em;
+                margin-bottom: 10px;
+            }
+
+            .step-text {
+                font-size: 0.8em;
+                max-width: 100px;
+            }
+
+            .step-description {
+                font-size: 0.65em;
+                margin-top: 4px;
+            }
+
+            .step-arrow {
+                width: 3px;
+                height: 30px;
+                margin: 5px 0;
+            }
+
+            .step-arrow::after {
+                right: auto;
+                bottom: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 12px solid rgba(255, 255, 255, 0.6);
+            }
+
+            .step-arrow-label {
+                display: none;
+            }
+
+            .supported-formats {
+                padding: 15px;
+                font-size: 0.85em;
+                margin-bottom: 20px;
+            }
+
+            .project-info-form {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            .project-info-form h3 {
+                font-size: 0.95em;
+                margin-bottom: 12px;
+            }
+
+            #selectedPackageInfo {
+                padding: 15px;
+                margin-bottom: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            #selectedPackageInfo > div {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            #selectedPackageInfo button {
+                width: 100%;
+                padding: 12px 15px;
+                margin: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>    <div class="container">        <header>
             <img src="/assets/images/logo.png" alt="HouseInMeta Logo" class="logo">
-            <h1>Visualize your "Dream" Home in 3D</h1>
-            <p>Transform your 2D floor plans into immersive 3D experiences with HouseInMeta</p>
+            <h1 data-i18n="convert2d.headerTitle">Visualize your "Dream" Home in 3D</h1>
+            <p data-i18n="convert2d.headerSubtitle">Transform your 2D floor plans into immersive 3D experiences with HouseInMeta</p>
         </header>
 
         <!-- Steps Progress Indicator -->

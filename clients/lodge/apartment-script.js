@@ -59,20 +59,40 @@ controls.addEventListener('unlock', () => {
 // LIGHTS
 
 // Natural ambient lighting - strong for overall brightness
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); // Full intensity for bright, even lighting
 scene.add(ambientLight);
 
 // Subtle directional light simulating natural daylight from above
-const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
+const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
 sunLight.position.set(50, 100, 30);
 sunLight.target.position.set(0, 0, 0);
 scene.add(sunLight);
 
 // Soft fill light for shadow areas
-const fillLight = new THREE.DirectionalLight(0xd0e8f2, 0.3);
+const fillLight = new THREE.DirectionalLight(0xd0e8f2, 0.25);
 fillLight.position.set(-50, 50, -50);
 scene.add(fillLight);
 
+// Load HDRI and create large sphere
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/clients-hsm/hdri.hdr', function(texture) {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  
+  // Create large sphere for HDRI background
+  const sphereGeometry = new THREE.SphereGeometry(500, 64, 64);
+  const sphereMaterial = new THREE.MeshBasicMaterial({
+    map: texture,
+    side: THREE.BackSide, // Render from inside
+    toneMapped: false // Don't tone map HDRI
+  });
+  const hdriSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  scene.add(hdriSphere);
+  
+  // Use HDRI as visual background only, not as environment lighting
+  // to preserve original surface colors
+  // scene.environment = texture;  // Commented out to prevent color shifts
+  scene.background = texture;
+});
 
 //const loader = new GLTFLoader().setPath('client/project2/apts/');
 const loader = new GLTFLoader();
@@ -86,7 +106,7 @@ const materialSettings = {
   roughness: 0.8             // Surface roughness (higher = more matte)
 };
 
-loader.load('./bois2.glb', (gltf) => {
+loader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/clients-hsm/bois.glb', (gltf) => {
   console.log('Apartment model');
   const mesh = gltf.scene;
 
@@ -170,17 +190,17 @@ const friction = 1.0; // Higher = smoother deceleration
 
 
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'KeyW') move.forward = true;
-  if (e.code === 'KeyS') move.backward = true;
-  if (e.code === 'KeyA') move.left = true;
-  if (e.code === 'KeyD') move.right = true;
+  if (e.code === 'KeyW' || e.code === 'ArrowUp') move.forward = true;
+  if (e.code === 'KeyS' || e.code === 'ArrowDown') move.backward = true;
+  if (e.code === 'KeyA' || e.code === 'ArrowLeft') move.left = true;
+  if (e.code === 'KeyD' || e.code === 'ArrowRight') move.right = true;
 });
 
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'KeyW') move.forward = false;
-  if (e.code === 'KeyS') move.backward = false;
-  if (e.code === 'KeyA') move.left = false;
-  if (e.code === 'KeyD') move.right = false;
+  if (e.code === 'KeyW' || e.code === 'ArrowUp') move.forward = false;
+  if (e.code === 'KeyS' || e.code === 'ArrowDown') move.backward = false;
+  if (e.code === 'KeyA' || e.code === 'ArrowLeft') move.left = false;
+  if (e.code === 'KeyD' || e.code === 'ArrowRight') move.right = false;
 });
 
 

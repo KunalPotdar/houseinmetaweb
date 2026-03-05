@@ -104,12 +104,24 @@ async function generateAndSend() {
 
       const pdfBase64 = await toBase64(file);
 
+      // Validate that a package has been selected
+      if (!selectedPackage) {
+        showError('Please select a package before submitting');
+        generateBtn.disabled = false;
+        uploadLoading.style.display = 'none';
+        return;
+      }
+
       // Prepare JSON body for Lambda backend
       const payload = {
         projectName,
         name: personName,
         email: projectEmail,
-        pdfBase64
+        pdfBase64,
+        // Add selected package information
+        packageId: selectedPackage.id,
+        packageName: selectedPackage.name,
+        packagePrice: selectedPackage.price
       };
 
       // Send to Lambda backend using API_CONFIG

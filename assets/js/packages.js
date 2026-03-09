@@ -1,59 +1,66 @@
 // Package data and management
-const packages = [
+// Base package configuration with icons and prices (language-independent)
+const packageConfigs = [
     {
         id: 'basic',
-        name: '3D Quick',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" /></linearGradient></defs><rect x="20" y="35" width="60" height="40" fill="url(#grad1)" rx="3"/><polygon points="25,35 50,15 75,35" fill="url(#grad1)"/><rect x="35" y="45" width="8" height="20" fill="white" opacity="0.7"/><rect x="57" y="45" width="8" height="20" fill="white" opacity="0.7"/></svg>',
-        description: 'Get your floor plan converted to 3D in no time',
         price: 39.99,
         period: 'one-time',
-        features: [
-            'High Quality Axonometric 3D View image',
-            'Single floor conversion',
-            'Two Interior 3D Rendered images',
-            '5-day delivery',
-        ],
         featured: false
     },
     {
         id: 'professional',
-        name: '3D Pro',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" /></linearGradient></defs><rect x="20" y="25" width="15" height="50" fill="url(#grad2)" rx="2"/><rect x="42" y="20" width="15" height="55" fill="url(#grad2)" rx="2"/><rect x="64" y="30" width="15" height="45" fill="url(#grad2)" rx="2"/><circle cx="27.5" cy="80" r="4" fill="#667eea"/><circle cx="49.5" cy="80" r="4" fill="#667eea"/><circle cx="71.5" cy="80" r="4" fill="#667eea"/></svg>',
-        description: 'Get a detailed understanding of your space with 3D Pro',
         price: 69.99,
         period: 'one-time',
-        features: [
-            'In addition to 3D Quick features:',
-            'High-quality Interior Rendered images',
-            'High quality 360° images for immersive experience',
-            'Two Revisions based on client feedback',
-            
-        ],
         featured: false
     },
     {
         id: 'premium',
-        name: '3D Premium',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" /><stop offset="100%" style="stop-color:#667eea;stop-opacity:1" /></linearGradient></defs><path d="M 50 15 L 62 50 L 88 50 L 70 65 L 78 95 L 50 80 L 22 95 L 30 65 L 12 50 L 38 50 Z" fill="url(#grad3)"/><circle cx="50" cy="50" r="35" fill="none" stroke="url(#grad3)" stroke-width="1.5" opacity="0.5"/></svg>',
-        description: 'Walk through your space like never before with 3D Premium - Our most popular service',
         price: 99.99,
         period: 'one-time',
-        features: [
-            'In addition to 3D Pro features:',
-            'A fully interactive 3D model with advanced navigation',
-            '3D files for use in VR/AR applications',
-            '🎤 Online Walkthrough experience, hosted by HouseInMeta',
-            'Priority support and faster delivery',
-        ],
         featured: true
     }
 ];
 
+// Feature keys that need to be translated for each package
+const packageFeatureKeys = {
+    basic: ['package.quick.feature1', 'package.quick.feature2', 'package.quick.feature3', 'package.quick.feature4'],
+    professional: ['package.pro.feature1', 'package.pro.feature2', 'package.pro.feature3', 'package.pro.feature4'],
+    premium: ['package.premium.feature1', 'package.premium.feature2', 'package.premium.feature3', 'package.premium.feature4', 'package.premium.feature5']
+};
+
+// Get translated package data for current language
+function getTranslatedPackages() {
+    return packageConfigs.map(config => {
+        const langKey = config.id === 'basic' ? 'quick' : config.id === 'professional' ? 'pro' : 'premium';
+        const featureKeys = packageFeatureKeys[config.id];
+        
+        return {
+            id: config.id,
+            name: window.i18n ? window.i18n.t(`package.${langKey}.name`) : 'Package',
+            icon: config.icon,
+            description: window.i18n ? window.i18n.t(`package.${langKey}.description`) : 'Description',
+            price: config.price,
+            period: config.period,
+            features: window.i18n ? featureKeys.map(key => window.i18n.t(key)) : [],
+            featured: config.featured
+        };
+    });
+}
+
+let packages = getTranslatedPackages();
 let selectedPackage = null;
 
 // Render packages
 function renderPackages() {
+    // Refresh packages data from current language
+    packages = getTranslatedPackages();
+    
     const grid = document.getElementById('packagesGrid');
+    const periodText = window.i18n ? (pkg) => pkg.period === 'one-time' ? window.i18n.t('package.quick.period') : 'per month' : 'One-time fee';
+    
     grid.innerHTML = packages.map(pkg => `
         <div class="package-card ${pkg.featured ? 'featured' : ''}" onclick="selectPackage('${pkg.id}')">
             <div class="package-icon">${pkg.icon.startsWith('<svg') ? pkg.icon : (pkg.icon.startsWith('/') ? `<img src="${pkg.icon}" alt="${pkg.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : pkg.icon)}</div>
@@ -63,11 +70,11 @@ function renderPackages() {
             <div class="package-price">
                 <span class="currency">€</span>${pkg.price.toFixed(2)}
             </div>
-            <div class="package-period">${pkg.period === 'one-time' ? 'One-time fee' : 'per month'}</div>
+            <div class="package-period">${pkg.period === 'one-time' ? (window.i18n ? window.i18n.t('package.quick.period') : 'One-time fee') : 'per month'}</div>
             <div class="package-features">
                 ${pkg.features.map(feature => `<div class="feature">${feature}</div>`).join('')}
             </div>
-            <button class="package-btn" id="btn-${pkg.id}">Select Package</button>
+            <button class="package-btn" id="btn-${pkg.id}">${window.i18n ? window.i18n.t('package.selectBtn') : 'Select Package'}</button>
         </div>
     `).join('');
 }

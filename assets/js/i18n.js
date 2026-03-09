@@ -117,7 +117,35 @@ const translations = {
     'convert2d.error.enterName': 'Please enter your name',
     'convert2d.error.enterEmail': 'Please enter your email address',
     'convert2d.error.invalidEmail': 'Please enter a valid email address',
-    'convert2d.processing': 'Processing your request...'
+    'convert2d.processing': 'Processing your request...',
+    
+    // Packages
+    'package.quick.name': '3D Quick',
+    'package.quick.description': 'Get your floor plan converted to 3D in no time',
+    'package.quick.feature1': 'High Quality Axonometric 3D View image',
+    'package.quick.feature2': 'Single floor conversion',
+    'package.quick.feature3': 'Two Interior 3D Rendered images',
+    'package.quick.feature4': '5-day delivery',
+    'package.quick.period': 'One-time fee',
+    
+    'package.pro.name': '3D Pro',
+    'package.pro.description': 'Get a detailed understanding of your space with 3D Pro',
+    'package.pro.feature1': 'In addition to 3D Quick features:',
+    'package.pro.feature2': 'High-quality Interior Rendered images',
+    'package.pro.feature3': 'High quality 360° images for immersive experience',
+    'package.pro.feature4': 'Two Revisions based on client feedback',
+    'package.pro.period': 'One-time fee',
+    
+    'package.premium.name': '3D Premium',
+    'package.premium.description': 'Walk through your space like never before with 3D Premium - Our most popular service',
+    'package.premium.feature1': 'In addition to 3D Pro features:',
+    'package.premium.feature2': 'A fully interactive 3D model with advanced navigation',
+    'package.premium.feature3': '3D files for use in VR/AR applications',
+    'package.premium.feature4': '🎤 Online Walkthrough experience, hosted by HouseInMeta',
+    'package.premium.feature5': 'Priority support and faster delivery',
+    'package.premium.period': 'One-time fee',
+    
+    'package.selectBtn': 'Select Package'
   },
   
   fr: {
@@ -235,7 +263,35 @@ const translations = {
     'convert2d.error.enterName': 'Veuillez entrer votre nom',
     'convert2d.error.enterEmail': 'Veuillez entrer votre adresse e-mail',
     'convert2d.error.invalidEmail': 'Veuillez entrer une adresse e-mail valide',
-    'convert2d.processing': 'Traitement de votre demande...'
+    'convert2d.processing': 'Traitement de votre demande...',
+    
+    // Packages
+    'package.quick.name': '3D Rapide',
+    'package.quick.description': 'Convertissez votre plan d\'étage en 3D en un instant',
+    'package.quick.feature1': 'Image de vue axonométrique 3D de haute qualité',
+    'package.quick.feature2': 'Conversion monoétage',
+    'package.quick.feature3': 'Deux images 3D d\'intérieur rendues',
+    'package.quick.feature4': 'Livraison en 5 jours',
+    'package.quick.period': 'Frais uniques',
+    
+    'package.pro.name': '3D Pro',
+    'package.pro.description': 'Comprenez en détail votre espace avec 3D Pro',
+    'package.pro.feature1': 'En plus des fonctionnalités 3D Rapide :',
+    'package.pro.feature2': 'Images intérieures rendues de haute qualité',
+    'package.pro.feature3': 'Images 360° de haute qualité pour une expérience immersive',
+    'package.pro.feature4': 'Deux révisions en fonction des commentaires',
+    'package.pro.period': 'Frais uniques',
+    
+    'package.premium.name': '3D Premium',
+    'package.premium.description': 'Explorez votre espace comme jamais auparavant avec 3D Premium - Notre service le plus populaire',
+    'package.premium.feature1': 'En plus des fonctionnalités 3D Pro :',
+    'package.premium.feature2': 'Modèle 3D entièrement interactif avec navigation avancée',
+    'package.premium.feature3': 'Fichiers 3D pour applications VR/AR',
+    'package.premium.feature4': '🎤 Expérience de visite virtuelle en ligne, hébergée par HouseInMeta',
+    'package.premium.feature5': 'Support prioritaire et livraison plus rapide',
+    'package.premium.period': 'Frais uniques',
+    
+    'package.selectBtn': 'Sélectionner le Forfait'
   },
   
   hi: {
@@ -328,7 +384,35 @@ const translations = {
     'convert2d.title': 'ड्रीम होम 3D',
     'convert2d.headerTitle': 'निर्माण से पहले अपने भविष्य कै Home को 3D में देखें',
     'convert2d.headerSubtitle': 'अपनी 2D योजनाओं को HouseInMeta के साथ immersive 3D अनुभवों में बदलें',
-    'convert2d.subtitle': 'अपनी 2D फ्लोर प्लान को आश्चर्यजनक इंटरैक्टिव 3D मॉडल में बदलें'
+    'convert2d.subtitle': 'अपनी 2D फ्लोर प्लान को आश्चर्यजनक इंटरैक्टिव 3D मॉडल में बदलें',
+    
+    // Packages
+    'package.quick.name': '3D तेज़',
+    'package.quick.description': 'अपनी फ्लोर प्लान को तुरंत 3D में बदलें',
+    'package.quick.feature1': 'उच्च गुणवत्ता वाली एक्सोनोमेट्रिक 3D व्यू छवि',
+    'package.quick.feature2': 'सिंगल फ्लोर रूपांतरण',
+    'package.quick.feature3': 'दो इंटीरियर 3D रेंडर की गई छवियां',
+    'package.quick.feature4': '5 दिन की डिलीवरी',
+    'package.quick.period': 'एक बार का शुल्क',
+    
+    'package.pro.name': '3D Pro',
+    'package.pro.description': '3D Pro के साथ अपनी जगह को विस्तार से समझें',
+    'package.pro.feature1': '3D तेज़ सुविधाओं के अलावा:',
+    'package.pro.feature2': 'उच्च गुणवत्ता वाली इंटीरियर रेंडर की गई छवियां',
+    'package.pro.feature3': 'इमर्सिव अनुभव के लिए उच्च गुणवत्ता वाली 360° छवियां',
+    'package.pro.feature4': 'क्लाइंट फीडबैक के आधार पर दो संशोधन',
+    'package.pro.period': 'एक बार का शुल्क',
+    
+    'package.premium.name': '3D Premium',
+    'package.premium.description': '3D Premium के साथ अपनी जगह को कभी नहीं देखे गए तरीके से देखें - हमारी सबसे लोकप्रिय सेवा',
+    'package.premium.feature1': '3D Pro सुविधाओं के अलावा:',
+    'package.premium.feature2': 'उन्नत नेविगेशन के साथ पूरी तरह से इंटरैक्टिव 3D मॉडल',
+    'package.premium.feature3': 'VR/AR अनुप्रयोगों के लिए 3D फाइलें',
+    'package.premium.feature4': '🎤 ऑनलाइन वॉकथ्रू अनुभव, HouseInMeta द्वारा होस्ट किया गया',
+    'package.premium.feature5': 'प्राथमिकता समर्थन और तेज़ डिलीवरी',
+    'package.premium.period': 'एक बार का शुल्क',
+    
+    'package.selectBtn': 'पैकेज चुनें'
   }
 };
 
@@ -377,6 +461,11 @@ function updatePageLanguage() {
   
   // Update language dropdown
   updateLanguageDropdown();
+  
+  // Re-render packages with new language translations
+  if (typeof renderPackages === 'function') {
+    renderPackages();
+  }
 }
 
 // Update language dropdown selection
@@ -399,6 +488,7 @@ if (typeof window !== 'undefined') {
     changeLanguage,
     updatePageLanguage,
     getCurrentLang: () => currentLang,
-    translate: (key) => translations[currentLang][key] || key
+    translate: (key) => translations[currentLang][key] || key,
+    t: (key) => translations[currentLang][key] || key
   };
 }

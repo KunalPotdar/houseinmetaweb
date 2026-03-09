@@ -6,7 +6,7 @@
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Transform your 2D apartment floor plans into stunning 3D virtual staging. Experience immersive apartment visualization technology powered by HouseInMeta's advanced AI conversion tools. Transformez vos plans d'étage 2D en visualisations 3D spectaculaires avec la technologie de mise en scène virtuelle.">
-    <meta name="keywords" content="2D to 3D conversion, apartment virtual staging, 3D home visualization, floor plan to 3D, virtual apartment tours, real estate visualization, AI interior design, property staging, 3D apartment rendering, virtual home staging, conversion 2D en 3D, staging virtuel d'appartement, visualisation 3D immobilière, plan d'étage en 3D, visite virtuelle d'appartement, visualisation immobilière, design d'intérieur IA, mise en scène de propriété, rendu 3D d'appartement, nouveau design d'appartement, appartement virtuel">
+    <meta name="keywords" content="2D to 3D conversion, apartment virtual staging, 3D home visualization, floor plan to 3D, virtual apartment tours, real estate visualization, AI interior design, property staging, 3D apartment rendering, virtual home staging, conversion 2D en 3D, staging virtuel d'appartement, visualisation 3D immobilière, plan d'étage en 3D, visite virtuelle d'appartement, visualisation immobilière, design d'intérieur IA, mise en scène de propriété, rendu 3D d'appartement, nouveau design d'appartement, appartement virtuel, visualiser un appartement avant sa construction, visite appartement neuf en 3D, transformer plan 2D en visite virtuelle, comprendre espace lumière appartement neuf, visite 3d appartement, visualisation 3d immobilier, visite virtuelle immobilier, walkthrough 3d appartement, plan 2d vers 3d immobilier, visite immersive immobilier, maison 3d avant construction, visualiser appartement neuf, 3d immobilier neuf, proptech immobilier france">
     <meta name="author" content="HouseInMeta">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="google-site-verification" content="">
@@ -42,6 +42,53 @@
     
     <!-- Stripe SDK -->
     <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- FAQ Schema for SEO - French Keywords -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "@id": "https://houseinmeta.com/convert2DTo3D.html#faq1",
+          "name": "Comment visualiser un appartement avant sa construction ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Avec HouseInMeta, vous pouvez visualiser un appartement avant sa construction en convertissant vos plans 2D en modèles 3D interactifs. Notre technologie AI transforme les plans d'étage en expériences 3D immersives, vous permettant d'explorer chaque détail de votre futur home avant même que la construction ne commence."
+          }
+        },
+        {
+          "@type": "Question",
+          "@id": "https://houseinmeta.com/convert2DTo3D.html#faq2",
+          "name": "Peut-on visiter un appartement neuf en 3D ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, absolument ! Avec nos solutions de visite virtuelle 3D, vous pouvez visiter un appartement neuf en détail avant sa livraison. Notre plateforme web-based offre une expérience immersive et interactive où vous pouvez explorer l'espace, la lumière, et les finitions de votre futur home depuis n'importe où et à n'importe quel moment."
+          }
+        },
+        {
+          "@type": "Question",
+          "@id": "https://houseinmeta.com/convert2DTo3D.html#faq3",
+          "name": "Comment transformer un plan 2D en visite virtuelle ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le processus est simple avec HouseInMeta : uploadez votre plan 2D (floor plan), choisissez votre forfait, et notre technologie AI transforme automatiquement votre plan en modèle 3D interactif. Certifiez votre rêve devienne réalité avec nos outils avancés de conversion 2D en 3D."
+          }
+        },
+        {
+          "@type": "Question",
+          "@id": "https://houseinmeta.com/convert2DTo3D.html#faq4",
+          "name": "Comment comprendre l'espace et la lumière d'un appartement neuf ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nos visualisations 3D permettent de comprendre facilement l'espace et la lumière d'un appartement neuf. Vous pouvez voir comment la lumière naturelle illumine chaque pièce à différentes heures du jour, comment l'espace s'utilise, et comment les proportions réelles du home affectent votre vie quotidienne. C'est une compréhension bien plus profonde qu'un simple plan 2D."
+          }
+        }
+      ]
+    }
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -429,11 +476,17 @@
         .package-icon {
             font-size: 4em;
             margin: 30px 0 15px 0;
-            display: block;
-            height: 80px;
             display: flex;
+            height: 80px;
             align-items: center;
             justify-content: center;
+        }
+
+        .package-icon img {
+            max-width: 120%;
+            max-height: 120%;
+            object-fit: contain;
+            opacity: 0.85;
         }
 
         .package-name {
@@ -1242,6 +1295,16 @@
                 font-size: 2.5em;
                 margin: 20px 0 10px 0;
                 height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .package-icon img {
+                max-width: 120%;
+                max-height: 120%;
+                object-fit: contain;
+                opacity: 0.85;
             }
 
             .package-name {
@@ -1366,7 +1429,7 @@
 </head>
 <body>    <div class="container">        <header>
             <img src="/assets/images/logo.png" alt="HouseInMeta Logo" class="logo">
-            <h1 data-i18n="convert2d.headerTitle">Visualize your "Dream" Home in 3D</h1>
+            <h1 data-i18n="convert2d.headerTitle">Visit your future Home in 3D before its construction</h1>
             <p data-i18n="convert2d.headerSubtitle">Transform your 2D floor plans into immersive 3D experiences with HouseInMeta</p>
         </header>
 

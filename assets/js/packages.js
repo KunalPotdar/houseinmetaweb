@@ -3,7 +3,7 @@ const packages = [
     {
         id: 'basic',
         name: '3D Quick',
-        icon: '🏠',
+        icon: '/assets/images/axenometricview.png',
         description: 'Get your floor plan converted to 3D in no time',
         price: 39.99,
         period: 'one-time',
@@ -56,7 +56,7 @@ function renderPackages() {
     const grid = document.getElementById('packagesGrid');
     grid.innerHTML = packages.map(pkg => `
         <div class="package-card ${pkg.featured ? 'featured' : ''}" onclick="selectPackage('${pkg.id}')">
-            <span class="package-icon">${pkg.icon}</span>
+            <div class="package-icon">${pkg.icon.startsWith('/') ? `<img src="${pkg.icon}" alt="${pkg.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : pkg.icon}</div>
             <div class="package-name">${pkg.name}</div>
             <div class="package-description">${pkg.description}</div>
             <div class="package-divider"></div>

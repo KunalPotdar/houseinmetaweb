@@ -90,7 +90,7 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'Dream Home 3D',
-    'convert2d.headerTitle': 'Visualize your "Dream" Home in 3D',
+    'convert2d.headerTitle': 'Visit your future Home in 3D before its construction',
     'convert2d.headerSubtitle': 'Transform your 2D floor plans into immersive 3D experiences with HouseInMeta',
     'convert2d.subtitle': 'Transform Your 2D Floor Plans into Stunning Interactive 3D Models',
     'convert2d.step1': 'Choose Your Package',
@@ -208,7 +208,7 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'Maison de Rêve 3D',
-    'convert2d.headerTitle': 'Visualisez votre Maison de Rêve en 3D',
+    'convert2d.headerTitle': 'Visitez votre futur Home en 3D avant sa construction',
     'convert2d.headerSubtitle': 'Transformez vos plans 2D en expériences 3D immersives avec HouseInMeta',
     'convert2d.subtitle': 'Transformez Vos Plans 2D en Magnifiques Modèles 3D Interactifs',
     'convert2d.step1': 'Choisissez Votre Forfait',
@@ -326,7 +326,7 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'ड्रीम होम 3D',
-    'convert2d.headerTitle': 'अपने सपनों का घर 3D में देखें',
+    'convert2d.headerTitle': 'निर्माण से पहले अपने भविष्य कै Home को 3D में देखें',
     'convert2d.headerSubtitle': 'अपनी 2D योजनाओं को HouseInMeta के साथ immersive 3D अनुभवों में बदलें',
     'convert2d.subtitle': 'अपनी 2D फ्लोर प्लान को आश्चर्यजनक इंटरैक्टिव 3D मॉडल में बदलें'
   }

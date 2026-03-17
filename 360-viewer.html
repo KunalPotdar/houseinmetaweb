@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360° Photo Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .nav-brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .nav-menu a.active {
+            border-bottom: 2px solid white;
+            padding-bottom: 2px;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* 360 Viewer Container */
+        #viewer-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background: #000000;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 15px 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-panel label {
+            font-size: 14px;
+            color: #aaa;
+            margin: 0;
+        }
+
+        .control-panel select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .control-panel select:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Help Panel */
+        .help-panel {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 300px;
+            font-size: 13px;
+            line-height: 1.8;
+            z-index: 900;
+        }
+
+        .help-panel h4 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .help-panel p {
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .control-button {
+            background: rgba(102, 126, 234, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .control-button:hover {
+            background: rgba(102, 126, 234, 1);
+            transform: scale(1.05);
+        }
+
+        .control-button.close {
+            background: rgba(200, 50, 50, 0.8);
+        }
+
+        .control-button.close:hover {
+            background: rgba(200, 50, 50, 1);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner p {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 20px 0;
+                gap: 0;
+                width: 100%;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                padding: 10px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            #viewer-container {
+                top: 60px;
+                height: calc(100vh - 60px);
+            }
+
+            .control-panel {
+                flex-direction: column;
+                gap: 10px;
+                bottom: 20px;
+                padding: 15px 20px;
+            }
+
+            .help-panel {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                top: 80px;
+            }
+
+            .nav-brand {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+            </svg>
+            360° Tours
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/about.html">About</a></li>
+            <li><a href="pages/projects.html">Projects</a></li>
+            <li><a class="active" onclick="location.reload()">360 Viewer</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Help Panel -->
+    <div class="help-panel" id="helpPanel">
+        <h4>Controls Guide</h4>
+        <p><strong>Mouse:</strong> Click and drag to rotate</p>
+        <p><strong>Scroll:</strong> Zoom in/out</p>
+        <p><strong>Touch:</strong> Swipe to rotate on mobile</p>
+        <p><strong>Auto-rotate:</strong> Image rotates automatically</p>
+    </div>
+
+    <!-- 360 Viewer Container -->
+    <div id="viewer-container"></div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <label for="image-selector">Select 360 Image:</label>
+        <select id="image-selector">
+            <option value="assets/images/2.png">Living Room</option>
+            <option value="assets/images/3.png">Kitchen</option>
+            <option value="assets/images/4.png">Bedroom</option>
+        </select>
+        <button class="control-button" id="toggleAutoRotate">Stop Rotation</button>
+        <button class="control-button close" id="closeHelp">Close Help</button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Loading 360° Image...</p>
+    </div>
+
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // ===== State Variables =====
+        let camera, renderer, scene;
+        let isUserInteracting = false;
+        let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
+        let lon = 0, onPointerDownLon = 0;
+        let lat = 0, onPointerDownLat = 0;
+        let autoRotate = true;
+        let currentMesh = null;
+        let touchStartX = 0, touchStartY = 0;
+
+        // ===== Initialization =====
+        function init() {
+            initRenderer();
+            initScene();
+            initCamera();
+            loadImage('assets/images/2.png');
+            addEventListeners();
+            hideLoadingSpinner();
+            animate();
+        }
+
+        function initRenderer() {
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.setSize(window.innerWidth, window.innerHeight - 70);
+            renderer.setClearColor(0x000000);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('viewer-container').appendChild(renderer.domElement);
+        }
+
+        function initScene() {
+            scene = new THREE.Scene();
+        }
+
+        function initCamera() {
+            camera = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / (window.innerHeight - 70),
+                1,
+                1100
+            );
+        }
+
+        // ===== Image Loading =====
+        function loadImage(imagePath) {
+            showLoadingSpinner();
+            
+            // Remove old mesh
+            if (currentMesh) {
+                scene.remove(currentMesh);
+            }
+
+            const geometry = new THREE.SphereGeometry(1000, 80, 40);
+            geometry.scale(-1, 1, 1);
+
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(
+                imagePath,
+                function(texture) {
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    const material = new THREE.MeshBasicMaterial({ map: texture });
+                    currentMesh = new THREE.Mesh(geometry, material);
+                    scene.add(currentMesh);
+                    hideLoadingSpinner();
+                },
+                undefined,
+                function(error) {
+                    console.error('Image loading error:', error);
+                    hideLoadingSpinner();
+                    alert('Failed to load image. Please check the image path.');
+                }
+            );
+
+            lon = 100;
+            lat = 0;
+        }
+
+        // ===== Animation =====
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (autoRotate) {
+                lon += 0.006;
+            }
+
+            lat = Math.max(-85, Math.min(85, lat));
+            const phi = THREE.MathUtils.degToRad(90 - lat);
+            const theta = THREE.MathUtils.degToRad(lon);
+
+            const x = 500 * Math.sin(phi) * Math.cos(theta);
+            const y = 500 * Math.cos(phi);
+            const z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(x, y, z);
+            renderer.render(scene, camera);
+        }
+
+        // ===== Event Listeners =====
+        function addEventListeners() {
+            // Mouse Events
+            document.addEventListener('pointerdown', onPointerDown);
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointerup', onPointerUp);
+
+            // Touch Events
+            document.addEventListener('touchstart', onTouchStart);
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+
+            // Mouse Wheel
+            document.addEventListener('wheel', onMouseWheel, false);
+
+            // Window Resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Image Selector
+            document.getElementById('image-selector').addEventListener('change', function(e) {
+                loadImage(e.target.value);
+            });
+
+            // Toggle Auto Rotate
+            document.getElementById('toggleAutoRotate').addEventListener('click', function() {
+                autoRotate = !autoRotate;
+                this.textContent = autoRotate ? 'Stop Rotation' : 'Start Rotation';
+            });
+
+            // Close Help
+            document.getElementById('closeHelp').addEventListener('click', function() {
+                document.getElementById('helpPanel').style.display = 'none';
+            });
+
+            // Mobile Menu
+            document.getElementById('hamburger').addEventListener('click', function() {
+                this.classList.toggle('active');
+                document.getElementById('navMenu').classList.toggle('active');
+            });
+        }
+
+        function onPointerDown(e) {
+            if (e.isPrimary === false) return;
+            isUserInteracting = true;
+            onPointerDownMouseX = e.clientX;
+            onPointerDownMouseY = e.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+        }
+
+        function onPointerMove(e) {
+            if (e.isPrimary === false || !isUserInteracting) return;
+
+            const deltaX = e.clientX - onPointerDownMouseX;
+            const deltaY = e.clientY - onPointerDownMouseY;
+
+            lon = onPointerDownLon - (deltaX * 0.5);
+            lat = onPointerDownLat + (deltaY * 0.5);
+        }
+
+        function onPointerUp(e) {
+            if (e.isPrimary === false) return;
+            isUserInteracting = false;
+        }
+
+        function onTouchStart(e) {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                isUserInteracting = true;
+                onPointerDownLon = lon;
+                onPointerDownLat = lat;
+            }
+        }
+
+        function onTouchMove(e) {
+            if (e.touches.length === 1 && isUserInteracting) {
+                const deltaX = e.touches[0].clientX - touchStartX;
+                const deltaY = e.touches[0].clientY - touchStartY;
+
+                lon = onPointerDownLon - (deltaX * 0.5);
+                lat = onPointerDownLat + (deltaY * 0.5);
+            }
+        }
+
+        function onTouchEnd(e) {
+            isUserInteracting = false;
+        }
+
+        function onMouseWheel(e) {
+            e.preventDefault();
+            // Zoom functionality can be added here if needed
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / (window.innerHeight - 70);
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight - 70);
+        }
+
+        // ===== Utility Functions =====
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        function hideLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        // ===== Start Application =====
+        init();
+    </script>
+</body>
+</html>

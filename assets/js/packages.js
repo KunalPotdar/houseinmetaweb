@@ -4,21 +4,21 @@ const packageConfigs = [
     {
         id: 'basic',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" /></linearGradient></defs><rect x="20" y="35" width="60" height="40" fill="url(#grad1)" rx="3"/><polygon points="25,35 50,15 75,35" fill="url(#grad1)"/><rect x="35" y="45" width="8" height="20" fill="white" opacity="0.7"/><rect x="57" y="45" width="8" height="20" fill="white" opacity="0.7"/></svg>',
-        price: 39.99,
+        price: 49.99,
         period: 'one-time',
         featured: false
     },
     {
         id: 'professional',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" /></linearGradient></defs><rect x="20" y="25" width="15" height="50" fill="url(#grad2)" rx="2"/><rect x="42" y="20" width="15" height="55" fill="url(#grad2)" rx="2"/><rect x="64" y="30" width="15" height="45" fill="url(#grad2)" rx="2"/><circle cx="27.5" cy="80" r="4" fill="#667eea"/><circle cx="49.5" cy="80" r="4" fill="#667eea"/><circle cx="71.5" cy="80" r="4" fill="#667eea"/></svg>',
-        price: 69.99,
+        price: 99.99,
         period: 'one-time',
         featured: false
     },
     {
         id: 'premium',
         icon: '<svg viewBox="0 0 100 100" style="width:60px;height:60px;filter:drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))"><defs><linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" /><stop offset="100%" style="stop-color:#667eea;stop-opacity:1" /></linearGradient></defs><path d="M 50 15 L 62 50 L 88 50 L 70 65 L 78 95 L 50 80 L 22 95 L 30 65 L 12 50 L 38 50 Z" fill="url(#grad3)"/><circle cx="50" cy="50" r="35" fill="none" stroke="url(#grad3)" stroke-width="1.5" opacity="0.5"/></svg>',
-        price: 99.99,
+        price: 129.99,
         period: 'one-time',
         featured: true
     }

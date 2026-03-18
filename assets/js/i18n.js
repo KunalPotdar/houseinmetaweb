@@ -15,7 +15,8 @@ const translations = {
     'hero.title1': '3D Real Estates',
     'hero.title2': 'Reveal before Build',
     'hero.description': 'Manifest your dream home with the power of our 3D visualization solutions.',
-    'hero.cta': 'Create your 3D Experience Here',
+    'hero.cta': 'Ask for Free Demo',
+    'hero.cta2': 'Create Your Experience Here',
     
     // Why Section
     'why.title': 'Why House In Meta?',
@@ -90,8 +91,8 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'Dream Home 3D',
-    'convert2d.headerTitle': 'Visit your future Home in 3D before its construction',
-    'convert2d.headerSubtitle': 'Transform your 2D floor plans into immersive 3D experiences with HouseInMeta',
+    'convert2d.headerTitle': 'Your 2D plan becomes an immersive virtual tour',
+    'convert2d.headerSubtitle': 'Upload your plan, choose your package, and receive an interactive 3D experience that your buyers can visit from any device — with no app to install.',
     'convert2d.subtitle': 'Transform Your 2D Floor Plans into Stunning Interactive 3D Models',
     'convert2d.step1': 'Choose Your Package',
     'convert2d.step2': 'Upload Your Plans',
@@ -161,7 +162,8 @@ const translations = {
     'hero.title1': 'Immobilier 3D',
     'hero.title2': 'Voyez avant de bâtir',
     'hero.description': 'Concrétisez votre maison de rêve avec la puissance de nos solutions de visualisation 3D.',
-    'hero.cta': 'Créer votre Expérience 3D Maintenant',
+    'hero.cta': 'Demandez une Démo Gratuite',
+    'hero.cta2': 'Créez Votre Expérience Ici',
     
     // Why Section
     'why.title': 'Pourquoi House In Meta ?',
@@ -236,8 +238,8 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'Maison de Rêve 3D',
-    'convert2d.headerTitle': 'Visitez votre futur Home en 3D avant sa construction',
-    'convert2d.headerSubtitle': 'Transformez vos plans 2D en expériences 3D immersives avec HouseInMeta',
+    'convert2d.headerTitle': 'Votre plan 2D devient une visite virtuelle immersive',
+    'convert2d.headerSubtitle': 'Téléchargez votre plan, choisissez votre forfait et recevez une expérience 3D interactive que vos acheteurs peuvent visiter depuis n\'importe quel appareil — sans application à installer.',
     'convert2d.subtitle': 'Transformez Vos Plans 2D en Magnifiques Modèles 3D Interactifs',
     'convert2d.step1': 'Choisissez Votre Forfait',
     'convert2d.step2': 'Téléchargez Vos Plans',
@@ -307,7 +309,8 @@ const translations = {
     'hero.title1': '3D रियल एस्टेट',
     'hero.title2': 'बनाने से पहले दिखाएं',
     'hero.description': 'हमारे 3D विज़ुअलाइज़ेशन समाधानों की शक्ति से अपने सपनों का घर साकार करें।',
-    'hero.cta': 'अपना 3D अनुभव यहां बनाएं',
+    'hero.cta': 'निःशुल्क डेमो के लिए अनुरोध करें',
+    'hero.cta2': 'अपना अनुभव यहां बनाएं',
     
     // Why Section
     'why.title': 'House In Meta क्यों?',
@@ -382,8 +385,8 @@ const translations = {
     
     // Convert 2D to 3D (Floor Plan Conversion)
     'convert2d.title': 'ड्रीम होम 3D',
-    'convert2d.headerTitle': 'निर्माण से पहले अपने भविष्य कै Home को 3D में देखें',
-    'convert2d.headerSubtitle': 'अपनी 2D योजनाओं को HouseInMeta के साथ immersive 3D अनुभवों में बदलें',
+    'convert2d.headerTitle': 'आपका 2D प्लान एक इमर्सिव वर्चुअल टूर बन जाता है',
+    'convert2d.headerSubtitle': 'अपना प्लान अपलोड करें, पैकेज चुनें, और एक इंटरएक्टिव 3D अनुभव पाएं जिसे आपके खरीदार किसी भी डिवाइस से देख सकते हैं — कोई ऐप इंस्टॉल किए बिना.',
     'convert2d.subtitle': 'अपनी 2D फ्लोर प्लान को आश्चर्यजनक इंटरैक्टिव 3D मॉडल में बदलें',
     
     // Packages

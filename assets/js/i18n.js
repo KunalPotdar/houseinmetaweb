@@ -9,7 +9,7 @@ const translations = {
     'nav.projects': 'Projects',
     'nav.blog': 'Blog',
     'nav.about': 'About',
-    'nav.contact': 'Contact',
+    'nav.contact': 'Free Demo',
     
     // Hero Section
     'hero.title1': '3D Real Estates',
@@ -73,10 +73,10 @@ const translations = {
     'about.careers.job.skill3': 'Walkthroughs',
     'about.careers.job.details': 'View Details',
     
-    // Contact
-    'contact.title': 'Trusted Partner in Your Success !',
-    'contact.subtitle': 'Let\'s discuss how 3D visualization can enhance your property marketing',
-    'contact.intro': 'Ready to showcase your properties in stunning 3D? Whether you\'re a real estate agency, developer, or individual property owner, we\'ll help you create immersive digital experiences that captivate buyers.',
+    // Contact / Free Demo
+    'contact.title': 'Get Your Free 3D Demo Today!',
+    'contact.subtitle': 'See your property brought to life in 3D — no commitment, completely free',
+    'contact.intro': 'Request your free demo and discover how an immersive 3D experience can transform the way you market and sell properties. Whether you\'re a real estate agency, developer, or individual owner — we\'ll show you exactly what\'s possible.',
     'contact.email': 'Email',
     'contact.location': 'Location',
     'contact.paris': 'Paris, France',
@@ -155,7 +155,7 @@ const translations = {
     'nav.projects': 'Projets',
     'nav.blog': 'Blog',
     'nav.about': 'À propos',
-    'nav.contact': 'Contact',
+    'nav.contact': 'Démo Gratuite',
     
     // Hero Section
     'hero.title1': 'Immobilier 3D',
@@ -219,10 +219,10 @@ const translations = {
     'about.careers.job.skill3': 'Visites Virtuelles',
     'about.careers.job.details': 'Voir les Détails',
     
-    // Contact
-    'contact.title': 'Partenaire de Confiance dans Votre Réussite !',
-    'contact.subtitle': 'Discutons de la façon dont la visualisation 3D peut améliorer votre marketing immobilier',
-    'contact.intro': 'Prêt à présenter vos propriétés en 3D époustouflant ? Que vous soyez une agence immobilière, un promoteur ou un propriétaire individuel, nous vous aiderons à créer des expériences numériques immersives qui captivent les acheteurs.',
+    // Contact / Démo Gratuite
+    'contact.title': 'Obtenez Votre Démo 3D Gratuite !',
+    'contact.subtitle': 'Découvrez votre bien en 3D — sans engagement, entièrement gratuit',
+    'contact.intro': 'Demandez votre démo gratuite et découvrez comment une expérience 3D immersive peut transformer la façon dont vous commercialisez vos biens. Agence immobilière, promoteur ou propriétaire individuel — nous vous montrons ce qui est possible.',
     'contact.email': 'E-mail',
     'contact.location': 'Localisation',
     'contact.paris': 'Paris, France',
@@ -301,7 +301,7 @@ const translations = {
     'nav.projects': 'परियोजनाएं',
     'nav.blog': 'ब्लॉग',
     'nav.about': 'हमारे बारे में',
-    'nav.contact': 'संपर्क',
+    'nav.contact': 'निःशुल्क डेमो',
     
     // Hero Section
     'hero.title1': '3D रियल एस्टेट',
@@ -365,10 +365,10 @@ const translations = {
     'about.careers.job.skill3': 'वॉकथ्रू',
     'about.careers.job.details': 'विवरण देखें',
     
-    // Contact
-    'contact.title': 'आपकी सफलता में विश्वसनीय साझेदार!',
-    'contact.subtitle': 'चलिए चर्चा करते हैं कि 3D विज़ुअलाइज़ेशन आपकी प्रॉपर्टी मार्केटिंग को कैसे बढ़ा सकता है',
-    'contact.intro': 'शानदार 3D में अपनी संपत्तियों को प्रदर्शित करने के लिए तैयार हैं? चाहे आप एक रियल एस्टेट एजेंसी, डेवलपर, या व्यक्तिगत संपत्ति मालिक हों, हम आपको इमर्सिव डिजिटल अनुभव बनाने में मदद करेंगे जो खरीदारों को आकर्षित करते हैं।',
+    // Contact / निःशुल्क डेमो
+    'contact.title': 'आज ही अपना निःशुल्क 3D डेमो पाएं!',
+    'contact.subtitle': 'अपनी संपत्ति को 3D में जीवंत देखें — बिना किसी प्रतिबद्धता के, पूरी तरह मुफ्त',
+    'contact.intro': 'अपना निःशुल्क डेमो अनुरोध करें और जानें कि एक इमर्सिव 3D अनुभव आपकी संपत्ति मार्केटिंग को कैसे बदल सकता है। चाहे आप एजेंसी हों, डेवलपर हों, या व्यक्तिगत मालिक — हम आपको दिखाएंगे कि क्या संभव है।',
     'contact.email': 'ईमेल',
     'contact.location': 'स्थान',
     'contact.paris': 'पेरिस, फ्रांस',

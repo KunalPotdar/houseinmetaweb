@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — House in Meta</title>
+  <title>Free Demo — House in Meta</title>
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" href="/assets/images/favicon.ico" />
 </head>
@@ -15,16 +15,25 @@
         <a href="/">Home</a>
         <a href="/projects.html">Projects</a>
         <a href="/pages/about.html">About</a>
-        <a href="/contact.html">Contact</a>
+        <a href="/contact.html">Free Demo</a>
       </nav>
     </header>
 
     <main class="hero">
-      <h2>Contact</h2>
-      <p class="muted">Email: <a href="mailto:hello@houseinmeta.com">hello@houseinmeta.com</a></p>
+      <h2>Request Your Free Demo</h2>
+      <p class="muted">See your property in stunning 3D — fill in the form and we'll reach out to set it up.</p>
       <section class="card">
-        <h3>Get in touch</h3>
-        <p>Add a contact form or social links here.</p>
+        <h3>Get Your Free Demo</h3>
+        <!-- HubSpot Form Embed -->
+        <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+        <div id="hubspot-contact-form"></div>
+        <script>
+          hbspt.forms.create({
+            region: "eu1",            // change to "na1" if your account is in North America
+            portalId: "YOUR_PORTAL_ID",  // replace with your HubSpot Portal ID
+            formId: "YOUR_FORM_ID"       // replace with your HubSpot Form ID
+          });
+        </script>
       </section>
     </main>
 

@@ -1,5 +1,5 @@
 // Internationalization (i18n) System for HouseInMeta
-// Supports English, French, and Hindi
+// Supports English and French
 
 const translations = {
   en: {
@@ -35,6 +35,8 @@ const translations = {
     'solutions.exteriors.desc': 'Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.',
     'solutions.walkthroughs.title': '3D Immersive Walkthroughs',
     'solutions.walkthroughs.desc': 'Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.',
+    'solutions.onlineservices.title': '3D Online Services',
+    'solutions.onlineservices.desc': 'Transform your 2D floor plans to real life walkthrough experiences on our platform.',
     
     // Blog
     'blog.title': 'Discover our Blogs',
@@ -60,7 +62,7 @@ const translations = {
     'about.intro': 'We specialize in creating immersive 3D experiences that revolutionize how properties are showcased online. Our team combines expertise in architectural visualization, WebGL development, and user experience design to deliver solutions that drive engagement and accelerate sales.',
     'about.founded': 'Founded in 2023, we\'ve helped numerous clients transform their traditional showcases into interactive 3D experiences.',
     'about.facts.title': 'Quick Facts',
-    'about.facts.experience': '15+ Years Experience',
+    'about.facts.experience': '15++ Years of Research',
     'about.facts.skilled': 'Skilled',
     'about.facts.ethics': 'Strong Work ethics',
     'about.facts.quality': 'Quality is Our no. 1 priority',
@@ -159,9 +161,9 @@ const translations = {
     'nav.contact': 'Démo Gratuite',
     
     // Hero Section
-    'hero.title1': 'Immobilier 3D',
-    'hero.title2': 'Voyez avant de bâtir',
-    'hero.description': 'Concrétisez votre maison de rêve avec la puissance de nos solutions de visualisation 3D.',
+    'hero.title1': 'Visite Virtuelle',
+    'hero.title2': 'Immobilier',
+    'hero.description': 'Entrez chez vous avant la première pierre.',
     'hero.cta': 'Demandez une Démo Gratuite',
     'hero.cta2': 'Créez Votre Expérience Ici',
     
@@ -178,10 +180,12 @@ const translations = {
     'solutions.title': 'Nos Solutions',
     'solutions.configurator.title': 'Configurateur Immobilier 3D',
     'solutions.configurator.desc': 'Donnez à vos clients des outils de configuration 3D en temps réel. Personnalisez les matériaux, les couleurs et les fonctionnalités pour visualiser instantanément l\'espace de leurs rêves.',
-    'solutions.exteriors.title': 'Extérieurs 3D',
-    'solutions.exteriors.desc': 'Présentez les propriétés avec de superbes modèles 3D et des vues panoramiques. Laissez les clients explorer les bâtiments et les paysages sous tous les angles, directement dans leur navigateur.',
+    'solutions.exteriors.title': 'Catalogue Maison 3D',
+    'solutions.exteriors.desc': 'Transformez des brochures statiques en maisons virtuelles 3D interactives que les agents immobiliers peuvent présenter à tout moment, partout.',
     'solutions.walkthroughs.title': 'Visites Immersives 3D',
     'solutions.walkthroughs.desc': 'Guidez les acheteurs potentiels à travers des espaces intérieurs réalistes avec éclairage et matériaux dynamiques. Parfait pour les visites à distance et les ventes avant construction.',
+    'solutions.onlineservices.title': 'Ma Maison en 3D',
+    'solutions.onlineservices.desc': 'Transformez vos plans 2D en véritables expériences de visite interactive sur notre plateforme.',
     
     // Blog
     'blog.title': 'Découvrez nos Blogs',
@@ -207,7 +211,7 @@ const translations = {
     'about.intro': 'Nous nous spécialisons dans la création d\'expériences 3D immersives qui révolutionnent la façon dont les propriétés sont présentées en ligne. Notre équipe combine expertise en visualisation architecturale, développement WebGL et conception d\'expérience utilisateur pour offrir des solutions qui stimulent l\'engagement et accélèrent les ventes.',
     'about.founded': 'Fondée en 2023, nous avons aidé de nombreux clients à transformer leurs vitrines traditionnelles en expériences 3D interactives.',
     'about.facts.title': 'Faits Rapides',
-    'about.facts.experience': '15+ ans d\'expérience',
+    'about.facts.experience': '15++ ans de recherche',
     'about.facts.skilled': 'Compétent',
     'about.facts.ethics': 'Éthique de travail solide',
     'about.facts.quality': 'La qualité est notre priorité n°1',
@@ -294,152 +298,36 @@ const translations = {
     'package.premium.period': 'Frais uniques',
     
     'package.selectBtn': 'Sélectionner le Forfait'
-  },
-  
-  hi: {
-    // Navigation
-    'nav.home': 'होम',
-    'nav.solutions': 'सेवाएँ',
-    'nav.projects': 'परियोजनाएं',
-    'nav.blog': 'ब्लॉग',
-    'nav.about': 'हमारे बारे में',
-    'nav.contact': 'निःशुल्क डेमो',
-    
-    // Hero Section
-    'hero.title1': '3D रियल एस्टेट',
-    'hero.title2': 'बनाने से पहले दिखाएं',
-    'hero.description': 'हमारे 3D विज़ुअलाइज़ेशन समाधानों की शक्ति से अपने सपनों का घर साकार करें।',
-    'hero.cta': 'निःशुल्क डेमो के लिए अनुरोध करें',
-    'hero.cta2': 'अपना अनुभव यहां बनाएं',
-    
-    // Why Section
-    'why.title': 'House In Meta क्यों?',
-    'why.introDevelopers': 'रियल एस्टेट डेवलपर्स के लिए, हर प्रोजेक्ट सिर्फ निर्माण से अधिक है — यह स्थानों को जीवन देने और खरीदारों की कल्पना को प्रेरित करने की कला है।',
-    'why.introBuyers': 'घर खरीदारों के लिए, घर उनके जीवन का सबसे बड़ा निवेश है। हम आपको अपने सपनों के घर का निर्माण से पहले अनुभव और एक्सप्लोर करने में मदद करते हैं।',
-    'why.description': 'HouseInMeta में, हम आपकी वास्तुकला दृष्टि को एक इमर्सिव, वेब-आधारित 3D अनुभव में बदलते हैं, जिससे ग्राहक और निवेशक किसी भी समय, कहीं भी आपकी संपत्तियों का पता लगा सकते हैं।',
-    'why.keyword1': 'प्रदर्शन',
-    'why.keyword2': 'संलग्न',
-    'why.keyword3': 'तेज़',
-    
-    // Solutions
-    'solutions.title': 'हमारी सेवाएँ',
-    'solutions.configurator.title': '3D रियल एस्टेट कॉन्फ़िगरेटर',
-    'solutions.configurator.desc': 'ग्राहकों को रियल-टाइम 3D कॉन्फ़िगरेशन टूल्स के साथ सशक्त बनाएं। सामग्री, रंग और सुविधाओं को कस्टमाइज़ करें ताकि वे तुरंत अपने सपनों की जगह की कल्पना कर सकें।',
-    'solutions.exteriors.title': '3D बाहरी',
-    'solutions.exteriors.desc': 'शानदार 3D मॉडल और पैनोरमिक दृश्यों के साथ संपत्तियों को प्रदर्शित करें। ग्राहकों को सीधे अपने ब्राउज़र में किसी भी कोण से इमारतों और परिदृश्यों का पता लगाने दें।',
-    'solutions.walkthroughs.title': '3D इमर्सिव वॉकथ्रू',
-    'solutions.walkthroughs.desc': 'गतिशील प्रकाश और सामग्री के साथ संभावित खरीदारों को जीवंत आंतरिक स्थानों के माध्यम से मार्गदर्शन करें। रिमोट व्यूइंग और प्री-कंस्ट्रक्शन बिक्री के लिए एकदम सही।',
-    
-    // Blog
-    'blog.title': 'हमारे ब्लॉग खोजें',
-    'blog.subtitle': 'वर्चुअल रियल एस्टेट की दुनिया से अंतर्दृष्टि और अपडेट',
-    'blog.post1.title': 'रियल एस्टेट में 3D मॉडल और वर्चुअल टूर की भूमिका',
-    'blog.post1.desc': 'जानें कि 3D मॉडल का रियल एस्टेट में कैसे लाभ उठाया जा सकता है।',
-    'blog.post2.title': 'गृह स्वामित्व का अनुभव: वैश्विक खरीदारों के लिए 360° टूर',
-    'blog.post2.desc': 'जानें कि 360° वर्चुअल टावर कैसे सपनों को निर्णय से जोड़ते हैं।',
-    'blog.post3.title': 'रियल एस्टेट डेवलपर्स को 3D + 360° वेब विज़ुअलाइज़ेशन क्यों अपनाना चाहिए',
-    'blog.post3.desc': 'प्रॉपर्टी मार्केटिंग का भविष्य ऑनलाइन और 3D में शुरू होता है',
-    'blog.readmore': 'और पढ़ें',
-    
-    // Projects
-    'projects.title': 'हमारी विशेष ग्राहक कहानी',
-    'projects.subtitle': 'हमारे इमर्सिव 3D समाधानों के वास्तविक परिणाम',
-    'projects.featured.title': 'प्रीमियम प्रॉपर्टी शोकेस',
-    'projects.featured.desc': 'उच्च-स्तरीय आवासीय संपत्तियों के लिए इंटरैक्टिव 3D बाहरी और आंतरिक कस्टमाइज़ेशन प्लेटफ़ॉर्म।',
-    'projects.view': 'प्रोजेक्ट देखें',
-    
-    // About
-    'about.title': 'उद्योग विशेषज्ञता',
-    'about.subtitle': '2023 से रियल एस्टेट विज़ुअलाइज़ेशन को बदलना',
-    'about.intro': 'हम इमर्सिव 3D अनुभव बनाने में विशेषज्ञ हैं जो ऑनलाइन संपत्तियों को प्रदर्शित करने के तरीके में क्रांति लाते हैं। हमारी टीम वास्तुकला विज़ुअलाइज़ेशन, WebGL विकास और उपयोगकर्ता अनुभव डिज़ाइन में विशेषज्ञता को जोड़ती है ताकि ऐसे समाधान प्रदान किए जा सकें जो जुड़ाव बढ़ाते हैं और बिक्री को तेज़ करते हैं।',
-    'about.founded': '2023 में स्थापित, हमने कई ग्राहकों को उनके पारंपरिक शोकेस को इंटरैक्टिव 3D अनुभवों में बदलने में मदद की है।',
-    'about.facts.title': 'त्वरित तथ्य',
-    'about.facts.experience': '15+ वर्ष का अनुभव',
-    'about.facts.skilled': 'कुशल',
-    'about.facts.ethics': 'मजबूत कार्य नैतिकता',
-    'about.facts.quality': 'गुणवत्ता हमारी नंबर 1 प्राथमिकता है',
-    'about.careers.title': 'हमारी टीम में शामिल हों',
-    'about.careers.subtitle': 'हम रियल एस्टेट विज़ुअलाइज़ेशन के भविष्य को आकार देने में मदद करने के लिए प्रतिभाशाली व्यक्तियों की तलाश कर रहे हैं। फ्रीलांसर और स्वतंत्र क्रिएटर्स का स्वागत है!',
-    'about.careers.job.title': '3D क्रिएटिव आर्टिस्ट',
-    'about.careers.job.type': 'पूर्णकालिक / फ्रीलांस • रिमोट',
-    'about.careers.job.desc': 'रियल एस्टेट परियोजनाओं के लिए शानदार 3D विज़ुअलाइज़ेशन, इमर्सिव वॉकथ्रू और फोटोरियलिस्टिक रेंडर बनाने के लिए हमारी टीम में शामिल हों।',
-    'about.careers.job.skill1': '3D मॉडलिंग',
-    'about.careers.job.skill2': 'रेंडरिंग',
-    'about.careers.job.skill3': 'वॉकथ्रू',
-    'about.careers.job.details': 'विवरण देखें',
-    
-    // Contact / निःशुल्क डेमो
-    'contact.title': 'आज ही अपना निःशुल्क 3D डेमो पाएं!',
-    'contact.subtitle': 'अपनी संपत्ति को 3D में जीवंत देखें — बिना किसी प्रतिबद्धता के, पूरी तरह मुफ्त',
-    'contact.intro': 'अपना निःशुल्क डेमो अनुरोध करें और जानें कि एक इमर्सिव 3D अनुभव आपकी संपत्ति मार्केटिंग को कैसे बदल सकता है। चाहे आप एजेंसी हों, डेवलपर हों, या व्यक्तिगत मालिक — हम आपको दिखाएंगे कि क्या संभव है।',
-    'contact.email': 'ईमेल',
-    'contact.location': 'स्थान',
-    'contact.paris': 'पेरिस, फ्रांस',
-    'contact.available': 'विश्वव्यापी उपलब्ध',
-    
-    // Common
-    'common.tagline': 'आपका घर, हमेशा आपका!',
-    'common.learnmore': 'और जानें',
-    'common.explore': 'एक्सप्लोर करें',
-    'footer.copyright': '© House in Meta',
-    
-    // Convert 2D to 3D (Floor Plan Conversion)
-    'convert2d.title': 'ड्रीम होम 3D',
-    'convert2d.headerTitle': 'आपका 2D प्लान एक इमर्सिव वर्चुअल टूर बन जाता है',
-    'convert2d.headerSubtitle': 'अपना प्लान अपलोड करें, पैकेज चुनें, और एक इंटरएक्टिव 3D अनुभव पाएं जिसे आपके खरीदार किसी भी डिवाइस से देख सकते हैं — कोई ऐप इंस्टॉल किए बिना.',
-    'convert2d.subtitle': 'अपनी 2D फ्लोर प्लान को आश्चर्यजनक इंटरैक्टिव 3D मॉडल में बदलें',
-    
-    // Packages
-    'package.quick.name': '3D तेज़',
-    'package.quick.description': 'अपनी फ्लोर प्लान को तुरंत 3D में बदलें',
-    'package.quick.feature1': 'उच्च गुणवत्ता वाली एक्सोनोमेट्रिक 3D व्यू छवि',
-    'package.quick.feature2': 'सिंगल फ्लोर रूपांतरण',
-    'package.quick.feature3': 'दो इंटीरियर 3D रेंडर की गई छवियां',
-    'package.quick.feature4': '5 दिन की डिलीवरी',
-    'package.quick.period': 'एक बार का शुल्क',
-    
-    'package.pro.name': '3D Pro',
-    'package.pro.description': '3D Pro के साथ अपनी जगह को विस्तार से समझें',
-    'package.pro.feature1': '3D तेज़ सुविधाओं के अलावा:',
-    'package.pro.feature2': 'उच्च गुणवत्ता वाली इंटीरियर रेंडर की गई छवियां',
-    'package.pro.feature3': 'इमर्सिव अनुभव के लिए उच्च गुणवत्ता वाली 360° छवियां',
-    'package.pro.feature4': 'क्लाइंट फीडबैक के आधार पर दो संशोधन',
-    'package.pro.period': 'एक बार का शुल्क',
-    
-    'package.premium.name': '3D Premium',
-    'package.premium.description': '3D Premium के साथ अपनी जगह को कभी नहीं देखे गए तरीके से देखें - हमारी सबसे लोकप्रिय सेवा',
-    'package.premium.feature1': '3D Pro सुविधाओं के अलावा:',
-    'package.premium.feature2': 'उन्नत नेविगेशन के साथ पूरी तरह से इंटरैक्टिव 3D मॉडल',
-    'package.premium.feature3': 'VR/AR अनुप्रयोगों के लिए 3D फाइलें',
-    'package.premium.feature4': '🎤 ऑनलाइन वॉकथ्रू अनुभव, HouseInMeta द्वारा होस्ट किया गया',
-    'package.premium.feature5': 'प्राथमिकता समर्थन और तेज़ डिलीवरी',
-    'package.premium.period': 'एक बार का शुल्क',
-    
-    'package.selectBtn': 'पैकेज चुनें'
   }
 };
 
-// Language state
-let currentLang = localStorage.getItem('houseInMetaLang') || 'en';
+// Language state — /en path = English, otherwise default to French
+let currentLang = (function() {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/en')) return 'en';
+  return localStorage.getItem('houseInMetaLang') || 'fr';
+})();
 
-// Toggle language function (kept for backwards compatibility)
+// Toggle language function
 function toggleLanguage() {
-  if (currentLang === 'en') {
-    currentLang = 'fr';
-  } else if (currentLang === 'fr') {
-    currentLang = 'hi';
+  if (window.location.pathname.startsWith('/en')) {
+    window.location.href = '/';
   } else {
-    currentLang = 'en';
+    window.location.href = '/en';
   }
-  localStorage.setItem('houseInMetaLang', currentLang);
-  updatePageLanguage();
 }
 
 // Change language function for dropdown
 function changeLanguage(lang) {
-  currentLang = lang;
-  localStorage.setItem('houseInMetaLang', currentLang);
-  updatePageLanguage();
+  const onEnPath = window.location.pathname.startsWith('/en');
+  if (lang === 'en' && !onEnPath) {
+    window.location.href = '/en';
+  } else if (lang === 'fr' && onEnPath) {
+    window.location.href = '/';
+  } else {
+    currentLang = lang;
+    localStorage.setItem('houseInMetaLang', currentLang);
+    updatePageLanguage();
+  }
 }
 
 // Update all translatable elements

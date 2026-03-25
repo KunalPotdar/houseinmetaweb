@@ -33,29 +33,87 @@ const frustumSize = 1;
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(3, 1.7, 6); // Start height like a human (1.6 meters)
 
+// Mobile detection (touch device)
+const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 // Controls
 const controls = new PointerLockControls(camera, renderer.domElement); // Use renderer.domElement, not document.body
-scene.add(controls); // Add controls directly, not controls.getObject()
+if (!isMobile) scene.add(controls); // PointerLockControls only active on desktop
 
 const walkthroughPanel = document.getElementById('walkthrough-controls');
 const walkthroughBtn = document.getElementById('startWalkthroughBtn');
 
-// Enter walkthrough mode on button click
-walkthroughBtn.addEventListener('click', () => {
-  controls.lock();
-  walkthroughBtn.style.display = 'none';        // Hide button when walkthrough starts
-});
+if (!isMobile) {
+  // Enter walkthrough mode on button click
+  walkthroughBtn.addEventListener('click', () => {
+    controls.lock();
+    walkthroughBtn.style.display = 'none';        // Hide button when walkthrough starts
+  });
 
-// Show instructions when controls are locked
-controls.addEventListener('lock', () => {
-  walkthroughPanel.style.display = 'block';
-});
+  // Show instructions when controls are locked
+  controls.addEventListener('lock', () => {
+    walkthroughPanel.style.display = 'block';
+  });
 
-// Hide instructions and show button when controls unlock
-controls.addEventListener('unlock', () => {
-  walkthroughPanel.style.display = 'none';
-  walkthroughBtn.style.display = 'block';       // Show button again
-});
+  // Hide instructions and show button when controls unlock
+  controls.addEventListener('unlock', () => {
+    walkthroughPanel.style.display = 'none';
+    walkthroughBtn.style.display = 'block';       // Show button again
+  });
+} else {
+  // Mobile: hide desktop-only button immediately
+  walkthroughBtn.style.display = 'none';
+}
+
+// ── Mobile touch look + D-pad ─────────────────────────────────────────────────────────────────────────────
+let yaw = 0, pitch = 0;
+let touchLookId = null, touchLookLastX = 0, touchLookLastY = 0;
+const _fwd = new THREE.Vector3();
+const _rgt = new THREE.Vector3();
+
+if (isMobile) {
+  // Right-side drag → look around
+  renderer.domElement.addEventListener('touchstart', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.clientX > window.innerWidth / 2 && touchLookId === null) {
+        touchLookId = t.identifier;
+        touchLookLastX = t.clientX;
+        touchLookLastY = t.clientY;
+      }
+    }
+  }, { passive: true });
+
+  renderer.domElement.addEventListener('touchmove', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchLookId) {
+        yaw   -= (t.clientX - touchLookLastX) * 0.003;
+        pitch -= (t.clientY - touchLookLastY) * 0.003;
+        pitch = Math.max(-Math.PI * 0.45, Math.min(Math.PI * 0.45, pitch));
+        touchLookLastX = t.clientX;
+        touchLookLastY = t.clientY;
+      }
+    }
+  }, { passive: true });
+
+  renderer.domElement.addEventListener('touchend', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touchLookId) touchLookId = null;
+    }
+  }, { passive: true });
+
+  // D-pad button bindings
+  function bindDpad(id, key) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('touchstart',  (e) => { e.preventDefault(); move[key] = true;  }, { passive: false });
+    el.addEventListener('touchend',    (e) => { e.preventDefault(); move[key] = false; }, { passive: false });
+    el.addEventListener('touchcancel', (e) => { e.preventDefault(); move[key] = false; }, { passive: false });
+  }
+  bindDpad('btn-forward',  'forward');
+  bindDpad('btn-backward', 'backward');
+  bindDpad('btn-left',     'left');
+  bindDpad('btn-right',    'right');
+}
 // LIGHTS
 
 // Natural ambient lighting - strong for overall brightness
@@ -175,7 +233,15 @@ loader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/clients-hsm/bois
   
   animate();
   document.getElementById('progress-container').style.display = 'none';
+  if (isMobile) {
+    document.getElementById('mobile-dpad').style.display = 'flex';
+    document.getElementById('mobile-hint').style.display = 'block';
+  }
    }, (xhr) => {
+  if (xhr.lengthComputable) {
+    const bar = document.getElementById('progress-bar');
+    if (bar) bar.style.width = `${Math.round(xhr.loaded / xhr.total * 100)}%`;
+  }
   console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
 }, (error) => {
   console.error(error);
@@ -207,7 +273,26 @@ document.addEventListener('keyup', (e) => {
 function animate() {
  requestAnimationFrame(animate);
   const delta = clock.getDelta(); // Use delta for consistent spee
-  if (controls.isLocked) {
+  if (isMobile) {
+    // Apply touch look via yaw/pitch Euler angles
+    camera.quaternion.setFromEuler(new THREE.Euler(pitch, yaw, 0, 'YXZ'));
+
+    direction.z = Number(move.forward) - Number(move.backward);
+    direction.x = Number(move.right) - Number(move.left);
+    direction.normalize();
+
+    if (move.forward || move.backward) velocity.z -= direction.z * speed * delta;
+    if (move.left || move.right)       velocity.x -= direction.x * speed * delta;
+    velocity.x -= velocity.x * friction * delta;
+    velocity.z -= velocity.z * friction * delta;
+
+    // Move in camera's flat forward/right directions (no vertical drift)
+    _fwd.set(0, 0, -1).applyQuaternion(camera.quaternion); _fwd.y = 0; _fwd.normalize();
+    _rgt.set(1, 0, 0).applyQuaternion(camera.quaternion);  _rgt.y = 0; _rgt.normalize();
+    camera.position.addScaledVector(_fwd, -velocity.z * delta);
+    camera.position.addScaledVector(_rgt, -velocity.x * delta);
+
+  } else if (controls.isLocked) {
     direction.z = Number(move.forward) - Number(move.backward);
     direction.x = Number(move.right) - Number(move.left);
     direction.normalize();

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maison M2 – House in Meta</title>
+  <meta name="description" content="Maison M2 – Premium residential model with 3D visualization by House in Meta">
+  <link rel="icon" href="/assets/images/favicon.ico" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1a2d5a;
+      --accent: #fe9148;
+      --bg:     #f6f7fa;
+      --card:   #ffffff;
+      --text:   #222;
+      --muted:  #666;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.09);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 1.1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-header .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      color: #fff;
+    }
+    .site-header .logo span { color: var(--accent); }
+    .back-link {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── HERO BANNER ── */
+    .hero-banner {
+      background: linear-gradient(120deg, var(--navy) 60%, #2b447a 100%);
+      color: #fff;
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+    }
+    .hero-banner h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .hero-banner p {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    /* ── MAIN GRID ── */
+    .main-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── LEFT: VISUALS ── */
+    .visuals-col {}
+
+    .exterior-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .exterior-card .img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #e8eaf0;
+      overflow: hidden;
+    }
+    .exterior-card .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .exterior-card .img-wrap img:hover { transform: scale(1.03); }
+    .exterior-card .img-label {
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-top: 1px solid #f0f0f0;
+      background: var(--card);
+    }
+
+    /* 2D image gallery strip */
+    .gallery-section { margin-top: 1.2rem; }
+    .gallery-section .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.6rem;
+    }
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+    .gallery-strip .thumb {
+      aspect-ratio: 4/3;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #dde0ea;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-strip .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .gallery-strip .thumb:hover img { transform: scale(1.07); }
+    .gallery-strip .thumb .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,45,90,0);
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-strip .thumb:hover .thumb-overlay {
+      background: rgba(26,45,90,0.3);
+    }
+
+    /* ── RIGHT: INFO ── */
+    .info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .info-header { }
+    .info-header .model-name {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+    .info-header .model-tagline {
+      margin-top: 0.35rem;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    /* Data points grid */
+    .specs-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+    }
+    .specs-card .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--bg);
+    }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem 1.2rem;
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .spec-item .spec-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .spec-item .spec-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .spec-item .spec-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .spec-item.highlight .spec-value {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    /* Action buttons */
+    .actions-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .actions-card .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.2rem;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.4rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.13); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+    }
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--navy);
+      border: 2px solid var(--navy);
+    }
+    .btn-icon { font-size: 1.1rem; }
+
+    /* Note / callout */
+    .note-box {
+      background: #fff8f2;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      background: none;
+      border: none;
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.8rem;
+      margin-top: 3rem;
+    }
+    .site-footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-banner { padding: 1.8rem 1.2rem 1.4rem; }
+      .main-container { padding: 1.5rem 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .specs-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/" class="logo">House<span>In</span>Meta</a>
+    <a href="/pages/projects.html" class="back-link">← All Projects</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero-banner">
+    <h1>Maison M2</h1>
+    <p>Premium Residential Model &mdash; Interactive 3D Visualization</p>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-container">
+    <div class="product-grid">
+
+      <!-- ═══ LEFT: VISUALS ═══ -->
+      <div class="visuals-col">
+
+        <!-- 3D Exterior Image -->
+        <div class="exterior-card">
+          <div class="img-wrap">
+            <img
+              src="exterior-3d.jpg"
+              alt="Maison M2 – 3D Exterior View"
+              onerror="this.style.display='none'; this.parentElement.style.background='#dde0ea'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.9rem;\'>3D Exterior Image</div>';"
+            />
+          </div>
+          <div class="img-label">3D Exterior Render</div>
+        </div>
+
+        <!-- 2D Image Gallery -->
+        <div class="gallery-section">
+          <div class="section-label">2D Floor Plans &amp; Images</div>
+          <div class="gallery-strip">
+
+            <div class="thumb" onclick="openLightbox('2d-plan-1.jpg', 'Ground Floor Plan')">
+              <img src="2d-plan-1.jpg" alt="Ground Floor Plan"
+                onerror="this.style.display='none'; this.parentElement.style.background='#e0e4f0'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.75rem;text-align:center;padding:6px;\'>Floor Plan 1</div>';" />
+              <div class="thumb-overlay"></div>
+            </div>
+
+            <div class="thumb" onclick="openLightbox('2d-plan-2.jpg', 'First Floor Plan')">
+              <img src="2d-plan-2.jpg" alt="First Floor Plan"
+                onerror="this.style.display='none'; this.parentElement.style.background='#e0e4f0'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.75rem;text-align:center;padding:6px;\'>Floor Plan 2</div>';" />
+              <div class="thumb-overlay"></div>
+            </div>
+
+            <div class="thumb" onclick="openLightbox('2d-plan-3.jpg', 'Section View')">
+              <img src="2d-plan-3.jpg" alt="Section View"
+                onerror="this.style.display='none'; this.parentElement.style.background='#e0e4f0'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:0.75rem;text-align:center;padding:6px;\'>Section View</div>';" />
+              <div class="thumb-overlay"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /visuals-col -->
+
+      <!-- ═══ RIGHT: INFO ═══ -->
+      <div class="info-col">
+
+        <!-- Model heading -->
+        <div class="info-header">
+          <div class="model-name">Maison M2</div>
+          <div class="model-tagline">Elegant contemporary living, designed for modern lifestyles.</div>
+        </div>
+
+        <!-- 6 Key Data Points -->
+        <div class="specs-card">
+          <div class="card-title">Model Specifications</div>
+          <div class="specs-grid">
+
+            <div class="spec-item">
+              <span class="spec-icon">🏷️</span>
+              <span class="spec-label">Model Name</span>
+              <span class="spec-value">Maison M2</span>
+            </div>
+
+            <div class="spec-item">
+              <span class="spec-icon">🏛️</span>
+              <span class="spec-label">Architectural Type</span>
+              <span class="spec-value">Contemporary Villa</span>
+            </div>
+
+            <div class="spec-item">
+              <span class="spec-icon">📐</span>
+              <span class="spec-label">Surface</span>
+              <span class="spec-value">285 m²</span>
+            </div>
+
+            <div class="spec-item">
+              <span class="spec-icon">🛏️</span>
+              <span class="spec-label">No. of Rooms</span>
+              <span class="spec-value">5 Rooms</span>
+            </div>
+
+            <div class="spec-item">
+              <span class="spec-icon">🏠</span>
+              <span class="spec-label">Roof Style</span>
+              <span class="spec-value">Hip Roof</span>
+            </div>
+
+            <div class="spec-item highlight">
+              <span class="spec-icon">💶</span>
+              <span class="spec-label">Base Price</span>
+              <span class="spec-value">€ 450,000</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-card">
+          <div class="card-title">Explore the Model</div>
+
+          <a href="apartment_view.html" target="_blank" class="btn btn-primary">
+            <span class="btn-icon">🥽</span> Launch 3D Walkthrough
+          </a>
+
+          <button class="btn btn-accent" onclick="scrollToGallery()">
+            <span class="btn-icon">🖼️</span> View 2D Floor Plans
+          </button>
+
+          <a href="/contact.html" class="btn btn-outline">
+            <span class="btn-icon">✉️</span> Request Full Info
+          </a>
+        </div>
+
+        <!-- Note -->
+        <div class="note-box">
+          <strong>Note:</strong> The 3D Walkthrough opens in a new tab. Use
+          <strong>W / A / S / D</strong> keys to move and your <strong>mouse</strong> to look around.
+          Press <strong>Esc</strong> to exit.
+        </div>
+
+      </div><!-- /info-col -->
+
+    </div><!-- /product-grid -->
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    &copy; 2026 <a href="/">House In Meta</a>. All rights reserved.
+  </footer>
+
+  <script>
+    function openLightbox(src, alt) {
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      img.src = src;
+      img.alt = alt || '';
+      lb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox({ target: document.getElementById('lightbox') });
+    });
+
+    function scrollToGallery() {
+      document.querySelector('.gallery-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+
+</body>
+</html>

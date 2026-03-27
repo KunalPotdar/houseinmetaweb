@@ -1,8 +1,8 @@
-import * as THREE from 'https://esm.sh/three@0.165.0';
-import { GLTFLoader } from 'https://esm.sh/three@0.165.0/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'https://esm.sh/three@0.165.0/examples/jsm/controls/OrbitControls.js';
-import { PointerLockControls } from 'https://esm.sh/three@0.165.0/examples/jsm/controls/PointerLockControls.js';
-import { RGBELoader } from 'https://esm.sh/three@0.165.0/examples/jsm/loaders/RGBELoader.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 const clock = new THREE.Clock();
 // Renderer 
 const renderer = new THREE.WebGLRenderer({ antialias: true });

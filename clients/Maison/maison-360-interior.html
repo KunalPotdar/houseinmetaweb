@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Maison Meta — 360° Interior Tour</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1b2a;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── ROOM TABS ── */
+    .room-tabs {
+      flex-shrink: 0;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0,0,0,0.6);
+      z-index: 20;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .room-tabs::-webkit-scrollbar { display: none; }
+    .room-tab {
+      flex-shrink: 0;
+      padding: 0.45rem 1.2rem;
+      border-radius: 20px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .room-tab:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+    .room-tab.active {
+      background: rgba(255,215,0,0.15);
+      border-color: #ffd700;
+      color: #ffd700;
+    }
+
+    /* ── VIEWER AREA ── */
+    #viewer-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #panorama {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── NAV ARROWS ── */
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: rgba(255,255,255,0.85);
+      transition: all 0.2s;
+    }
+    .nav-arrow:hover {
+      background: rgba(255,215,0,0.2);
+      border-color: #ffd700;
+      color: #ffd700;
+      transform: translateY(-50%) scale(1.08);
+    }
+    .nav-arrow.hidden { display: none; }
+    #arrow-prev { left: 1.2rem; }
+    #arrow-next { right: 1.2rem; }
+
+    /* ── DOTS ── */
+    .img-dots {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.55rem;
+      z-index: 10;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active { background: #ffd700; transform: scale(1.3); }
+    .dot:hover { background: rgba(255,255,255,0.7); }
+
+    /* hide pannellum's own controls & attribution for cleaner UI */
+    .pnlm-controls-container { display: none !important; }
+    .pnlm-about-msg { display: none !important; }
+
+    @media (max-width: 480px) {
+      .room-tabs { padding: 0.55rem 1rem; gap: 0.4rem; }
+      .room-tab { font-size: 0.76rem; padding: 0.38rem 0.9rem; }
+      .nav-arrow { width: 42px; height: 42px; font-size: 1.1rem; }
+      #arrow-prev { left: 0.7rem; }
+      #arrow-next { right: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ROOM TABS -->
+  <div class="room-tabs" id="room-tabs"></div>
+
+  <!-- PANORAMA VIEWER -->
+  <div id="viewer-wrap">
+    <div id="panorama"></div>
+
+    <!-- Navigation arrows -->
+    <button class="nav-arrow hidden" id="arrow-prev">&#8592;</button>
+    <button class="nav-arrow hidden" id="arrow-next">&#8594;</button>
+
+    <!-- Image dots -->
+    <div class="img-dots" id="img-dots"></div>
+  </div>
+
+  <script>
+    // ──────────────────────────────────────────────────────────────────
+    // CONFIGURATION — update filenames to match your S3 uploads
+    // Expected S3 paths:
+    //   Maison/360-interior/living-room/01.jpg ...
+    //   Maison/360-interior/master-bedroom/01.jpg ...
+    //   Maison/360-interior/kids-bedroom/01.jpg ...
+    // ──────────────────────────────────────────────────────────────────
+    const BASE = 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/Maison/360-interior/';
+
+    const ROOMS = [
+      {
+        label: 'Living Room',
+        images: [
+          BASE + '01.jpg',
+          BASE + '02.jpg',
+        ]
+      },
+      {
+        label: 'Master Bedroom',
+        images: [
+          BASE + '01.jpg',
+          BASE + '02.jpg',
+        ]
+      },
+      {
+        label: "Kid's Bedroom",
+        images: [
+          BASE + '03.jpg',
+          BASE + '03.jpg',
+        ]
+      }
+    ];
+    // ──────────────────────────────────────────────────────────────────
+
+    let currentRoom  = 0;
+    let currentImage = 0;
+    let viewer       = null;
+
+    const arrowPrev = document.getElementById('arrow-prev');
+    const arrowNext = document.getElementById('arrow-next');
+    const imgDots   = document.getElementById('img-dots');
+
+    function updateArrows() {
+      const imgs = ROOMS[currentRoom].images;
+      arrowPrev.classList.toggle('hidden', currentImage === 0);
+      arrowNext.classList.toggle('hidden', currentImage === imgs.length - 1);
+    }
+
+    function updateDots() {
+      imgDots.innerHTML = '';
+      const imgs = ROOMS[currentRoom].images;
+      if (imgs.length <= 1) return;
+      imgs.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === currentImage ? ' active' : '');
+        dot.onclick = () => goToImage(i);
+        imgDots.appendChild(dot);
+      });
+    }
+
+    function goToImage(index) {
+      const imgs = ROOMS[currentRoom].images;
+      currentImage = Math.max(0, Math.min(imgs.length - 1, index));
+      const url = imgs[currentImage];
+
+      if (viewer) {
+        viewer.destroy();
+        viewer = null;
+      }
+
+      viewer = pannellum.viewer('panorama', {
+        type: 'equirectangular',
+        panorama: url,
+        autoLoad: true,
+        showControls: false,
+        compass: false,
+        mouseZoom: true,
+        touchZoom: true,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
+      });
+
+      updateArrows();
+      updateDots();
+    }
+
+    function goToRoom(rIndex) {
+      currentRoom  = rIndex;
+      currentImage = 0;
+      document.querySelectorAll('.room-tab').forEach((t, i) =>
+        t.classList.toggle('active', i === rIndex)
+      );
+      goToImage(0);
+    }
+
+    // Build room tabs
+    const roomTabsEl = document.getElementById('room-tabs');
+    ROOMS.forEach((room, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'room-tab' + (i === 0 ? ' active' : '');
+      btn.textContent = room.label;
+      btn.onclick = () => goToRoom(i);
+      roomTabsEl.appendChild(btn);
+    });
+
+    arrowPrev.onclick = () => goToImage(currentImage - 1);
+    arrowNext.onclick = () => goToImage(currentImage + 1);
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  goToImage(currentImage - 1);
+      if (e.key === 'ArrowRight') goToImage(currentImage + 1);
+    });
+
+    // Init
+    goToRoom(0);
+  </script>
+</body>
+</html>

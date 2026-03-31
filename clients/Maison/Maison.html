@@ -197,15 +197,30 @@
       transition: background 0.2s, transform 0.2s;
     }
     .slideshow-dots .sdot.active { background: #fff; transform: scale(1.3); }
-    .slideshow-progress {
+
+    /* Slideshow arrow buttons */
+    .slideshow-arrow {
       position: absolute;
-      bottom: 0; left: 0;
-      height: 3px;
-      background: var(--accent);
-      width: 0%;
-      transition: width linear;
-      z-index: 3;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.45);
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      transition: background 0.2s;
+      line-height: 1;
     }
+    .slideshow-arrow:hover { background: rgba(0,0,0,0.75); }
+    .slideshow-arrow.prev { left: 0.75rem; }
+    .slideshow-arrow.next { right: 0.75rem; }
 
     /* ── RIGHT: INFO ── */
     .info-col {
@@ -597,12 +612,21 @@
       height: 100%;
       border-radius: 0;
     }
+    .fw-frame .slideshow img {
+      object-fit: contain;
+      background: #111;
+    }
     @media (max-width: 900px) {
       .fw-section { padding: 0 1rem 2rem; }
-      .fw-frame { height: 480px; }
+      .fw-frame { height: 420px; }
+      .fw-frame .slideshow img { object-fit: contain; background: #111; }
     }
     @media (max-width: 480px) {
-      .fw-frame { height: 360px; }
+      .fw-frame { height: 260px; }
+      .fw-frame .slideshow img { object-fit: contain; background: #111; }
+    }
+    @media (max-width: 360px) {
+      .fw-frame { height: 200px; }
     }
 
     /* ── TECHNICAL SPECS SECTION ── */
@@ -1204,17 +1228,18 @@
         <span class="fw-icon">🖼️</span>
         <div>
           <div class="fw-title">Maison Meta Images</div>
-          <div class="fw-sub">Floor plans &amp; renders — click to advance</div>
+          <div class="fw-sub">Floor plans &amp; renders</div>
         </div>
       </div>
       <div class="fw-frame">
-        <div class="slideshow" id="slideshow" onclick="advanceSlide()">
+        <div class="slideshow" id="slideshow">
           <img src="2d-plan-1.jpg" alt="Image 1" class="active" />
           <img src="2d-plan-2.jpg" alt="Image 2" />
           <img src="2d-plan-3.jpg" alt="Image 3" />
           <img src="2d-plan-4.jpg" alt="Image 4" />
+          <button class="slideshow-arrow prev" id="slideshow-prev" aria-label="Previous image">&#8592;</button>
+          <button class="slideshow-arrow next" id="slideshow-next" aria-label="Next image">&#8594;</button>
           <div class="slideshow-dots" id="slideshow-dots"></div>
-          <div class="slideshow-progress" id="slideshow-progress"></div>
         </div>
       </div>
     </div>
@@ -1644,12 +1669,11 @@
 
     // ── Slideshow ──────────────────────────────────────────────────
     (function() {
-      const INTERVAL = 10000; // 10 seconds
       const slides   = Array.from(document.querySelectorAll('.slideshow img'));
       const dotsWrap = document.getElementById('slideshow-dots');
-      const progress = document.getElementById('slideshow-progress');
+      const prevBtn  = document.getElementById('slideshow-prev');
+      const nextBtn  = document.getElementById('slideshow-next');
       let current    = 0;
-      let timer      = null;
 
       if (!slides.length) return;
 
@@ -1667,22 +1691,10 @@
         current = (index + slides.length) % slides.length;
         slides[current].classList.add('active');
         dotsWrap.children[current].classList.add('active');
-        restartProgress();
       }
 
-      function restartProgress() {
-        clearTimeout(timer);
-        progress.style.transition = 'none';
-        progress.style.width = '0%';
-        progress.getBoundingClientRect();
-        progress.style.transition = `width ${INTERVAL}ms linear`;
-        progress.style.width = '100%';
-        timer = setTimeout(() => goTo(current + 1), INTERVAL);
-      }
-
-      window.advanceSlide = () => goTo(current + 1);
-
-      restartProgress();
+      prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
+      nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
     })();
 
     // ── Finance Calculator ─────────────────────────────────────────────────

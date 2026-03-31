@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PMZ17T07L5"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-PMZ17T07L5');
-  </script>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1033,50 +1025,11 @@
 
     @media (max-width: 900px) {
       .product-grid { grid-template-columns: 1fr; }
-      .hero-banner { padding: 5.5rem 1.2rem 1.8rem; }
+      .hero-banner { padding: 1rem 1.2rem 1.8rem; } /* top set by JS */
       .main-container { padding: 1.5rem 1rem 3rem; }
 
-      /* Two-row header: brand | breadcrumb nav */
-      .site-header {
-        padding: 0.6rem 1rem 0.45rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.15rem;
-      }
-
-      /* Breadcrumb nav strip */
-      .site-nav {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        gap: 0;
-        width: 100%;
-        padding-bottom: 0.1rem;
-      }
-      .site-nav::-webkit-scrollbar { display: none; }
-      .site-nav a {
-        font-size: 0.7rem;
-        font-weight: 500;
-        padding: 2px 0;
-        color: rgba(255,255,255,0.5);
-        background: none;
-        border-radius: 0;
-        white-space: nowrap;
-        letter-spacing: 0.02em;
-      }
-      /* separator between items */
-      .site-nav a:not(:last-child)::after {
-        content: '›';
-        display: inline-block;
-        margin: 0 7px;
-        color: rgba(255,255,255,0.22);
-        font-size: 0.75rem;
-        pointer-events: none;
-      }
-      .site-nav a:hover,
-      .site-nav a.active { color: var(--accent); }
+      .site-header { padding: 0.9rem 1.2rem; gap: 1rem; }
+      .site-nav { display: none; }
     }
 
     @media (max-width: 480px) {
@@ -1118,10 +1071,10 @@
 
   <!-- HERO -->
   <section class="hero-banner">
-    <div class="breadcrumb"><a href="/pages/projects.html">Projects</a> / Maison Meta</div>
     <h1 class="fade-in">Maison Meta</h1>
     <span class="hero-tag">Premium Residential Model</span>
-    <p>Interactive 3D Visualization by House In Meta</p>
+    <p>Ni ostentatoire, ni banale — cette maison contemporaine s'impose par sa retenue. </p>
+    <p>Elle s'inscrit dans le paysage français avec une évidence presque naturelle, comme si le terrain l'avait toujours attendue.</p>
   </section>
 
   <!-- MAIN CONTENT -->
@@ -1660,9 +1613,21 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // ── Header hide/show on scroll ──
+    // ── Hero padding: match actual header height ──
     const header = document.getElementById('site-header');
     const heroBanner = document.querySelector('.hero-banner');
+
+    function syncHeroPadding() {
+      if (!header || !heroBanner) return;
+      const h = header.getBoundingClientRect().height;
+      heroBanner.style.paddingTop = (h + 12) + 'px';
+    }
+    syncHeroPadding();
+    window.addEventListener('resize', syncHeroPadding);
+    // Re-check after fonts/images may have loaded
+    window.addEventListener('load', syncHeroPadding);
+
+    // ── Header hide/show on scroll ──
     let lastScrollTop = 0;
     window.addEventListener('scroll', function() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;

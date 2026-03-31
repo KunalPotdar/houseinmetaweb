@@ -20,20 +20,20 @@
     </header>
 
     <main class="hero">
-      <h2>Request Your Free Demo</h2>
-      <p class="muted">See your property in stunning 3D — fill in the form and we'll reach out to set it up.</p>
       <section class="card">
-        <h3>Get Your Free Demo</h3>
-        <!-- HubSpot Form Embed -->
-        <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
-        <div id="hubspot-contact-form"></div>
-        <script>
-          hbspt.forms.create({
-            region: "eu1",            // change to "na1" if your account is in North America
-            portalId: "YOUR_PORTAL_ID",  // replace with your HubSpot Portal ID
-            formId: "YOUR_FORM_ID"       // replace with your HubSpot Form ID
-          });
-        </script>
+        <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="contact.title">Connect with us</h2>
+          <div>
+            <!-- HubSpot Form Embed -->
+            <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+            <div id="hubspot-contact-form"></div>
+            <script src="https://js-eu1.hsforms.net/forms/embed/148054443.js" defer></script>
+            <div class="hs-form-frame" data-region="eu1" data-form-id="59813e70-52d6-4f72-8009-2ca641f28094" data-portal-id="148054443"></div>
+          </div>
+          <div style="background:var(--accent);padding:1.5rem;border-radius:8px">
+            <h4 style="margin-top:0" data-i18n="contact.location">Location</h4>
+            <p class="muted" style="margin:0"><span data-i18n="contact.paris">Paris, France</span><br><span data-i18n="contact.available">Available Worldwide</span></p>
+          </div>
+        </div>
       </section>
     </main>
 

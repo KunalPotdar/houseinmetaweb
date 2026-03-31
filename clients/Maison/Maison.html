@@ -1016,13 +1016,69 @@
     .fade-in { opacity: 0; animation: fadeSlideIn 0.7s ease-out 0.15s forwards; }
 
     /* ── RESPONSIVE ── */
+
+    /* Hero scroll-hide (applied by JS on mobile) */
+    .hero-banner {
+      max-height: 500px;
+      overflow: hidden;
+      transition: opacity 0.35s ease, max-height 0.45s ease, padding 0.35s ease;
+    }
+    .hero-banner.hero-scrolled {
+      opacity: 0;
+      max-height: 0;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      pointer-events: none;
+    }
+
     @media (max-width: 900px) {
       .product-grid { grid-template-columns: 1fr; }
       .hero-banner { padding: 5.5rem 1.2rem 1.8rem; }
       .main-container { padding: 1.5rem 1rem 3rem; }
-      .site-header { padding: 0.9rem 1.2rem; gap: 1rem; }
-      .site-nav { display: none; }
+
+      /* Two-row header: brand | breadcrumb nav */
+      .site-header {
+        padding: 0.6rem 1rem 0.45rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+      }
+
+      /* Breadcrumb nav strip */
+      .site-nav {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 0;
+        width: 100%;
+        padding-bottom: 0.1rem;
+      }
+      .site-nav::-webkit-scrollbar { display: none; }
+      .site-nav a {
+        font-size: 0.7rem;
+        font-weight: 500;
+        padding: 2px 0;
+        color: rgba(255,255,255,0.5);
+        background: none;
+        border-radius: 0;
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+      }
+      /* separator between items */
+      .site-nav a:not(:last-child)::after {
+        content: '›';
+        display: inline-block;
+        margin: 0 7px;
+        color: rgba(255,255,255,0.22);
+        font-size: 0.75rem;
+        pointer-events: none;
+      }
+      .site-nav a:hover,
+      .site-nav a.active { color: var(--accent); }
     }
+
     @media (max-width: 480px) {
       .specs-grid { grid-template-columns: 1fr 1fr; }
       .hero-banner h1 { font-size: 1.8rem; }
@@ -1606,6 +1662,7 @@
 
     // ── Header hide/show on scroll ──
     const header = document.getElementById('site-header');
+    const heroBanner = document.querySelector('.hero-banner');
     let lastScrollTop = 0;
     window.addEventListener('scroll', function() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -1614,6 +1671,14 @@
         header.style.transition = 'transform 0.3s ease-in-out';
       } else {
         header.style.transform = 'translateY(0)';
+      }
+      // Hide hero banner on first scroll (mobile only)
+      if (heroBanner) {
+        if (window.innerWidth <= 900) {
+          heroBanner.classList.toggle('hero-scrolled', scrollTop > 10);
+        } else {
+          heroBanner.classList.remove('hero-scrolled');
+        }
       }
       lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });

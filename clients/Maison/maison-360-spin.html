@@ -174,6 +174,114 @@
     @media (max-width: 480px) {
       .bottom-bar { padding: 0.5rem 1rem; }
     }
+
+    /* ── HOTSPOT LAYER ── */
+    #hotspot-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 8;
+    }
+    .hotspot {
+      position: absolute;
+      pointer-events: all;
+      cursor: pointer;
+      transform: translate(-50%, -100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hotspot-pin svg {
+      width: 32px;
+      height: 42px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+      transition: transform 0.18s, filter 0.18s;
+    }
+    .hotspot:hover .hotspot-pin svg,
+    .hotspot.selected .hotspot-pin svg {
+      transform: scale(1.22) translateY(-3px);
+      filter: drop-shadow(0 4px 12px rgba(255,215,0,0.85));
+    }
+    .hotspot-label {
+      margin-top: 4px;
+      background: rgba(13,27,42,0.82);
+      color: #ffd700;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ── INFO PANEL ── */
+    #info-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(13, 27, 42, 0.96);
+      border: 1px solid rgba(78, 140, 225, 0.45);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem 1rem;
+      width: clamp(280px, 88vw, 560px);
+      z-index: 25;
+      display: none;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 36px rgba(0, 0, 0, 0.55);
+      animation: panel-in 0.2s ease;
+    }
+    @keyframes panel-in {
+      from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    #info-panel.visible { display: block; }
+    #info-panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-right: 1.4rem;
+    }
+    #info-panel-close {
+      position: absolute;
+      top: 0.65rem;
+      right: 0.85rem;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    #info-panel-close:hover { color: #fff; }
+
+    /* ── INFO PANEL — text rows ── */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.42rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      gap: 1.2rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key {
+      color: rgba(255,255,255,0.48);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .info-val {
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -181,6 +289,9 @@
   <!-- VIEWER -->
   <div id="spin-container">
     <img id="spin-img" src="" alt="Maison M2 360° view" draggable="false" />
+
+    <!-- Hotspot markers -->
+    <div id="hotspot-layer"></div>
 
     <!-- Loading overlay -->
     <div id="loading-overlay">
@@ -196,6 +307,13 @@
         <span class="hint-icon">↔</span>
         Drag to rotate
       </div>
+    </div>
+
+    <!-- Info panel (shown on hotspot click) -->
+    <div id="info-panel">
+      <button id="info-panel-close" title="Close">✕</button>
+      <div id="info-panel-title"></div>
+      <div id="info-panel-body"></div>
     </div>
   </div>
 
@@ -236,6 +354,59 @@
     };
     // ─────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────
+    // HOTSPOTS — pin markers with 2D plan images
+    // x / y: position as % of container (0–100)
+    // image: filename relative to this HTML file
+    // caption: optional text under the image
+    // ─────────────────────────────────────────────
+    const HOTSPOTS = [
+      {
+        id: 'roof',
+        label: 'Kitchen',
+        x: 48, y: 53,
+        anchorFrame: 0,
+        alwaysVisible: true,
+        properties: {
+          'Surface Area':   '18 m²',
+          'Ceiling Height': '2.70 m',
+          'Floor Type':     'Ceramic Tiles',
+          'Windows':        '2',
+          'Orientation':    'South-East',
+          'Fitted Kitchen': 'Yes',
+        },
+      },
+      {
+        id: 'upper-floor',
+        label: 'Bedroom',
+        x: 66, y: 63,
+        anchorFrame: 0,
+        properties: {
+          'Surface Area':   '22 m²',
+          'Ceiling Height': '2.60 m',
+          'Floor Type':     'Hardwood Oak',
+          'Windows':        '2',
+          'Orientation':    'North-West',
+          'Built-in Wardrobe': 'Yes',
+        },
+      },
+      {
+        id: 'ground-floor',
+        label: 'Living Room',
+        x: 34, y: 63,
+        anchorFrame: 0,
+        properties: {
+          'Surface Area':   '38 m²',
+          'Ceiling Height': '2.80 m',
+          'Floor Type':     'Engineered Parquet',
+          'Windows':        '3',
+          'Orientation':    'South',
+          'Terrace Access': 'Yes',
+        },
+      },
+    ];
+    // ─────────────────────────────────────────────
+
     let currentFrame = 0;
     let images = [];        // preloaded Image objects
     let loaded = 0;
@@ -247,6 +418,7 @@
     let isDragging = false;
     let dragStartX = 0;
     let dragAccum = 0;    // accumulated pixels since last frame step
+    let didDrag   = false; // true if pointer moved enough to count as a drag
 
     const spinImg      = document.getElementById('spin-img');
     const loadOverlay  = document.getElementById('loading-overlay');
@@ -257,6 +429,10 @@
     const spinBtn      = document.getElementById('spin-btn');
     const frameCounter = document.getElementById('frame-counter');
     const container    = document.getElementById('spin-container');
+    const infoPanel      = document.getElementById('info-panel');
+    const infoPanelTitle = document.getElementById('info-panel-title');
+    const infoPanelBody  = document.getElementById('info-panel-body');
+    const infoPanelClose = document.getElementById('info-panel-close');
 
     // ── Helpers ──────────────────────────────────
 
@@ -272,6 +448,26 @@
       }
       scrubber.value = currentFrame;
       frameCounter.textContent = `${currentFrame + 1} / ${CONFIG.totalFrames}`;
+      if (isReady) updateHotspotPositions();
+    }
+
+    // ── Hotspot rotation tracking ─────────────────
+    // Hotspots are only visible on frame 0 (the starting frame).
+    function updateHotspotPositions() {
+      const visible = currentFrame === 0;
+      document.querySelectorAll('.hotspot').forEach(el => {
+        const hs = HOTSPOTS.find(h => h.id === el.dataset.id);
+        if (!hs) return;
+        if (visible) {
+          el.style.visibility = 'visible';
+          el.style.opacity    = '1';
+          el.style.left       = hs.x + '%';
+          el.style.top        = hs.y + '%';
+        } else {
+          el.style.visibility = 'hidden';
+          el.style.opacity    = '0';
+        }
+      });
     }
 
     function onFrameLoaded() {
@@ -332,6 +528,7 @@
     container.addEventListener('pointerdown', (e) => {
       if (!isReady) return;
       isDragging = true;
+      didDrag    = false;
       dragStartX = e.clientX;
       dragAccum = 0;
       stopSpin();
@@ -343,6 +540,7 @@
       if (!isDragging) return;
       const dx = e.clientX - dragStartX;
       dragStartX = e.clientX;
+      if (Math.abs(dx) > 2) didDrag = true;
       dragAccum += dx;
 
       const steps = Math.trunc(dragAccum / CONFIG.dragSensitivity);
@@ -355,11 +553,13 @@
     container.addEventListener('pointerup', () => {
       isDragging = false;
       container.classList.remove('dragging');
+      setTimeout(() => { didDrag = false; }, 0);
     });
 
     container.addEventListener('pointercancel', () => {
       isDragging = false;
       container.classList.remove('dragging');
+      setTimeout(() => { didDrag = false; }, 0);
     });
 
     // ── Scrubber ─────────────────────────────────
@@ -376,8 +576,66 @@
       if (e.key === 'ArrowRight') { stopSpin(); showFrame(currentFrame + 1); }
     });
 
+    // ── Hotspots ─────────────────────────────────
+
+    const PIN_SVG = `<svg viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 1C9.373 1 4 6.373 4 13c0 8.5 12 27 12 27S28 21.5 28 13c0-6.627-5.373-12-12-12z"
+            fill="#ffd700" stroke="#b8960c" stroke-width="1.4"/>
+      <circle cx="16" cy="13" r="5" fill="#0d1b2a"/>
+    </svg>`;
+
+    function showInfoPanel(hs) {
+      infoPanelTitle.textContent = hs.label;
+      infoPanelBody.innerHTML = Object.entries(hs.properties || {})
+        .map(([k, v]) =>
+          `<div class="info-row"><span class="info-key">${k}</span><span class="info-val">${v}</span></div>`)
+        .join('');
+      infoPanel.classList.remove('visible');
+      void infoPanel.offsetWidth;
+      infoPanel.classList.add('visible');
+    }
+
+    function createHotspots() {
+      const layer = document.getElementById('hotspot-layer');
+      HOTSPOTS.forEach(hs => {
+        const el = document.createElement('div');
+        el.className = 'hotspot';
+        el.style.left = hs.x + '%';
+        el.style.top  = hs.y + '%';
+        el.dataset.id = hs.id;
+        el.innerHTML  =
+          `<div class="hotspot-pin">${PIN_SVG}</div>`
+          + `<div class="hotspot-label">${hs.label}</div>`;
+
+        el.addEventListener('pointerdown', e => e.stopPropagation());
+        el.addEventListener('click', (e) => {
+          if (didDrag) return;
+          e.stopPropagation();
+          document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('selected'));
+          el.classList.add('selected');
+          showInfoPanel(hs);
+        });
+        layer.appendChild(el);
+      });
+    }
+
+    infoPanelClose.addEventListener('click', () => {
+      infoPanel.classList.remove('visible');
+      document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('selected'));
+    });
+
+    // Close panel when clicking the background (not after a drag)
+    container.addEventListener('click', (e) => {
+      if (didDrag) return;
+      if (!e.target.closest('.hotspot') && !e.target.closest('#info-panel')) {
+        infoPanel.classList.remove('visible');
+        document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('selected'));
+      }
+    });
+
     // ── Start ────────────────────────────────────
 
+    createHotspots();
     preloadAll();
   </script>
 </body>

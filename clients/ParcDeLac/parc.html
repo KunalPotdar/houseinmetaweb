@@ -39,47 +39,6 @@
       filter: brightness(1.25);
     }
 
-    /* ── LOADING OVERLAY ── */
-    #loading-overlay {
-      position: absolute;
-      inset: 0;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.2rem;
-      z-index: 20;
-    }
-    .loading-title {
-      color: #1a1a1a;
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .loading-sub {
-      color: rgba(0,0,0,0.45);
-      font-size: 0.8rem;
-    }
-    #load-bar-wrap {
-      width: 240px;
-      height: 6px;
-      background: rgba(0,0,0,0.12);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    #load-bar {
-      height: 100%;
-      width: 0%;
-      background: #4e8ce1;
-      border-radius: 3px;
-      transition: width 0.1s ease;
-    }
-    #load-pct {
-      color: rgba(0,0,0,0.45);
-      font-size: 0.75rem;
-    }
-
     /* ── FLOOR SELECTOR ── */
     #floor-selector {
       position: absolute;
@@ -88,7 +47,7 @@
       transform: translateX(-50%);
       display: flex;
       gap: 0.3rem;
-      z-index: 10;
+      z-index: 30;
       background: rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -174,14 +133,6 @@
   <div id="spin-container">
     <img id="spin-img" src="" alt="Maison M2 360° view" draggable="false" />
 
-    <!-- Loading overlay -->
-    <div id="loading-overlay">
-      <div class="loading-title">Loading your Digital Home</div>
-      <div id="load-bar-wrap"><div id="load-bar"></div></div>
-      <div id="load-pct">0%</div>
-      <div class="loading-sub">Preparing 360° experience…</div>
-    </div>
-
     <!-- Floor selector -->
     <div id="floor-selector">
       <button class="floor-btn active" data-floor="0">Aerial</button>
@@ -204,11 +155,11 @@
     // FLOORS — add/edit entries to match your S3 paths
     // ─────────────────────────────────────────────
     const FLOORS = [
-      { label: 'Aerial',  baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/', totalFrames: 60 },
-      { label: 'Floor 1', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/F1/',     totalFrames: 60 },
-      { label: 'Floor 2', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/F2/',     totalFrames: 60 },
-      { label: 'Floor 3', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/F3/',     totalFrames: 60 },
-      { label: 'Floor 4', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/F4/',     totalFrames: 60 },
+      { label: 'Aerial',  baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/Aerial/', totalFrames: 60 },
+      { label: 'Floor 1', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/G1/',     totalFrames: 60 },
+      { label: 'Floor 2', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/G2/',     totalFrames: 60 },
+      { label: 'Floor 3', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/G3/',     totalFrames: 60 },
+      { label: 'Floor 4', baseUrl: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/G4/',     totalFrames: 60 },
     ];
 
     // ─────────────────────────────────────────────
@@ -250,9 +201,6 @@
     let didDrag    = false;
 
     const spinImg      = document.getElementById('spin-img');
-    const loadOverlay  = document.getElementById('loading-overlay');
-    const loadBar      = document.getElementById('load-bar');
-    const loadPct      = document.getElementById('load-pct');
     const spinBtn      = document.getElementById('spin-btn');
     const frameCounter = document.getElementById('frame-counter');
     const container    = document.getElementById('spin-container');
@@ -277,16 +225,10 @@
     function onFrameLoaded(gen) {
       if (gen !== loadGeneration) return; // stale callback from previous floor
       loaded++;
-      const total = FLOORS[currentFloor].totalFrames;
-      const pct = Math.round((loaded / total) * 100);
-      loadBar.style.width = pct + '%';
-      loadPct.textContent = pct + '%';
 
-      // Show viewer once preload count is ready
       if (!isReady && loaded >= CONFIG.preloadCount) {
         isReady = true;
         showFrame(0);
-        loadOverlay.style.display = 'none';
       }
     }
 
@@ -321,11 +263,6 @@
       images        = [];
       currentFrame  = 0;
       loadGeneration++;
-
-      // Show loading overlay
-      loadOverlay.style.display = 'flex';
-      loadBar.style.width = '0%';
-      loadPct.textContent = '0%';
 
       preloadAll();
     }
@@ -378,6 +315,7 @@
 
     container.addEventListener('pointerdown', (e) => {
       if (!isReady) return;
+      if (e.target.closest('#floor-selector')) return;
       isDragging = true;
       didDrag    = false;
       dragStartX = e.clientX;

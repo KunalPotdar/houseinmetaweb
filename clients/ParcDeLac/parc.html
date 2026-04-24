@@ -35,7 +35,8 @@
       object-fit: contain;
       display: block;
       pointer-events: none;
-      will-change: contents;
+      will-change: transform;
+      transform-origin: center center;
       filter: brightness(1.25);
     }
 
@@ -194,11 +195,23 @@
     let spinLastTime  = null;
     let spinProgress  = 0;   // fractional frame accumulator
 
-    // Drag state
+    // Drag / pan state
     let isDragging = false;
     let dragStartX = 0;
+    let dragStartY = 0;
     let dragAccum  = 0;
     let didDrag    = false;
+
+    // Zoom / pan state
+    let zoomScale  = 1;
+    let panX       = 0;
+    let panY       = 0;
+    const MIN_ZOOM = 1;
+    const MAX_ZOOM = 5;
+
+    // Multi-pointer tracking (pinch)
+    const activePointers = new Map();
+    let lastPinchDist = 0;
 
     const spinImg      = document.getElementById('spin-img');
     const spinBtn      = document.getElementById('spin-btn');
@@ -232,6 +245,37 @@
       }
     }
 
+    // ── Zoom helpers ──────────────────────────────────
+
+    function applyTransform() {
+      spinImg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+    }
+
+    function clampPan() {
+      if (zoomScale <= 1) { panX = 0; panY = 0; return; }
+      const hw = container.clientWidth  * (zoomScale - 1) / (2 * zoomScale);
+      const hh = container.clientHeight * (zoomScale - 1) / (2 * zoomScale);
+      panX = Math.max(-hw, Math.min(hw, panX));
+      panY = Math.max(-hh, Math.min(hh, panY));
+    }
+
+    function zoomAt(screenX, screenY, factor) {
+      const rect = container.getBoundingClientRect();
+      const rx = screenX - rect.left - rect.width  / 2;
+      const ry = screenY - rect.top  - rect.height / 2;
+      const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomScale * factor));
+      panX = rx - (rx - panX) * newScale / zoomScale;
+      panY = ry - (ry - panY) * newScale / zoomScale;
+      zoomScale = newScale;
+      clampPan();
+      applyTransform();
+    }
+
+    function resetZoom() {
+      zoomScale = 1; panX = 0; panY = 0;
+      applyTransform();
+    }
+
     // ── Preload frames for current floor ─────────
 
     function preloadAll() {
@@ -258,6 +302,7 @@
 
       // Reset viewer
       stopSpin();
+      resetZoom();
       isReady       = false;
       loaded        = 0;
       images        = [];
@@ -311,44 +356,97 @@
       autoSpin ? stopSpin() : startSpin();
     });
 
-    // ── Drag — Mouse ─────────────────────────────
+    // ── Drag / Pinch / Pan ────────────────────────────
 
     container.addEventListener('pointerdown', (e) => {
-      if (!isReady) return;
       if (e.target.closest('#floor-selector')) return;
-      isDragging = true;
-      didDrag    = false;
-      dragStartX = e.clientX;
-      dragAccum = 0;
-      stopSpin();
-      container.classList.add('dragging');
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       container.setPointerCapture(e.pointerId);
-    });
 
-    container.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - dragStartX;
-      dragStartX = e.clientX;
-      if (Math.abs(dx) > 2) didDrag = true;
-      dragAccum += dx;
-
-      const steps = Math.trunc(dragAccum / CONFIG.dragSensitivity);
-      if (steps !== 0) {
-        showFrame(currentFrame - steps);
-        dragAccum -= steps * CONFIG.dragSensitivity;
+      if (activePointers.size === 1) {
+        if (!isReady) return;
+        isDragging = true;
+        didDrag    = false;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragAccum  = 0;
+        stopSpin();
+        container.classList.add('dragging');
+      } else if (activePointers.size === 2) {
+        isDragging = false;
+        container.classList.remove('dragging');
+        const pts = [...activePointers.values()];
+        lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
       }
     });
 
-    container.addEventListener('pointerup', () => {
-      isDragging = false;
-      container.classList.remove('dragging');
-      setTimeout(() => { didDrag = false; }, 0);
+    container.addEventListener('pointermove', (e) => {
+      if (!activePointers.has(e.pointerId)) return;
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (activePointers.size === 2) {
+        const pts = [...activePointers.values()];
+        const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        const midX = (pts[0].x + pts[1].x) / 2;
+        const midY = (pts[0].y + pts[1].y) / 2;
+        if (lastPinchDist > 0) zoomAt(midX, midY, dist / lastPinchDist);
+        lastPinchDist = dist;
+        return;
+      }
+
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) didDrag = true;
+
+      if (zoomScale > 1) {
+        panX += dx;
+        panY += dy;
+        clampPan();
+        applyTransform();
+      } else {
+        dragAccum += dx;
+        const steps = Math.trunc(dragAccum / CONFIG.dragSensitivity);
+        if (steps !== 0) {
+          showFrame(currentFrame - steps);
+          dragAccum -= steps * CONFIG.dragSensitivity;
+        }
+      }
     });
 
-    container.addEventListener('pointercancel', () => {
-      isDragging = false;
-      container.classList.remove('dragging');
-      setTimeout(() => { didDrag = false; }, 0);
+    container.addEventListener('pointerup', (e) => {
+      activePointers.delete(e.pointerId);
+      if (activePointers.size < 2) lastPinchDist = 0;
+      if (activePointers.size === 0) {
+        isDragging = false;
+        container.classList.remove('dragging');
+        setTimeout(() => { didDrag = false; }, 0);
+      }
+    });
+
+    container.addEventListener('pointercancel', (e) => {
+      activePointers.delete(e.pointerId);
+      if (activePointers.size < 2) lastPinchDist = 0;
+      if (activePointers.size === 0) {
+        isDragging = false;
+        container.classList.remove('dragging');
+        setTimeout(() => { didDrag = false; }, 0);
+      }
+    });
+
+    // ── Wheel zoom ──────────────────────────────────────
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 1 / 1.12);
+    }, { passive: false });
+
+    // Double-click / double-tap to reset zoom
+    container.addEventListener('dblclick', (e) => {
+      if (e.target.closest('#floor-selector')) return;
+      resetZoom();
     });
 
     // ── Keyboard ─────────────────────────────────

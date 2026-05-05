@@ -1,0 +1,120 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── VIEWER ── */
+#spin-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#spin-container.dragging { cursor: grabbing; }
+
+#spin-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: center center;
+  filter: brightness(1.25);
+}
+
+/* ── FLOOR SELECTOR ── */
+#floor-selector {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.3rem;
+  z-index: 30;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 50px;
+  padding: 0.3rem 0.4rem;
+  /* mobile: don't let it overflow the screen */
+  max-width: calc(100vw - 2rem);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#floor-selector::-webkit-scrollbar { display: none; }
+.floor-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  -webkit-tap-highlight-color: transparent;
+}
+.floor-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.floor-btn.active {
+  background: #4e8ce1;
+  color: #fff;
+}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  gap: 1rem;
+  z-index: 10;
+}
+
+/* Auto-spin toggle */
+#spin-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  min-height: 44px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#spin-btn:hover { background: rgba(255,255,255,0.18); }
+#spin-btn.active {
+  background: rgba(78,140,225,0.2);
+  border-color: #4e8ce1;
+  color: #4e8ce1;
+}
+
+/* Frame counter */
+.frame-counter { display: none; }
+
+@media (max-width: 480px) {
+  #floor-selector { top: 0.6rem; }
+  #spin-btn { font-size: 0.8rem; padding: 0.55rem 1.1rem; }
+}

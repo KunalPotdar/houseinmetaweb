@@ -33,23 +33,26 @@ const CONFIG = {
 };
 // ─────────────────────────────────────────────
 
+// ── Per-floor image state ──────────────────────
+// All floors are loaded simultaneously; switching just changes the active set.
+const floorImages = FLOORS.map(() => []);    // floorImages[fi][frameIdx] = HTMLImageElement
+const floorLoaded = FLOORS.map(() => 0);     // loaded frame count per floor
+const floorReady  = FLOORS.map(() => false); // true once >= preloadCount frames are loaded
+
+// ── Viewer state ──────────────────────────────
 let currentFloor  = 0;
-let loadGeneration = 0;
 let currentFrame  = 0;
-let images        = [];
-let loaded        = 0;
-let isReady       = false;
 let autoSpin      = false;
 let spinRafId     = null;
 let spinLastTime  = null;
 let spinProgress  = 0;   // fractional frame accumulator
 
-// Priority preloader state
-let toLoadList    = [];  // [{index, priority}] sorted highest-priority first
-let loadedList    = {};  // path → HTMLImageElement cache
-let currentLoading = 0; // number of in-flight requests
+// ── Global image cache & loading queue ────────
+const imageCache  = {};  // URL → HTMLImageElement (shared across all floors)
+let   loadQueue   = [];  // [{floorIdx, frameIdx, path, priority}]
+let   activeLoads = 0;   // number of in-flight requests
 
-// Drag / pan state
+// ── Drag / pan state ──────────────────────────
 let isDragging = false;
 let dragStartX = 0;
 let dragStartY = 0;
@@ -72,6 +75,15 @@ const spinBtn      = document.getElementById('spin-btn');
 const frameCounter = document.getElementById('frame-counter');
 const container    = document.getElementById('spin-container');
 const floorBtns    = document.querySelectorAll('.floor-btn');
+const polyCanvas   = document.getElementById('poly-canvas');
+const polyCtx      = polyCanvas.getContext('2d');
+
+// ── Polygon overlay data (Floor 4) ────────────
+let polyData        = null;
+let currentPolyPath = null;  // Path2D for hit-testing
+
+// ── DOM ref ───────────────────────────────────
+const aptWidget = document.getElementById('apt-widget');
 
 // ── Helpers ──────────────────────────────────
 
@@ -83,26 +95,31 @@ function frameSrc(index, floor) {
 function showFrame(index) {
   const total = FLOORS[currentFloor].totalFrames;
   currentFrame = ((index % total) + total) % total;
-  if (images[currentFrame] && images[currentFrame].complete) {
-    spinImg.src = images[currentFrame].src;
+  const img = floorImages[currentFloor][currentFrame];
+  if (img && img.complete) {
+    spinImg.src = img.src;
   }
   frameCounter.textContent = `${currentFrame + 1} / ${total}`;
+  drawPolygon();
 }
 
-function onFrameLoaded(gen) {
-  if (gen !== loadGeneration) return; // stale callback from previous floor
-  loaded++;
-
-  if (!isReady && loaded >= CONFIG.preloadCount) {
-    isReady = true;
-    showFrame(currentFrame);
+function onFrameLoaded(floorIdx) {
+  floorLoaded[floorIdx]++;
+  if (!floorReady[floorIdx] && floorLoaded[floorIdx] >= CONFIG.preloadCount) {
+    floorReady[floorIdx] = true;
+    // If this is the currently active floor, reveal the viewer
+    if (floorIdx === currentFloor) {
+      showFrame(currentFrame);
+    }
   }
 }
 
 // ── Zoom helpers ──────────────────────────────────
 
 function applyTransform() {
-  spinImg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+  const t = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+  spinImg.style.transform    = t;
+  polyCanvas.style.transform = t;
 }
 
 function clampPan() {
@@ -130,106 +147,104 @@ function resetZoom() {
   applyTransform();
 }
 
-// ── Priority-based preloader ─────────────────
+// ── Priority-based loader ─────────────────────
 
-function refreshPriorities(pivot) {
-  const total = FLOORS[currentFloor].totalFrames;
-  toLoadList.forEach(item => {
-    // higher value = closer to pivot (matches reference _refreshPriorities)
-    item.priority = Math.abs(total / 2 - Math.abs(item.index - pivot));
-  });
-  toLoadList.sort((a, b) => b.priority - a.priority);
-}
+function launchLoad() {
+  while (activeLoads < CONFIG.concurrentLoads && loadQueue.length > 0) {
+    const item = loadQueue.shift();
 
-function launchPreload(gen) {
-  if (gen !== loadGeneration) return;
-  if (toLoadList.length === 0) return;
-  if (currentLoading >= CONFIG.concurrentLoads) return;
+    // Already cached — count it immediately and continue
+    if (imageCache[item.path]) {
+      floorImages[item.floorIdx][item.frameIdx] = imageCache[item.path];
+      onFrameLoaded(item.floorIdx);
+      continue;
+    }
 
-  const item = toLoadList.shift();
-  if (!item) return;
+    // Already has an in-flight Image element — skip (onload will handle it)
+    if (floorImages[item.floorIdx][item.frameIdx]) continue;
 
-  // Already cached from a previous load of the same floor
-  if (loadedList[item.path]) {
-    images[item.index] = loadedList[item.path];
-    onFrameLoaded(gen);
-    launchPreload(gen);
-    return;
+    activeLoads++;
+    const img = new Image();
+    img.onload = () => {
+      activeLoads--;
+      imageCache[item.path] = img;
+      floorImages[item.floorIdx][item.frameIdx] = img;
+      onFrameLoaded(item.floorIdx);
+      launchLoad();
+    };
+    img.onerror = () => {
+      activeLoads--;
+      onFrameLoaded(item.floorIdx);
+      launchLoad();
+    };
+    img.src = item.path;
+    floorImages[item.floorIdx][item.frameIdx] = img; // expose ref so showFrame can check .complete
   }
-
-  currentLoading++;
-  const img = new Image();
-  img.onload = () => {
-    if (gen !== loadGeneration) return; // stale — floor switched
-    currentLoading--;
-    loadedList[item.path] = img;
-    images[item.index]    = img;
-    onFrameLoaded(gen);
-    launchPreload(gen);
-  };
-  img.onerror = () => {
-    if (gen !== loadGeneration) return;
-    currentLoading--;
-    onFrameLoaded(gen);
-    launchPreload(gen);
-  };
-  img.src = item.path;
-  images[item.index] = img; // expose ref so showFrame can check .complete
 }
 
 function reprioritize(pivot) {
-  if (toLoadList.length === 0) return;
-  refreshPriorities(pivot);
-  // Fill any free slots that opened up
-  const free = CONFIG.concurrentLoads - currentLoading;
-  for (let i = 0; i < free; i++) launchPreload(loadGeneration);
+  // Boost current-floor frames nearest to the current drag position
+  const total = FLOORS[currentFloor].totalFrames;
+  loadQueue.forEach(item => {
+    if (item.floorIdx === currentFloor) {
+      item.priority = 2000 + Math.abs(total / 2 - Math.abs(item.frameIdx - pivot));
+    }
+  });
+  loadQueue.sort((a, b) => b.priority - a.priority);
+  launchLoad();
 }
 
-function preloadAll() {
-  const floor = FLOORS[currentFloor];
-  const total = floor.totalFrames;
-  const gen   = loadGeneration;
-
-  // Build the pending queue (skip frames already in cache)
-  toLoadList = [];
-  for (let i = 0; i < total; i++) {
-    const path = frameSrc(i, floor);
-    if (!loadedList[path]) {
-      toLoadList.push({ index: i, path, priority: 0 });
-    } else {
-      images[i] = loadedList[path];
-      onFrameLoaded(gen); // count cached frames toward the ready threshold
+function preloadAllFloors() {
+  loadQueue = [];
+  for (let fi = 0; fi < FLOORS.length; fi++) {
+    const floor = FLOORS[fi];
+    for (let i = 0; i < floor.totalFrames; i++) {
+      const path = frameSrc(i, floor);
+      if (imageCache[path]) {
+        // Already in cache (e.g. page revisit)
+        floorImages[fi][i] = imageCache[path];
+        onFrameLoaded(fi);
+      } else if (!floorImages[fi][i]) {
+        // Priority: active floor first, early frames higher within active floor
+        let priority;
+        if (fi === currentFloor) {
+          priority = 1000 + (i < CONFIG.preloadCount ? 500 : 0) - i;
+        } else {
+          // Background floors load after the active floor is ready
+          priority = 100 - fi * 10 - i;
+        }
+        loadQueue.push({ floorIdx: fi, frameIdx: i, path, priority });
+      }
     }
   }
-
-  refreshPriorities(currentFrame);
-
-  // Launch up to concurrentLoads workers in parallel
-  for (let t = 0; t < CONFIG.concurrentLoads; t++) launchPreload(gen);
+  loadQueue.sort((a, b) => b.priority - a.priority);
+  launchLoad();
 }
 
 // ── Floor switching ───────────────────────────
 
 function switchFloor(floorIndex) {
-  if (floorIndex === currentFloor && isReady) return;
+  if (floorIndex === currentFloor) return;
   currentFloor = floorIndex;
+  drawPolygon(); // clear or redraw immediately for the new floor
 
   // Update button states
   floorBtns.forEach((btn, i) => btn.classList.toggle('active', i === floorIndex));
 
-  // Reset viewer
   stopSpin();
   resetZoom();
-  isReady        = false;
-  loaded         = 0;
-  images         = [];
-  loadGeneration++;
-  toLoadList     = [];
-  currentLoading = 0;
-  // Note: loadedList is intentionally kept — cross-floor cache is not shared
-  // because URLs differ per floor, so it acts as a no-op deduplication guard.
 
-  preloadAll();
+  // Boost this floor's pending queue items to the top
+  loadQueue.forEach(item => {
+    if (item.floorIdx === floorIndex) item.priority += 2000;
+  });
+  loadQueue.sort((a, b) => b.priority - a.priority);
+  launchLoad();
+
+  // If already ready, show immediately; otherwise onFrameLoaded will reveal it
+  if (floorReady[floorIndex]) {
+    showFrame(currentFrame);
+  }
 }
 
 floorBtns.forEach((btn) => {
@@ -284,7 +299,7 @@ container.addEventListener('pointerdown', (e) => {
   container.setPointerCapture(e.pointerId);
 
   if (activePointers.size === 1) {
-    if (!isReady) return;
+    if (!floorReady[currentFloor]) return;
     isDragging = true;
     didDrag    = false;
     dragStartX = e.clientX;
@@ -377,6 +392,132 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') { stopSpin(); showFrame(currentFrame + 1); reprioritize(currentFrame); }
 });
 
+// ── Polygon overlay ─────────────────────────
+
+function resizeCanvas() {
+  polyCanvas.width  = container.clientWidth;
+  polyCanvas.height = container.clientHeight;
+  drawPolygon();
+}
+
+function drawPolygon() {
+  polyCtx.clearRect(0, 0, polyCanvas.width, polyCanvas.height);
+  currentPolyPath = null;
+
+  // Only draw on Floor 4
+  if (currentFloor !== 4 || !polyData) return;
+
+  // JSON keys are 1-based (frame 1 = index 0)
+  const frameKey = String(currentFrame + 1);
+  const points   = polyData[frameKey];
+  if (!points || points.length < 3) return;
+
+  // Need the image's natural dimensions to map coordinates
+  const img = floorImages[currentFloor][currentFrame];
+  if (!img || !img.naturalWidth) return;
+
+  const cw = polyCanvas.width;
+  const ch = polyCanvas.height;
+  const iw = img.naturalWidth;
+  const ih = img.naturalHeight;
+
+  // Map image-space coords → canvas coords (object-fit: contain)
+  const scale   = Math.min(cw / iw, ch / ih);
+  const offsetX = (cw - iw * scale) / 2;
+  const offsetY = (ch - ih * scale) / 2;
+
+  const path = new Path2D();
+  points.forEach((pt, i) => {
+    const cx = offsetX + pt.x * scale;
+    const cy = offsetY + pt.y * scale;
+    if (i === 0) path.moveTo(cx, cy);
+    else         path.lineTo(cx, cy);
+  });
+  path.closePath();
+  currentPolyPath = path;
+
+  polyCtx.fillStyle   = 'rgba(30, 100, 220, 0.35)';
+  polyCtx.fill(path);
+  polyCtx.strokeStyle = 'rgba(50, 140, 255, 0.85)';
+  polyCtx.lineWidth   = 2;
+  polyCtx.stroke(path);
+}
+
+// ── Apartment widget ────────────────────────
+
+function showWidget(screenX, screenY) {
+  aptWidget.classList.remove('hidden');
+  const ww = aptWidget.offsetWidth  || 210;
+  const wh = aptWidget.offsetHeight || 165;
+  let left = screenX + 16;
+  let top  = screenY - Math.round(wh / 2);
+  if (left + ww > window.innerWidth  - 8) left = screenX - ww - 16;
+  if (top  < 8)                           top  = 8;
+  if (top  + wh > window.innerHeight - 8) top  = window.innerHeight - wh - 8;
+  aptWidget.style.left = left + 'px';
+  aptWidget.style.top  = top  + 'px';
+}
+
+function hideWidget() {
+  aptWidget.classList.add('hidden');
+}
+
+document.getElementById('apt-widget-close').addEventListener('click', hideWidget);
+
+container.addEventListener('click', (e) => {
+  if (e.target.closest('#floor-selector')) return;
+  if (didDrag) return;
+  if (currentFloor !== 4 || !currentPolyPath) { hideWidget(); return; }
+
+  // Convert screen coords → canvas pixel coords (undo CSS transform)
+  const rect = container.getBoundingClientRect();
+  const cw   = polyCanvas.width;
+  const ch   = polyCanvas.height;
+  const sx   = e.clientX - rect.left;
+  const sy   = e.clientY - rect.top;
+  const cx   = (sx - panX - cw / 2) / zoomScale + cw / 2;
+  const cy   = (sy - panY - ch / 2) / zoomScale + ch / 2;
+
+  if (polyCtx.isPointInPath(currentPolyPath, cx, cy)) {
+    showWidget(e.clientX, e.clientY);
+  } else {
+    hideWidget();
+  }
+});
+
+// ── Cursor: pointer when hovering the polygon on Floor 4 ──
+container.addEventListener('pointermove', (e) => {
+  if (activePointers.size !== 1 || !isDragging) {
+    if (currentFloor === 4 && currentPolyPath) {
+      const rect = container.getBoundingClientRect();
+      const cw   = polyCanvas.width;
+      const ch   = polyCanvas.height;
+      const sx   = e.clientX - rect.left;
+      const sy   = e.clientY - rect.top;
+      const cx   = (sx - panX - cw / 2) / zoomScale + cw / 2;
+      const cy   = (sy - panY - ch / 2) / zoomScale + ch / 2;
+      container.style.cursor = polyCtx.isPointInPath(currentPolyPath, cx, cy)
+        ? 'pointer' : '';
+    } else {
+      container.style.cursor = '';
+    }
+  }
+}, { passive: true });
+
+async function loadPolyData() {
+  try {
+    const res  = await fetch('poly_projections.json');
+    polyData   = await res.json();
+    drawPolygon();
+  } catch (e) {
+    console.warn('Could not load poly_projections.json', e);
+  }
+}
+
+window.addEventListener('resize', resizeCanvas);
+
 // ── Start ────────────────────────────────────
 
-preloadAll();
+resizeCanvas();
+loadPolyData();
+preloadAllFloors();

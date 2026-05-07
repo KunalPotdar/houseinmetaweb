@@ -33,6 +33,18 @@ body {
   filter: brightness(1.25);
 }
 
+#poly-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: center center;
+  z-index: 5;
+}
+
 /* ── FLOOR SELECTOR ── */
 #floor-selector {
   position: absolute;
@@ -114,7 +126,92 @@ body {
 /* Frame counter */
 .frame-counter { display: none; }
 
+/* ── APARTMENT WIDGET ── */
+.apt-widget {
+  position: fixed;
+  z-index: 100;
+  min-width: 210px;
+  background: rgba(12, 18, 32, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(78, 140, 225, 0.45);
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem 1rem;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  pointer-events: auto;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.apt-widget.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+}
+.apt-widget-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.apt-widget-close:hover { color: #fff; }
+.apt-widget-name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.25rem;
+  padding-right: 1.4rem;
+}
+.apt-widget-surface {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 0.85rem;
+}
+.apt-widget-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.apt-widget-btn {
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(78,140,225,0.5);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.apt-widget-btn--2d {
+  background: rgba(78,140,225,0.18);
+  color: #90bfff;
+}
+.apt-widget-btn--2d:hover {
+  background: rgba(78,140,225,0.38);
+  border-color: #4e8ce1;
+  color: #fff;
+}
+.apt-widget-btn--3d {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.8);
+}
+.apt-widget-btn--3d:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
+}
+
 @media (max-width: 480px) {
   #floor-selector { top: 0.6rem; }
   #spin-btn { font-size: 0.8rem; padding: 0.55rem 1.1rem; }
+  .apt-widget { min-width: 180px; }
 }

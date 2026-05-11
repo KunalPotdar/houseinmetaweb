@@ -29,13 +29,13 @@ const translations = {
     
     // Solutions
     'solutions.title': 'Our Solutions',
-    'solutions.configurator.title': '3D Real Estate Configurator',
-    'solutions.configurator.desc': 'Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.',
-    'solutions.exteriors.title': '3D Exteriors',
-    'solutions.exteriors.desc': 'Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.',
+    'solutions.configurator.title': 'Orbital 3D Model',
+    'solutions.configurator.desc': 'An immersive interactive experience to explore your real estate project from aerial and street-level views, with smooth navigation, floor-level visualization and integrated sales tools.',
+    'solutions.exteriors.title': '3D Home Catalogue',
+    'solutions.exteriors.desc': 'Transform static brochures into interactive 3D virtual homes that real estate agents can showcase anytime, anywhere.',
     'solutions.walkthroughs.title': '3D Immersive Walkthroughs',
     'solutions.walkthroughs.desc': 'Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.',
-    'solutions.onlineservices.title': '3D Online Services',
+    'solutions.onlineservices.title': 'My Home in 3D',
     'solutions.onlineservices.desc': 'Transform your 2D floor plans to real life walkthrough experiences on our platform.',
     
     // Blog
@@ -178,8 +178,8 @@ const translations = {
     
     // Solutions
     'solutions.title': 'Nos Solutions',
-    'solutions.configurator.title': 'Configurateur Immobilier 3D',
-    'solutions.configurator.desc': 'Donnez à vos clients des outils de configuration 3D en temps réel. Personnalisez les matériaux, les couleurs et les fonctionnalités pour visualiser instantanément l\'espace de leurs rêves.',
+    'solutions.configurator.title': 'Maquette Orbitale 3D',
+    'solutions.configurator.desc': 'Une expérience interactive immersive permettant d\'explorer votre projet immobilier en vue aérienne et piétonne, avec navigation fluide, visualisation des niveaux et outils d\'aide à la vente intégrés.',
     'solutions.exteriors.title': 'Catalogue Maison 3D',
     'solutions.exteriors.desc': 'Transformez des brochures statiques en maisons virtuelles 3D interactives que les agents immobiliers peuvent présenter à tout moment, partout.',
     'solutions.walkthroughs.title': 'Visites Immersives 3D',

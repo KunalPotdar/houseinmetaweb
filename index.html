@@ -402,8 +402,15 @@
       }
       
       /* Solutions section */
-      #solutions > div[style*="flex:3"] {
-        padding: 2rem 1.5rem !important;
+      #solutions .solutions-grid {
+        grid-template-columns: 1fr !important;
+      }
+      #solutions .solutions-grid > div[style*="grid-column"] {
+        flex-direction: column !important;
+      }
+      #solutions .solutions-grid > div[style*="grid-column"] img {
+        width: 100% !important;
+        height: 180px !important;
       }
       
       /* Image clip paths - remove on mobile for better display */
@@ -433,24 +440,6 @@
       #blog .card p {
         font-size: 0.9rem !important;
         line-height: 1.4 !important;
-      }
-      
-      /* Projects section - image fit on mobile */
-      #projects .card img {
-        height: 200px !important;
-        object-fit: cover !important;
-      }
-      
-      #projects .card {
-        min-height: auto !important;
-      }
-      
-      #projects .card h3 {
-        font-size: 1.2rem !important;
-      }
-      
-      #projects .card p {
-        font-size: 0.9rem !important;
       }
       
       /* Contact section */
@@ -586,7 +575,6 @@
         <nav style="mix-blend-mode:difference;display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-start">
           <a href="#home" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.home">Home</a>
           <a href="#solutions" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.solutions">Solutions</a>
-          <a href="#projects" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.projects">Projects</a>
           <a href="#blog" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.blog">Blog</a>
           <a href="#about" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.about">About</a>
           <a href="#contact" style="color:white;text-decoration:none;font-size:1rem;margin:0 1.5rem;font-weight:500;letter-spacing:0.5px" data-i18n="nav.contact">Free Demo</a>
@@ -667,40 +655,56 @@
       </div>
     </section>
 
-      <section id="solutions" class="card" style="margin-bottom:4rem;padding:0;display:flex;min-height:600px;overflow:hidden">
-        <!-- Left side image -->
-        <div style="flex:0 0 50%;position:relative;background:linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0))">
-          <img src="/assets/images/aex-3.png"
-               alt="Solutions Showcase"
-               style="width:100%;height:100%;object-fit:cover;object-position:center;clip-path:polygon(0 0, 100% 0, 90% 100%, 0 100%)" />
+      <!-- Lightbox Modal -->
+      <div id="sol-lightbox" onclick="closeSolLightbox()" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;cursor:zoom-out">
+        <div onclick="event.stopPropagation()" style="position:relative;max-width:90vw;max-height:90vh">
+          <button onclick="closeSolLightbox()" style="position:absolute;top:-2.2rem;right:0;background:none;border:none;color:white;font-size:2rem;line-height:1;cursor:pointer;padding:0" aria-label="Close">&times;</button>
+          <img id="sol-lightbox-img" src="" alt="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.6);display:block" />
+          <p id="sol-lightbox-caption" style="color:white;text-align:center;margin-top:0.8rem;font-size:1.1rem;font-weight:500"></p>
         </div>
+      </div>
+      <script>
+        function openSolLightbox(src, caption) {
+          var lb = document.getElementById('sol-lightbox');
+          document.getElementById('sol-lightbox-img').src = src;
+          document.getElementById('sol-lightbox-caption').textContent = caption;
+          lb.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        }
+        function closeSolLightbox() {
+          document.getElementById('sol-lightbox').style.display = 'none';
+          document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') closeSolLightbox();
+        });
+      </script>
 
-        <!-- Right side content -->
-        <div style="flex:3;padding:3rem 6rem;display:flex;flex-direction:column;justify-content:center">
-          <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="solutions.title">Our Solutions</h2>
-          <div style="display:flex;flex-direction:column;gap:1.2rem">
-            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.configurator.title">3D Real Estate Configurator</h3>
-              <p class="muted" style="margin-bottom:0" data-i18n="solutions.configurator.desc">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
+      <section id="solutions" class="card" style="margin-bottom:4rem;padding:3rem 4rem">
+          <h2 style="font-size:2.5rem;margin:0 0 2rem;text-align:center" data-i18n="solutions.title">Our Solutions</h2>
+          <div class="solutions-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem">
+            <div style="grid-column:1/-1;padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease;display:flex;align-items:center;gap:2rem;cursor:pointer" onclick="openSolLightbox('/assets/images/Maquette3D.png','Maquette Orbitale 3D')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+              <img src="/assets/images/Maquette3D.png" alt="Maquette Orbitale 3D" style="width:260px;height:180px;object-fit:cover;border-radius:10px;flex-shrink:0" />
+              <div>
+                <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.configurator.title">3D Real Estate Configurator</h3>
+                <p class="muted" style="margin-bottom:0" data-i18n="solutions.configurator.desc">Empower clients with real-time 3D configuration tools. Customize materials, colors, and features to visualize their dream space instantly.</p>
+              </div>
             </div>
-            
-            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.exteriors.title">3D Exteriors</h3>
-              <p class="muted" style="margin-bottom:0" data-i18n="solutions.exteriors.desc">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
+            <div style="grid-column:1/-1;padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease;display:flex;align-items:center;gap:2rem;cursor:pointer" onclick="openSolLightbox('/assets/images/CatalogMaison3D.png','Catalogue Maison 3D')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+              <img src="/assets/images/CatalogMaison3D.png" alt="Catalogue Maison 3D" style="width:260px;height:180px;object-fit:cover;border-radius:10px;flex-shrink:0" />
+              <div>
+                <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.exteriors.title">3D Exteriors</h3>
+                <p class="muted" style="margin-bottom:0" data-i18n="solutions.exteriors.desc">Showcase properties with stunning 3D models and panoramic views. Let clients explore buildings and landscapes from any angle, directly in their browser.</p>
+              </div>
             </div>
-            
-            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.walkthroughs.title">3D Immersive Walkthroughs</h3>
-              <p class="muted" style="margin-bottom:0" data-i18n="solutions.walkthroughs.desc">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
-            </div>
-            
-            <div style="padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease" onmouseover="this.style.transform='translateX(10px)'" onmouseout="this.style.transform='translateX(0)'">
-              <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.onlineservices.title">3D Online Services</h3>
-              <p class="muted" style="margin-bottom:0.5rem" data-i18n="solutions.onlineservices.desc">Transform your 2D floor plans to real life walkthrough experiences on our platform.</p>
-              <a href="convert2DTo3D.html" style="display:inline-block;padding:0.5rem 1.2rem;background:white;color:black;text-decoration:none;font-size:0.95rem;font-weight:500;border-radius:4px;transition:all 0.2s ease" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Click Here</a>
+            <div style="grid-column:1/-1;padding:1.5rem;background:var(--accent);border-radius:12px;transition:transform 0.3s ease;display:flex;align-items:center;gap:2rem;cursor:pointer" onclick="openSolLightbox('/assets/images/VisitesImmersive3D.png','Visites Immersives 3D')" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+              <img src="/assets/images/VisitesImmersive3D.png" alt="Visites Immersives 3D" style="width:260px;height:180px;object-fit:cover;border-radius:10px;flex-shrink:0" />
+              <div>
+                <h3 style="margin-top:0;font-size:1.4rem" data-i18n="solutions.walkthroughs.title">3D Immersive Walkthroughs</h3>
+                <p class="muted" style="margin-bottom:0" data-i18n="solutions.walkthroughs.desc">Guide potential buyers through lifelike interior spaces with dynamic lighting and materials. Perfect for remote viewings and pre-construction sales.</p>
+              </div>
             </div>
           </div>
-        </div>
       </section>
 
       <section id="blog" class="card" style="margin-bottom:4rem">
@@ -738,31 +742,6 @@
             <div style="margin-top:1rem;font-size:0.9rem;color:var(--accent)">Lire la suite</div>
           </div>
         </a>
-      </section>
-
-      <section id="projects" class="card" style="margin-bottom:4rem">
-      <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="projects.title">Our Featured Customer Story</h2>
-      <p class="muted" style="margin-bottom:2rem" data-i18n="projects.subtitle">Real results from our immersive 3D solutions</p>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem">
-        
-        <!-- Highlighted Project with Thumbnail -->
-        <a href="clients/Aashirwad/main-ext.html" style="text-decoration:none;color:inherit;">
-          <div class="card" style="background:var(--accent);border:2px solid rgb(34, 34, 34);
-              box-shadow:0 8px 24px rgba(0,0,0,0.15);transform:scale(1.02);
-              transition:transform 0.3s,box-shadow 0.3s;cursor:pointer;
-              overflow:hidden;border-radius:12px;">
-            <img src="/assets/images/marathin.png" 
-                alt="Aashirwad Project Thumbnail" 
-                style="width:100%;height:400px;object-fit:cover;">
-            <div style="padding:1rem;">
-              <h3 data-i18n="projects.featured.title">Premium Property Showcase</h3>
-              <p class="muted" data-i18n="projects.featured.desc">Interactive 3D exterior and interior customization platform for high-end residential properties.</p>
-              <div style="margin-top:0.5rem;color:rgb(255, 253, 253);font-weight:500;" data-i18n="projects.view">View Project</div>
-            </div>
-          </div>
-        </a>
-
       </section>
 
       <section id="about" class="card" style="margin-bottom:4rem">

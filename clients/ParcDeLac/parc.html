@@ -8,18 +8,54 @@
 </head>
 <body>
 
+  <!-- LOADING OVERLAY -->
+  <div id="loading-overlay">
+    <div class="loading-card">
+      <img class="loading-logo" src="../../assets/images/logo.png" alt="HouseInMeta" />
+      <div class="loading-title">HouseInMeta</div>
+      <div class="loading-subtitle">Parc de Lac &mdash; 360° View</div>
+      <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loading-bar"></div>
+      </div>
+      <div class="loading-status" id="loading-status">Loading&hellip;</div>
+      <div class="loading-powered">Powered by <strong>HouseInMeta</strong></div>
+    </div>
+  </div>
+
   <!-- VIEWER -->
   <div id="spin-container">
     <img id="spin-img" src="" alt="Maison M2 360° view" draggable="false" />
     <canvas id="poly-canvas"></canvas>
 
+    <!-- Compass -->
+    <div id="compass">
+      <svg id="compass-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="40" cy="40" r="36" fill="rgba(42,42,42,0.88)" stroke="rgba(78,140,225,0.35)" stroke-width="1.5"/>
+        <!-- Cardinal labels -->
+        <text x="40" y="11" text-anchor="middle" fill="#4e8ce1" font-size="9" font-family="Segoe UI,sans-serif" font-weight="700">N</text>
+        <text x="40" y="73" text-anchor="middle" fill="rgba(224,224,224,0.5)" font-size="8" font-family="Segoe UI,sans-serif">S</text>
+        <text x="70" y="44" text-anchor="middle" fill="rgba(224,224,224,0.5)" font-size="8" font-family="Segoe UI,sans-serif">E</text>
+        <text x="10" y="44" text-anchor="middle" fill="rgba(224,224,224,0.5)" font-size="8" font-family="Segoe UI,sans-serif">W</text>
+        <!-- Needle group (rotated by JS) -->
+        <g id="compass-needle" transform="rotate(0 40 40)">
+          <!-- North tip (red) -->
+          <polygon points="40,16 37,40 43,40" fill="#e05555"/>
+          <!-- South tip (light) -->
+          <polygon points="40,64 37,40 43,40" fill="rgba(224,224,224,0.35)"/>
+          <!-- Center dot -->
+          <circle cx="40" cy="40" r="3" fill="rgba(42,42,42,1)" stroke="rgba(78,140,225,0.6)" stroke-width="1"/>
+        </g>
+      </svg>
+    </div>
+
     <!-- Floor selector -->
     <div id="floor-selector">
       <button class="floor-btn active" data-floor="0">Aerial</button>
-      <button class="floor-btn" data-floor="1">Floor 1</button>
-      <button class="floor-btn" data-floor="2">Floor 2</button>
-      <button class="floor-btn" data-floor="3">Floor 3</button>
-      <button class="floor-btn" data-floor="4">Floor 4</button>
+      <button class="floor-btn" data-floor="4">R+3</button>
+      <button class="floor-btn" data-floor="3">R+2</button>
+      <button class="floor-btn" data-floor="2">R+1</button>
+      <button class="floor-btn" data-floor="1">RDC</button>
     </div>
 
   </div>
@@ -33,12 +69,6 @@
       <button class="apt-widget-btn apt-widget-btn--2d">View 2D Plan</button>
       <button class="apt-widget-btn apt-widget-btn--3d">3D Walkthrough</button>
     </div>
-  </div>
-
-  <!-- BOTTOM BAR -->
-  <div class="bottom-bar">
-    <button id="spin-btn">⟳ Auto</button>
-    <span class="frame-counter" id="frame-counter">1 / 1</span>
   </div>
 
   <script src="parc.js"></script>

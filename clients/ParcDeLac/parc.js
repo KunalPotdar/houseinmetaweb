@@ -26,10 +26,10 @@ const CONFIG = {
   spinDuration: 18000,
 
   // Number of frames to preload before showing the viewer
-  preloadCount: 36,
+  preloadCount: 8,
 
-  // Max simultaneous image fetches (configurable thread count)
-  concurrentLoads: 3,
+  // Max simultaneous image fetches — HTTP/2 (S3) handles high concurrency well
+  concurrentLoads: 8,
 };
 // ─────────────────────────────────────────────
 
@@ -77,6 +77,10 @@ const container    = document.getElementById('spin-container');
 const floorBtns    = document.querySelectorAll('.floor-btn');
 const polyCanvas   = document.getElementById('poly-canvas');
 const polyCtx      = polyCanvas.getContext('2d');
+const compassNeedle  = document.getElementById('compass-needle');
+const loadingOverlay = document.getElementById('loading-overlay');
+const loadingBar     = document.getElementById('loading-bar');
+const loadingStatus  = document.getElementById('loading-status');
 
 // ── Polygon overlay data (Floor 4) ────────────
 let polyData        = null;
@@ -99,17 +103,38 @@ function showFrame(index) {
   if (img && img.complete) {
     spinImg.src = img.src;
   }
-  frameCounter.textContent = `${currentFrame + 1} / ${total}`;
   drawPolygon();
+  // Rotate compass needle opposite to spin direction
+  const deg = -(currentFrame / total) * 360;
+  compassNeedle.setAttribute('transform', `rotate(${deg} 40 40)`);
+}
+
+function showLoadingOverlay(pct) {
+  loadingBar.style.width = pct + '%';
+  loadingStatus.textContent = pct >= 100 ? 'Ready' : `Loading… ${pct}%`;
+  loadingOverlay.classList.remove('hidden');
+}
+
+function hideLoadingOverlay() {
+  loadingBar.style.width = '100%';
+  loadingStatus.textContent = 'Ready';
+  setTimeout(() => loadingOverlay.classList.add('hidden'), 400);
 }
 
 function onFrameLoaded(floorIdx) {
   floorLoaded[floorIdx]++;
+  // Update loading progress bar for the active floor
+  if (floorIdx === currentFloor && !floorReady[floorIdx]) {
+    const pct = Math.min(100, Math.round(floorLoaded[floorIdx] / CONFIG.preloadCount * 100));
+    loadingBar.style.width = pct + '%';
+    loadingStatus.textContent = `Loading… ${pct}%`;
+  }
   if (!floorReady[floorIdx] && floorLoaded[floorIdx] >= CONFIG.preloadCount) {
     floorReady[floorIdx] = true;
     // If this is the currently active floor, reveal the viewer
     if (floorIdx === currentFloor) {
       showFrame(currentFrame);
+      hideLoadingOverlay();
     }
   }
 }
@@ -165,20 +190,22 @@ function launchLoad() {
 
     activeLoads++;
     const img = new Image();
-    img.onload = () => {
-      activeLoads--;
-      imageCache[item.path] = img;
-      floorImages[item.floorIdx][item.frameIdx] = img;
-      onFrameLoaded(item.floorIdx);
-      launchLoad();
-    };
-    img.onerror = () => {
-      activeLoads--;
-      onFrameLoaded(item.floorIdx);
-      launchLoad();
-    };
     img.src = item.path;
-    floorImages[item.floorIdx][item.frameIdx] = img; // expose ref so showFrame can check .complete
+    floorImages[item.floorIdx][item.frameIdx] = img;
+
+    // img.decode() waits for decode off the main thread; falls back to onload on older browsers
+    (img.decode ? img.decode() : new Promise((res, rej) => { img.onload = res; img.onerror = rej; }))
+      .then(() => {
+        activeLoads--;
+        imageCache[item.path] = img;
+        onFrameLoaded(item.floorIdx);
+        launchLoad();
+      })
+      .catch(() => {
+        activeLoads--;
+        onFrameLoaded(item.floorIdx);
+        launchLoad();
+      });
   }
 }
 
@@ -229,7 +256,7 @@ function switchFloor(floorIndex) {
   drawPolygon(); // clear or redraw immediately for the new floor
 
   // Update button states
-  floorBtns.forEach((btn, i) => btn.classList.toggle('active', i === floorIndex));
+  floorBtns.forEach(btn => btn.classList.toggle('active', parseInt(btn.dataset.floor) === floorIndex));
 
   stopSpin();
   resetZoom();
@@ -241,7 +268,7 @@ function switchFloor(floorIndex) {
   loadQueue.sort((a, b) => b.priority - a.priority);
   launchLoad();
 
-  // If already ready, show immediately; otherwise onFrameLoaded will reveal it
+  // If already ready, show immediately; otherwise wait silently for onFrameLoaded
   if (floorReady[floorIndex]) {
     showFrame(currentFrame);
   }
@@ -275,19 +302,17 @@ function startSpin() {
   spinLastTime = null;
   spinProgress = 0;
   spinRafId = requestAnimationFrame(spinStep);
-  spinBtn.classList.add('active');
-  spinBtn.textContent = '⏸ Stop';
+  if (spinBtn) { spinBtn.classList.add('active'); spinBtn.textContent = '⏸ Stop'; }
 }
 
 function stopSpin() {
   if (spinRafId) { cancelAnimationFrame(spinRafId); spinRafId = null; }
   spinLastTime = null;
   autoSpin = false;
-  spinBtn.classList.remove('active');
-  spinBtn.textContent = '⟳ Auto';
+  if (spinBtn) { spinBtn.classList.remove('active'); spinBtn.textContent = '⟳ Auto'; }
 }
 
-spinBtn.addEventListener('click', () => {
+if (spinBtn) spinBtn.addEventListener('click', () => {
   autoSpin ? stopSpin() : startSpin();
 });
 

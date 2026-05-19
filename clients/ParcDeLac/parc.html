@@ -66,8 +66,54 @@
     <div class="apt-widget-name">Apartment 202</div>
     <div class="apt-widget-surface">Surface&nbsp;85 m²</div>
     <div class="apt-widget-actions">
-      <button class="apt-widget-btn apt-widget-btn--2d">View 2D Plan</button>
-      <button class="apt-widget-btn apt-widget-btn--3d">3D Walkthrough</button>
+      <button class="apt-widget-btn apt-widget-btn--2d">Vue 2D</button>
+      <button class="apt-widget-btn apt-widget-btn--3d">Vue 3D</button>
+      <button class="apt-widget-btn apt-widget-btn--rt">Visite 3D Temps R&eacute;el</button>
+    </div>
+  </div>
+
+  <!-- VISITE 3D TEMPS RÉEL MODAL -->
+  <div id="visitert-modal" class="plan2d-modal hidden">
+    <div class="plan2d-backdrop" id="visitert-backdrop"></div>
+    <div class="plan2d-frame visitert-frame">
+      <button class="plan2d-close" id="visitert-close">&#10005;</button>
+      <div class="plan2d-title">Visite 3D Temps R&eacute;el &mdash; Appartement A202</div>
+      <iframe
+        id="visitert-iframe"
+        class="visitert-iframe"
+        src="about:blank"
+        allow="pointer-lock; fullscreen"
+        allowfullscreen
+        frameborder="0"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- 3D PLAN MODAL -->
+  <div id="plan3d-modal" class="plan2d-modal hidden">
+    <div class="plan2d-backdrop" id="plan3d-backdrop"></div>
+    <div class="plan2d-frame">
+      <button class="plan2d-close" id="plan3d-close">&#10005;</button>
+      <div class="plan2d-title">Vue 3D &mdash; Appartement A202</div>
+      <div class="plan2d-img-wrap">
+        <img class="plan2d-img" id="plan3d-img"
+             src="https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/Lot/3D+plan.jpg"
+             alt="Vue 3D A202" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 2D PLAN MODAL -->
+  <div id="plan2d-modal" class="plan2d-modal hidden">
+    <div class="plan2d-backdrop" id="plan2d-backdrop"></div>
+    <div class="plan2d-frame">
+      <button class="plan2d-close" id="plan2d-close">&#10005;</button>
+      <div class="plan2d-title">Plan 2D &mdash; Appartement A202</div>
+      <div class="plan2d-img-wrap">
+        <img class="plan2d-img" id="plan2d-img"
+             src="https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/Lot/2D+plan-A202.jpg"
+             alt="Plan 2D A202" />
+      </div>
     </div>
   </div>
 

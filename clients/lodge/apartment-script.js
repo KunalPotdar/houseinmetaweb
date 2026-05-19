@@ -164,7 +164,7 @@ const materialSettings = {
   roughness: 0.8             // Surface roughness (higher = more matte)
 };
 
-loader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/clients-hsm/bois.glb', (gltf) => {
+loader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/Lot/A202.glb', (gltf) => {
   console.log('Apartment model');
   const mesh = gltf.scene;
 

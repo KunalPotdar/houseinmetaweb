@@ -546,3 +546,49 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 loadPolyData();
 preloadAllFloors();
+
+// ── 2D Plan modal ─────────────────────────────
+const plan2dModal   = document.getElementById('plan2d-modal');
+const plan2dClose   = document.getElementById('plan2d-close');
+const plan2dBackdrop = document.getElementById('plan2d-backdrop');
+
+function openPlan2d() { plan2dModal.classList.remove('hidden'); }
+function closePlan2d() { plan2dModal.classList.add('hidden'); }
+
+document.querySelector('.apt-widget-btn--2d').addEventListener('click', openPlan2d);
+plan2dClose.addEventListener('click', closePlan2d);
+plan2dBackdrop.addEventListener('click', closePlan2d);
+
+// ── 3D Plan modal ─────────────────────────────
+const plan3dModal    = document.getElementById('plan3d-modal');
+const plan3dClose    = document.getElementById('plan3d-close');
+const plan3dBackdrop = document.getElementById('plan3d-backdrop');
+
+function openPlan3d() { plan3dModal.classList.remove('hidden'); }
+function closePlan3d() { plan3dModal.classList.add('hidden'); }
+
+document.querySelector('.apt-widget-btn--3d').addEventListener('click', openPlan3d);
+plan3dClose.addEventListener('click', closePlan3d);
+plan3dBackdrop.addEventListener('click', closePlan3d);
+
+// ── Visite 3D Temps Réel modal ─────────────────────
+const visiterTModal    = document.getElementById('visitert-modal');
+const visiterTClose    = document.getElementById('visitert-close');
+const visiterTBackdrop = document.getElementById('visitert-backdrop');
+const visiterTIframe   = document.getElementById('visitert-iframe');
+
+function openVisiterT() {
+  visiterTIframe.src = '../lodge/apartment_view.html';
+  visiterTModal.classList.remove('hidden');
+}
+function closeVisiterT() {
+  visiterTModal.classList.add('hidden');
+  // Reset src to stop the 3D engine when closed
+  visiterTIframe.src = 'about:blank';
+}
+
+document.querySelector('.apt-widget-btn--rt').addEventListener('click', openVisiterT);
+visiterTClose.addEventListener('click', closeVisiterT);
+visiterTBackdrop.addEventListener('click', closeVisiterT);
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePlan2d(); closePlan3d(); closeVisiterT(); } });

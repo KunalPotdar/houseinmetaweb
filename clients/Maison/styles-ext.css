@@ -51,16 +51,17 @@ body {
 /* Mobile styles (screen width 768px and below) */
 @media (max-width: 768px) {
   #floorPanel {
-    transform: scale(0.8); /* Reduce size */
-    top: 5px;
-    right: 5px;
-    padding: 5px;
+    left: auto;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px;
   }
 
   .floorBtn {
-    font-size: 12px;       /* Smaller text */
-    padding: 2px 4px;     /* Less padding */
-    margin: 3px 0;    
+    font-size: 14px;
+    padding: 10px 14px;
+    min-width: 60px;
   }
 }
 

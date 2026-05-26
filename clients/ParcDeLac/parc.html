@@ -117,6 +117,51 @@
     </div>
   </div>
 
+  <!-- CHATBOT TOGGLE BUTTON -->
+  <button id="chatbot-toggle" aria-label="Open apartment assistant">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="chatbot-toggle-badge"></span>
+  </button>
+
+  <!-- CHATBOT PANEL -->
+  <div id="chatbot-panel" class="chatbot-panel">
+    <div class="chatbot-header">
+      <div class="chatbot-header-info">
+        <div class="chatbot-avatar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3C6.5 3 2 6.58 2 11a7.86 7.86 0 0 0 2.1 5.26L2.05 21l5.06-1.7A11.1 11.1 0 0 0 12 19c5.5 0 10-3.58 10-8s-4.5-8-10-8z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="chatbot-title">Parc de Lac Assistant</div>
+          <div class="chatbot-status">&#x25cf;&nbsp;Online &middot; Apartment Expert</div>
+        </div>
+      </div>
+      <button class="chatbot-close-btn" id="chatbot-close">&#10005;</button>
+    </div>
+
+    <div class="chatbot-messages" id="chatbot-messages"></div>
+
+    <div class="chatbot-suggestions" id="chatbot-suggestions">
+      <button class="chatbot-chip">Available apartments</button>
+      <button class="chatbot-chip">3-room units</button>
+      <button class="chatbot-chip">Show prices</button>
+      <button class="chatbot-chip">Lake view</button>
+      <button class="chatbot-chip">Penthouse</button>
+    </div>
+
+    <div class="chatbot-input-row">
+      <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Ask about apartments&hellip;" autocomplete="off" />
+      <button id="chatbot-send" class="chatbot-send-btn" aria-label="Send">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <script src="parc.js"></script>
 </body>
 </html>

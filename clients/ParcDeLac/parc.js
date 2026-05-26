@@ -578,8 +578,7 @@ const visiterTBackdrop = document.getElementById('visitert-backdrop');
 const visiterTIframe   = document.getElementById('visitert-iframe');
 
 function openVisiterT() {
-  visiterTIframe.src = '../lodge/apartment_view.html';
-  visiterTModal.classList.remove('hidden');
+  window.location.href = 'visite-3d-temps-reel.html';
 }
 function closeVisiterT() {
   visiterTModal.classList.add('hidden');
@@ -591,4 +590,262 @@ document.querySelector('.apt-widget-btn--rt').addEventListener('click', openVisi
 visiterTClose.addEventListener('click', closeVisiterT);
 visiterTBackdrop.addEventListener('click', closeVisiterT);
 
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePlan2d(); closePlan3d(); closeVisiterT(); } });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closePlan2d();
+    closePlan3d();
+    closeVisiterT();
+    document.getElementById('chatbot-panel').classList.remove('chatbot-open');
+  }
+});
+
+// ── CHATBOT ─────────────────────────────────────────────────────────────────
+
+const CHAT_APARTMENTS = [
+  { id: 'A101', floor: 'RDC', rooms: 2, surface: 65,  price: 250000, status: 'available', view: 'Garden',          features: ['Parking', 'Storage'] },
+  { id: 'A102', floor: 'RDC', rooms: 3, surface: 88,  price: 320000, status: 'sold',      view: 'Garden',          features: ['Parking', 'Storage', 'Terrace'] },
+  { id: 'A201', floor: 'R+1', rooms: 2, surface: 65,  price: 270000, status: 'available', view: 'Lake',            features: ['Parking', 'Balcony'] },
+  { id: 'A202', floor: 'R+1', rooms: 3, surface: 85,  price: 355000, status: 'available', view: 'Lake',            features: ['Parking', 'Storage', 'Balcony'] },
+  { id: 'A301', floor: 'R+2', rooms: 2, surface: 65,  price: 285000, status: 'reserved',  view: 'Lake',            features: ['Parking', 'Balcony'] },
+  { id: 'A302', floor: 'R+2', rooms: 3, surface: 85,  price: 375000, status: 'available', view: 'Lake',            features: ['Parking', 'Storage', 'Balcony'] },
+  { id: 'A303', floor: 'R+2', rooms: 4, surface: 112, price: 460000, status: 'available', view: 'Panoramic',       features: ['Parking ×2', 'Storage', 'Balcony'] },
+  { id: 'A401', floor: 'R+3', rooms: 3, surface: 88,  price: 395000, status: 'available', view: 'Panoramic',       features: ['Parking', 'Storage', 'Terrace'] },
+  { id: 'A402', floor: 'R+3', rooms: 4, surface: 112, price: 490000, status: 'reserved',  view: 'Panoramic',       features: ['Parking ×2', 'Storage', 'Terrace'] },
+  { id: 'PH01', floor: 'R+3', rooms: 5, surface: 165, price: 650000, status: 'available', view: 'Panoramic 360°',  features: ['Parking ×2', 'Storage', 'Roof Terrace', 'Private Pool'] },
+];
+
+function chatFmtPrice(p) {
+  return p.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+}
+
+function chatBuildCards(apts) {
+  return apts.map(a => `
+    <div class="chat-apt-card">
+      <div class="chat-apt-id">${a.id} &mdash; ${a.floor}</div>
+      <div class="chat-apt-detail">
+        &#127760; ${a.rooms} rooms &nbsp;&#183;&nbsp; ${a.surface}\u202fm&sup2;<br>
+        &#128176; ${chatFmtPrice(a.price)}<br>
+        &#127774; ${a.view}<br>
+        &#10003; ${a.features.join(' &middot; ')}
+      </div>
+      <span class="chat-apt-status status-${a.status}">${a.status}</span>
+    </div>`).join('');
+}
+
+function chatbotGetReply(input) {
+  const q = input.toLowerCase().trim();
+
+  // Greetings
+  if (/^(hi|hello|hey|bonjour|salut|good\s*(morning|afternoon|evening))/.test(q)) {
+    return { text: 'Hello! 👋 I\'m the <strong>Parc de Lac</strong> apartment assistant. Ask me about available units, prices, floor plans, and more. What are you looking for?' };
+  }
+
+  // Thank you
+  if (/thank|merci/.test(q)) {
+    return { text: 'You\'re welcome! Feel free to ask anything else about Parc de Lac apartments.' };
+  }
+
+  // Contact / visit
+  if (/contact|visit|tour|appointment|schedule|agent|call|phone/.test(q)) {
+    return { text: 'To schedule a visit or speak with a sales agent:<br><br>&#128222; <strong>+212 5XX-XXX-XXX</strong><br>&#128140; <strong>contact@houseinmeta.com</strong><br><br>Our team will arrange a private tour of your preferred unit.' };
+  }
+
+  // About the project
+  if (/what is|about|project|parc de lac|description|how many/.test(q)) {
+    return { text: '<strong>Parc de Lac</strong> is a premium residential development with stunning lake &amp; panoramic views.<br><br>&#127970; Ground floor (RDC) to R+3 &mdash; <strong>10 apartments</strong><br>&#128197; 2-room to 5-room penthouse<br>&#128176; Starting from <strong>' + chatFmtPrice(850000) + '</strong>' };
+  }
+
+  // Penthouse
+  if (/penthouse|ph01|ph 01/.test(q)) {
+    const ph = CHAT_APARTMENTS.find(a => a.id === 'PH01');
+    return { text: 'Here is our exclusive <strong>Penthouse</strong>:', cards: [ph] };
+  }
+
+  // Specific apartment by ID
+  const idMatch = q.match(/\b(a\d{3}|ph\d{2})\b/);
+  if (idMatch) {
+    const apt = CHAT_APARTMENTS.find(a => a.id.toLowerCase() === idMatch[1]);
+    if (apt) return { text: 'Details for <strong>' + apt.id + '</strong>:', cards: [apt] };
+    return { text: 'Apartment <strong>' + idMatch[1].toUpperCase() + '</strong> not found. Available IDs: A101, A201, A202, A302, A303, A401, PH01.' };
+  }
+
+  // Budget / under X
+  if (/under|less than|below|max budget|budget/.test(q)) {
+    const numMatch = q.match(/[\d\s,]+/);
+    if (numMatch) {
+      const budget = parseInt(numMatch[0].replace(/[\s,]/g, ''));
+      if (!isNaN(budget) && budget > 0) {
+        const found = CHAT_APARTMENTS.filter(a => a.price <= budget && a.status === 'available');
+        if (found.length === 0) return { text: 'No available apartments found under <strong>' + chatFmtPrice(budget) + '</strong>. Prices start from <strong>' + chatFmtPrice(850000) + '</strong>.' };
+        return { text: 'Available apartments under <strong>' + chatFmtPrice(budget) + '</strong>:', cards: found };
+      }
+    }
+  }
+
+  // Prices
+  if (/price|cost|how much|tarif|prix/.test(q)) {
+    const avail  = CHAT_APARTMENTS.filter(a => a.status === 'available');
+    const minP   = Math.min(...avail.map(a => a.price));
+    const maxP   = Math.max(...avail.map(a => a.price));
+    return {
+      text: '&#128176; Prices for available units range from<br><strong>' + chatFmtPrice(minP) + '</strong> to <strong>' + chatFmtPrice(maxP) + '</strong> (Penthouse).',
+      cards: avail,
+    };
+  }
+
+  // Available apartments
+  if (/available|free|open|vacant|disponible/.test(q)) {
+    const avail = CHAT_APARTMENTS.filter(a => a.status === 'available');
+    return { text: 'We currently have <strong>' + avail.length + ' available</strong> units:', cards: avail };
+  }
+
+  // Room count — e.g. "3 room", "3 bedroom", "3-room"
+  const roomMatch = q.match(/(\d)[\s-]*(room|bed|bedroom|pi[eè]ce|chambre)/);
+  if (roomMatch) {
+    const count = parseInt(roomMatch[1]);
+    const found = CHAT_APARTMENTS.filter(a => a.rooms === count && a.status === 'available');
+    if (found.length === 0) return { text: 'No available <strong>' + count + '-room</strong> apartments right now. Try 2, 3, or 4-room units.' };
+    return { text: 'Available <strong>' + count + '-room</strong> apartments:', cards: found };
+  }
+
+  // Floor queries
+  const floorMap = [
+    [/\b(ground|rdc|rez|floor\s*0)\b/, 'RDC'],
+    [/\b(r\+1|floor\s*1|first\s*floor|1st)\b/, 'R+1'],
+    [/\b(r\+2|floor\s*2|second\s*floor|2nd)\b/, 'R+2'],
+    [/\b(r\+3|floor\s*3|third\s*floor|3rd|top\s*floor)\b/, 'R+3'],
+  ];
+  for (const [pattern, label] of floorMap) {
+    if (pattern.test(q)) {
+      const found = CHAT_APARTMENTS.filter(a => a.floor === label && a.status === 'available');
+      if (found.length === 0) return { text: 'No available apartments on <strong>' + label + '</strong> currently.' };
+      return { text: 'Available apartments on <strong>' + label + '</strong>:', cards: found };
+    }
+  }
+
+  // Surface / size
+  if (/surface|size|area|sqm|m2|m²|square|big|large|small|floor\s*plan/.test(q)) {
+    const avail = CHAT_APARTMENTS.filter(a => a.status === 'available');
+    return { text: 'Surfaces range from <strong>65 m²</strong> (2-room) to <strong>165 m²</strong> (Penthouse).', cards: avail };
+  }
+
+  // Lake / panoramic view
+  if (/lake|water|view|vue|panoram/.test(q)) {
+    const found = CHAT_APARTMENTS.filter(a => /lake|panoram/i.test(a.view) && a.status === 'available');
+    if (found.length === 0) return { text: 'No lake or panoramic-view units available right now.' };
+    return { text: 'Available apartments with lake / panoramic views:', cards: found };
+  }
+
+  // Parking
+  if (/parking|garage|car\s*space/.test(q)) {
+    return { text: '&#128663; All Parc de Lac apartments include at least <strong>1 parking space</strong>.<br>4-room &amp; penthouse units include <strong>2 parking spaces</strong>.' };
+  }
+
+  // Default fallback
+  return {
+    text: 'Here are some things you can ask me:<br><br>' +
+      '&#8226; &ldquo;Show available apartments&rdquo;<br>' +
+      '&#8226; &ldquo;3-room apartments&rdquo;<br>' +
+      '&#8226; &ldquo;What are the prices?&rdquo;<br>' +
+      '&#8226; &ldquo;Apartments on R+2&rdquo;<br>' +
+      '&#8226; &ldquo;Tell me about A202&rdquo;<br>' +
+      '&#8226; &ldquo;Lake view units&rdquo;<br>' +
+      '&#8226; &ldquo;Penthouse&rdquo;',
+  };
+}
+
+// ── Chatbot UI wiring ────────────────────────────────────────────────────────
+
+(function initChatbot() {
+  const toggle  = document.getElementById('chatbot-toggle');
+  const panel   = document.getElementById('chatbot-panel');
+  const closeBtn= document.getElementById('chatbot-close');
+  const input   = document.getElementById('chatbot-input');
+  const sendBtn = document.getElementById('chatbot-send');
+  const msgs    = document.getElementById('chatbot-messages');
+  const chips   = document.querySelectorAll('.chatbot-chip');
+
+  function timeNow() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function addMessage(role, htmlContent) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'chat-msg ' + role;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.innerHTML = htmlContent;
+
+    const time = document.createElement('div');
+    time.className = 'chat-time';
+    time.textContent = timeNow();
+
+    wrapper.appendChild(bubble);
+    wrapper.appendChild(time);
+    msgs.appendChild(wrapper);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addTyping() {
+    const wrapper = document.createElement('div');
+    wrapper.id = 'chat-typing-indicator';
+    wrapper.className = 'chat-msg bot';
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble chat-typing';
+    bubble.innerHTML = '<span></span><span></span><span></span>';
+    wrapper.appendChild(bubble);
+    msgs.appendChild(wrapper);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('chat-typing-indicator');
+    if (el) el.remove();
+  }
+
+  function buildReplyHtml(reply) {
+    let html = reply.text;
+    if (reply.cards && reply.cards.length > 0) {
+      html += '<div class="chat-apt-cards">' + chatBuildCards(reply.cards) + '</div>';
+    }
+    return html;
+  }
+
+  function sendMessage(text) {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    addMessage('user', escHtml(trimmed));
+    input.value = '';
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addMessage('bot', buildReplyHtml(chatbotGetReply(trimmed)));
+    }, 500 + Math.random() * 350);
+  }
+
+  toggle.addEventListener('click', () => {
+    panel.classList.add('chatbot-open');
+    setTimeout(() => input.focus(), 310);
+  });
+
+  closeBtn.addEventListener('click', () => panel.classList.remove('chatbot-open'));
+
+  sendBtn.addEventListener('click', () => sendMessage(input.value));
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(input.value); });
+
+  chips.forEach(chip => chip.addEventListener('click', () => sendMessage(chip.textContent)));
+
+  // Welcome message after a short delay
+  setTimeout(() => {
+    addMessage('bot',
+      'Welcome to <strong>Parc de Lac</strong>! &#127963;<br>' +
+      'I\'m your apartment assistant. Ask me about available units, prices, surfaces, views, and more.<br><br>' +
+      'What can I help you with?'
+    );
+  }, 900);
+}());

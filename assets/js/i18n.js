@@ -13,7 +13,7 @@ const translations = {
     
     // Hero Section
     'hero.title1': '3D Real Estates',
-    'hero.title2': 'Reveal before Build',
+    'hero.title2': 'Reveal Before Build',
     'hero.description': 'Manifest your dream home with the power of our 3D visualization solutions.',
     'hero.cta': 'Ask for Free Demo',
     'hero.cta2': 'Create Your Experience Here',
@@ -161,9 +161,9 @@ const translations = {
     'nav.contact': 'Démo Gratuite',
     
     // Hero Section
-    'hero.title1': 'Visite Virtuelle',
-    'hero.title2': 'Immobilier',
-    'hero.description': 'Entrez chez vous avant la première pierre.',
+    'hero.title1': 'Accélérateur de Ventes VEFA',
+    'hero.title2': 'Reveal Before Build',
+    'hero.description': 'Transformez vos plans immobiliers en expériences interactives qui accélèrent les ventes.',
     'hero.cta': 'Demandez une Démo Gratuite',
     'hero.cta2': 'Créez Votre Expérience Ici',
     
@@ -349,6 +349,8 @@ function updatePageLanguage() {
       }
     }
   });
+
+  highlightHeroAccelerateur();
   
   // Update language dropdown
   updateLanguageDropdown();
@@ -357,6 +359,17 @@ function updatePageLanguage() {
   if (typeof renderPackages === 'function') {
     renderPackages();
   }
+}
+
+function highlightHeroAccelerateur() {
+  const heroTitle = document.querySelector('[data-i18n="hero.title1"]');
+  if (!heroTitle) return;
+
+  const heroText = heroTitle.textContent || '';
+  heroTitle.innerHTML = heroText.replace(
+    /^Accélérateur\b/,
+    '<span style="color:#3b82f6">Accélérateur</span>'
+  );
 }
 
 // Update language dropdown selection

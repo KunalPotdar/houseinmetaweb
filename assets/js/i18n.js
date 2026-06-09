@@ -8,8 +8,8 @@ const translations = {
     'nav.solutions': 'Solutions',
     'nav.projects': 'Projects',
     'nav.blog': 'Blog',
-    'nav.about': 'About',
-    'nav.contact': 'Free Demo',
+    'nav.about': 'Experience',
+    'nav.contact': 'Contact',
     
     // Hero Section
     'hero.title1': '3D Real Estates',
@@ -157,14 +157,14 @@ const translations = {
     'nav.solutions': 'Solutions',
     'nav.projects': 'Projets',
     'nav.blog': 'Blog',
-    'nav.about': 'À propos',
-    'nav.contact': 'Démo Gratuite',
+    'nav.about': 'Experience',
+    'nav.contact': 'Contact',
     
     // Hero Section
     'hero.title1': 'Accélérateur de Ventes VEFA',
     'hero.title2': 'Reveal Before Build',
     'hero.description': 'Transformez vos plans immobiliers en expériences interactives qui accélèrent les ventes.',
-    'hero.cta': 'Demandez une Démo Gratuite',
+    'hero.cta': 'Découvrez HouseInMeta en action',
     'hero.cta2': 'Créez Votre Expérience Ici',
     
     // Why Section

@@ -1,47 +1,50 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('contactForm');
   const status = document.getElementById('contactFormStatus');
-  const button = document.getElementById('contactSubmitBtn');
-  if (!form || !status || !button) return;
+  if (!form || !status) return;
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
 
-    const raw = Object.fromEntries(new FormData(form).entries());
-    const data = {
-      name: (raw.name || '').toString().trim(),
-      email: (raw.email || '').toString().trim(),
-      phone: (raw.phone || '').toString().trim(),
-      subject: (raw.subject || 'Website Contact Request').toString().trim(),
-      message: (raw.message || `Phone: ${(raw.phone || '').toString().trim() || 'Not provided'}`).toString().trim()
-    };
+    const endpoint = (form.getAttribute('data-appscript-url') || '').trim();
+    if (!endpoint || endpoint.includes('PASTE_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE')) {
+      status.textContent = 'Please configure your Google Apps Script Web App URL in the form data-appscript-url attribute.';
+      return;
+    }
 
-    if (!data.name || !data.email || !data.phone) {
+    const rawData = new FormData(form);
+    const name = (rawData.get('name') || '').toString().trim();
+    const email = (rawData.get('email') || '').toString().trim();
+    const phone = (rawData.get('phone') || '').toString().trim();
+    const subject = (rawData.get('subject') || 'Website Contact Request').toString().trim();
+    const message = (rawData.get('message') || '').toString().trim();
+
+    if (!name || !email) {
       status.textContent = 'Please fill all required fields.';
       return;
     }
 
-    button.disabled = true;
-    button.textContent = 'Sending...';
+    const payload = new FormData();
+    payload.append('name', name);
+    payload.append('email', email);
+    payload.append('phone', phone || 'Not provided');
+    payload.append('subject', subject);
+    payload.append('message', message || 'Not provided');
+    payload.append('submittedAt', new Date().toISOString());
+
     status.textContent = 'Sending your message...';
 
     try {
-      const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.contact}`, {
+      await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        mode: 'no-cors',
+        body: payload
       });
-
-      const result = await response.json();
-      if (!response.ok || !result.success) throw new Error(result.error || 'Send failed');
 
       form.reset();
       status.textContent = 'Message sent successfully.';
-    } catch (err) {
-      status.textContent = err.message || 'Could not send message.';
-    } finally {
-      button.disabled = false;
-      button.textContent = 'Send Message';
+    } catch (error) {
+      status.textContent = 'Unable to send message. Please try again.';
     }
   });
 });

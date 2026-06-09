@@ -43,12 +43,8 @@ function processPayment() {
         }))
     };
 
-    // Process payment based on method
-    if (paymentMethod === 'card') {
-        processStripePayment(orderData);
-    } else if (paymentMethod === 'bank_transfer') {
-        processBankTransfer(orderData);
-    }
+    // Stripe payment flow removed; submit order directly
+    processBankTransfer(orderData);
 }
 
 // Process bank transfer
@@ -64,7 +60,7 @@ async function handlePaymentSuccess(orderData) {
     document.getElementById('successMessage').classList.add('show');
 
     // Save order to backend and send email notification
-    await sendOrderToBackend(orderData, 'stripe');
+    await sendOrderToBackend(orderData, 'manual');
 
     // Show confirmation after 2 seconds
     setTimeout(() => {

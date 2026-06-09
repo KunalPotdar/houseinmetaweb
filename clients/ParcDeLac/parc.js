@@ -28,8 +28,19 @@ const CONFIG = {
   // Number of frames to preload before showing the viewer
   preloadCount: 8,
 
-  // Max simultaneous image fetches — HTTP/2 (S3) handles high concurrency well
-  concurrentLoads: 8,
+  // Frames that should be decoded before swapping to a newly selected floor
+  floorSwitchMinFrames: 2,
+
+  // Max simultaneous image fetches (adapted to network quality)
+  concurrentLoads: (() => {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!conn) return 8;
+    if (conn.saveData) return 4;
+    const type = (conn.effectiveType || '').toLowerCase();
+    if (type.includes('2g')) return 3;
+    if (type.includes('3g')) return 5;
+    return 8;
+  })(),
 };
 // ─────────────────────────────────────────────
 
@@ -51,6 +62,7 @@ let spinProgress  = 0;   // fractional frame accumulator
 const imageCache  = {};  // URL → HTMLImageElement (shared across all floors)
 let   loadQueue   = [];  // [{floorIdx, frameIdx, path, priority}]
 let   activeLoads = 0;   // number of in-flight requests
+let   pendingFloorSwitch = null;
 
 // ── Drag / pan state ──────────────────────────
 let isDragging = false;
@@ -89,6 +101,20 @@ let currentPolyPath = null;  // Path2D for hit-testing
 // ── DOM ref ───────────────────────────────────
 const aptWidget = document.getElementById('apt-widget');
 
+function circularDistance(a, b, total) {
+  const diff = Math.abs(a - b);
+  return Math.min(diff, total - diff);
+}
+
+function updateViewerImage(src, floorTransition = false) {
+  if (!src || spinImg.src === src) return;
+  if (floorTransition) spinImg.classList.add('floor-switching');
+  spinImg.src = src;
+  if (floorTransition) {
+    setTimeout(() => spinImg.classList.remove('floor-switching'), 170);
+  }
+}
+
 // ── Helpers ──────────────────────────────────
 
 function frameSrc(index, floor) {
@@ -101,7 +127,7 @@ function showFrame(index) {
   currentFrame = ((index % total) + total) % total;
   const img = floorImages[currentFloor][currentFrame];
   if (img && img.complete) {
-    spinImg.src = img.src;
+    updateViewerImage(img.src);
   }
   drawPolygon();
   // Rotate compass needle opposite to spin direction
@@ -135,6 +161,20 @@ function onFrameLoaded(floorIdx) {
     if (floorIdx === currentFloor) {
       showFrame(currentFrame);
       hideLoadingOverlay();
+    }
+  }
+
+  if (
+    pendingFloorSwitch === floorIdx &&
+    floorLoaded[floorIdx] >= CONFIG.floorSwitchMinFrames
+  ) {
+    const img = floorImages[floorIdx][currentFrame];
+    if (img && img.complete) {
+      updateViewerImage(img.src, true);
+      if (floorReady[floorIdx]) {
+        pendingFloorSwitch = null;
+        hideLoadingOverlay();
+      }
     }
   }
 }
@@ -190,6 +230,8 @@ function launchLoad() {
 
     activeLoads++;
     const img = new Image();
+    img.decoding = 'async';
+    img.fetchPriority = item.priority >= 6000 ? 'high' : 'auto';
     img.src = item.path;
     floorImages[item.floorIdx][item.frameIdx] = img;
 
@@ -214,15 +256,37 @@ function reprioritize(pivot) {
   const total = FLOORS[currentFloor].totalFrames;
   loadQueue.forEach(item => {
     if (item.floorIdx === currentFloor) {
-      item.priority = 2000 + Math.abs(total / 2 - Math.abs(item.frameIdx - pivot));
+      item.priority = 2500 + (total - circularDistance(item.frameIdx, pivot, total));
     }
   });
   loadQueue.sort((a, b) => b.priority - a.priority);
   launchLoad();
 }
 
+function queueFloorFrames(floorIdx, pivot, boost) {
+  const floor = FLOORS[floorIdx];
+  const total = floor.totalFrames;
+
+  for (let i = 0; i < total; i++) {
+    if (floorImages[floorIdx][i]) continue;
+    if (loadQueue.some(item => item.floorIdx === floorIdx && item.frameIdx === i)) continue;
+
+    const dist = circularDistance(i, pivot, total);
+    let priority = boost + (total - dist);
+    if (dist < CONFIG.preloadCount) priority += 400;
+
+    loadQueue.push({
+      floorIdx,
+      frameIdx: i,
+      path: frameSrc(i, floor),
+      priority
+    });
+  }
+}
+
 function preloadAllFloors() {
   loadQueue = [];
+
   for (let fi = 0; fi < FLOORS.length; fi++) {
     const floor = FLOORS[fi];
     for (let i = 0; i < floor.totalFrames; i++) {
@@ -231,19 +295,16 @@ function preloadAllFloors() {
         // Already in cache (e.g. page revisit)
         floorImages[fi][i] = imageCache[path];
         onFrameLoaded(fi);
-      } else if (!floorImages[fi][i]) {
-        // Priority: active floor first, early frames higher within active floor
-        let priority;
-        if (fi === currentFloor) {
-          priority = 1000 + (i < CONFIG.preloadCount ? 500 : 0) - i;
-        } else {
-          // Background floors load after the active floor is ready
-          priority = 100 - fi * 10 - i;
-        }
-        loadQueue.push({ floorIdx: fi, frameIdx: i, path, priority });
       }
     }
   }
+
+  queueFloorFrames(currentFloor, currentFrame, 5000);
+  for (let fi = 0; fi < FLOORS.length; fi++) {
+    if (fi === currentFloor) continue;
+    queueFloorFrames(fi, currentFrame, 400);
+  }
+
   loadQueue.sort((a, b) => b.priority - a.priority);
   launchLoad();
 }
@@ -252,7 +313,9 @@ function preloadAllFloors() {
 
 function switchFloor(floorIndex) {
   if (floorIndex === currentFloor) return;
+  const previousFloor = currentFloor;
   currentFloor = floorIndex;
+  pendingFloorSwitch = floorIndex;
   drawPolygon(); // clear or redraw immediately for the new floor
 
   // Update button states
@@ -261,16 +324,41 @@ function switchFloor(floorIndex) {
   stopSpin();
   resetZoom();
 
-  // Boost this floor's pending queue items to the top
+  // Aggressively prioritize frames around current angle for the target floor
+  queueFloorFrames(floorIndex, currentFrame, 7000);
   loadQueue.forEach(item => {
-    if (item.floorIdx === floorIndex) item.priority += 2000;
+    if (item.floorIdx === floorIndex) {
+      const total = FLOORS[floorIndex].totalFrames;
+      item.priority = Math.max(item.priority, 7000 + (total - circularDistance(item.frameIdx, currentFrame, total)));
+    }
   });
   loadQueue.sort((a, b) => b.priority - a.priority);
   launchLoad();
 
-  // If already ready, show immediately; otherwise wait silently for onFrameLoaded
+  const targetImg = floorImages[floorIndex][currentFrame];
+  if (targetImg && targetImg.complete) {
+    updateViewerImage(targetImg.src, true);
+    pendingFloorSwitch = null;
+    return;
+  }
+
+  // Keep previous floor visible until the target floor has enough decoded frames.
+  currentFloor = previousFloor;
+  showFrame(currentFrame);
+  currentFloor = floorIndex;
+
+  if (floorLoaded[floorIndex] < CONFIG.floorSwitchMinFrames) {
+    showLoadingOverlay(Math.min(95, Math.round((floorLoaded[floorIndex] / CONFIG.preloadCount) * 100)));
+  }
+
+  // If already ready, swap immediately.
   if (floorReady[floorIndex]) {
-    showFrame(currentFrame);
+    const readyImg = floorImages[floorIndex][currentFrame];
+    if (readyImg && readyImg.complete) {
+      updateViewerImage(readyImg.src, true);
+      pendingFloorSwitch = null;
+      hideLoadingOverlay();
+    }
   }
 }
 

@@ -1,11 +1,10 @@
 // House In Meta - Backend Server with Gmail Email Service
-// Node.js/Express server with Stripe payment processing and Gmail email notifications
+// Node.js/Express server with email notifications
 
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const nodemailer = require('nodemailer');
-const stripe = require('stripe');
 const multer = require('multer');
 
 // Load environment variables
@@ -14,11 +13,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Initialize Stripe
-const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
-
 // Middleware
-// CORS Configuration - explicitly configured for API Gateway Lambda integration
+// CORS configuration
 app.use(cors({
   origin: true, // Reflect the request origin (respects preflight)
   credentials: true,
@@ -352,34 +348,6 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// Create Payment Intent (Stripe)
-app.post('/api/create-payment-intent', async (req, res) => {
-  try {
-    const { amount, currency, paymentMethodId, orderData } = req.body;
-
-    // Create payment intent with Stripe
-    const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: amount,
-      currency: currency,
-      payment_method: paymentMethodId,
-      confirm: true,
-      metadata: {
-        orderId: orderData.orderId,
-        customerEmail: orderData.user.email,
-        packageName: orderData.package
-      }
-    });
-
-    res.json({
-      clientSecret: paymentIntent.client_secret,
-      status: paymentIntent.status
-    });
-  } catch (error) {
-    console.error('Payment Intent Error:', error);
-    res.status(400).json({ error: error.message });
-  }
-});
-
 // Save Order (to database/file)
 app.post('/api/orders', async (req, res) => {
   try {
@@ -490,6 +458,103 @@ app.post('/api/send-email', async (req, res) => {
       success: true,
       message: 'Order saved successfully. Email delivery pending.',
       note: error.message
+    });
+  }
+});
+
+// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+
+    const escapeHtml = (value) =>
+      String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: name, email, subject, message'
+      });
+    }
+
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email address'
+      });
+    }
+
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safePhone = phone ? escapeHtml(phone) : 'Not provided';
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+
+    const receiver = process.env.CONTACT_RECEIVER_EMAIL || 'amruta@houseinmeta.com';
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body { font-family: Arial, sans-serif; color: #222; line-height: 1.5; }
+          .card { max-width: 640px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+          .head { background: #4e8ce1; color: #fff; padding: 16px 20px; }
+          .body { padding: 20px; }
+          .row { margin-bottom: 10px; }
+          .label { font-weight: 700; }
+          .message { white-space: pre-wrap; background: #f7f7f7; border-radius: 6px; padding: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="head"><h2 style="margin:0">New Contact Message</h2></div>
+          <div class="body">
+            <div class="row"><span class="label">Name:</span> ${safeName}</div>
+            <div class="row"><span class="label">Email:</span> ${safeEmail}</div>
+            <div class="row"><span class="label">Phone:</span> ${safePhone}</div>
+            <div class="row"><span class="label">Subject:</span> ${safeSubject}</div>
+            <div class="row"><span class="label">Message:</span></div>
+            <div class="message">${safeMessage}</div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      return res.status(500).json({
+        success: false,
+        error: 'Email service not configured'
+      });
+    }
+
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: receiver,
+      subject: `Contact Form: ${safeSubject}`,
+      html: htmlContent,
+      replyTo: email,
+      headers: {
+        'X-Contact-Source': 'website-contact-form'
+      }
+    });
+
+    res.json({
+      success: true,
+      message: 'Contact request sent successfully'
+    });
+  } catch (error) {
+    console.error('Contact form error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to send contact request'
     });
   }
 });
@@ -937,11 +1002,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server (Lambda will ignore this, local only)
-if (!process.env.LAMBDA_FUNCTION_NAME) {
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  });
-}
+// Start server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
 
 module.exports = app;

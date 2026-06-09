@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // Main initialization
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all components
-    initializeStripe();
-    renderPackages();
-    setupUploadArea();
-    updateOrderSummary();
+  if (typeof renderPackages === 'function') renderPackages();
+  if (typeof setupUploadArea === 'function') setupUploadArea();
+  if (typeof updateOrderSummary === 'function') updateOrderSummary();
 });

@@ -112,6 +112,11 @@ body {
   will-change: transform;
   transform-origin: center center;
   filter: brightness(1.25);
+  transition: opacity 0.16s ease;
+}
+
+#spin-img.floor-switching {
+  opacity: 0.84;
 }
 
 #poly-canvas {

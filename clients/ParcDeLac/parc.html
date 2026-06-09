@@ -6,6 +6,7 @@
   <title>Parc de Lac 360° View</title>
   <link rel="preconnect" href="https://apt-hsim-models.s3.eu-west-3.amazonaws.com" crossorigin />
   <link rel="stylesheet" href="parc.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 </head>
 <body>
 
@@ -27,6 +28,11 @@
   <div id="spin-container">
     <img id="spin-img" src="" alt="Maison M2 360° view" draggable="false" />
     <canvas id="poly-canvas"></canvas>
+
+    <div id="pedestrian-inline" class="pedestrian-inline" aria-hidden="true">
+      <div class="pedestrian-inline-title">Accès Piéton &mdash; Vue 360°</div>
+      <div id="pedestrian-360-viewer" class="pedestrian-inline-viewer"></div>
+    </div>
 
     <!-- Compass -->
     <div id="compass">
@@ -57,6 +63,7 @@
       <button class="floor-btn" data-floor="3">R+2</button>
       <button class="floor-btn" data-floor="2">R+1</button>
       <button class="floor-btn" data-floor="1">RDC</button>
+      <button class="floor-btn floor-btn-special" data-action="pedestrian-360">Accès Piéton</button>
     </div>
 
   </div>
@@ -164,5 +171,6 @@
   </div>
 
   <script src="parc.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 </body>
 </html>

@@ -90,9 +90,15 @@ const floorBtns    = document.querySelectorAll('.floor-btn');
 const polyCanvas   = document.getElementById('poly-canvas');
 const polyCtx      = polyCanvas.getContext('2d');
 const compassNeedle  = document.getElementById('compass-needle');
+const compass      = document.getElementById('compass');
 const loadingOverlay = document.getElementById('loading-overlay');
 const loadingBar     = document.getElementById('loading-bar');
 const loadingStatus  = document.getElementById('loading-status');
+const pedestrianInline = document.getElementById('pedestrian-inline');
+const pedestrianBtn = document.querySelector('[data-action="pedestrian-360"]');
+
+let pedestrianViewer = null;
+let inPedestrianMode = false;
 
 // ── Polygon overlay data (Floor 4) ────────────
 let polyData        = null;
@@ -313,6 +319,7 @@ function preloadAllFloors() {
 
 function switchFloor(floorIndex) {
   if (floorIndex === currentFloor) return;
+  closePedestrian360();
   const previousFloor = currentFloor;
   currentFloor = floorIndex;
   pendingFloorSwitch = floorIndex;
@@ -363,8 +370,67 @@ function switchFloor(floorIndex) {
 }
 
 floorBtns.forEach((btn) => {
-  btn.addEventListener('click', () => switchFloor(parseInt(btn.dataset.floor)));
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.action;
+    if (action === 'pedestrian-360') {
+      openPedestrian360();
+      return;
+    }
+
+    const floorIndex = parseInt(btn.dataset.floor, 10);
+    if (!Number.isNaN(floorIndex)) {
+      switchFloor(floorIndex);
+    }
+  });
 });
+
+function initPedestrianViewer() {
+  if (pedestrianViewer || typeof pannellum === 'undefined') return;
+  pedestrianViewer = pannellum.viewer('pedestrian-360-viewer', {
+    type: 'equirectangular',
+    panorama: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/360-ext.png',
+    autoLoad: true,
+    showControls: true,
+    mouseZoom: true,
+    autoRotate: -2,
+    hfov: 100,
+    pitch: 0,
+    yaw: 0
+  });
+}
+
+function openPedestrian360() {
+  stopSpin();
+  hideWidget();
+  initPedestrianViewer();
+  inPedestrianMode = true;
+  pedestrianInline.classList.add('active');
+  pedestrianInline.setAttribute('aria-hidden', 'false');
+  spinImg.style.display = 'none';
+  polyCanvas.style.display = 'none';
+  if (compass) compass.style.display = 'none';
+  floorBtns.forEach(btn => btn.classList.remove('active'));
+  if (pedestrianBtn) pedestrianBtn.classList.add('active');
+
+  // Ensure viewer dimensions are recalculated after becoming visible
+  setTimeout(() => {
+    if (pedestrianViewer && typeof pedestrianViewer.resize === 'function') {
+      pedestrianViewer.resize();
+    }
+  }, 60);
+}
+
+function closePedestrian360() {
+  if (!inPedestrianMode) return;
+  inPedestrianMode = false;
+  pedestrianInline.classList.remove('active');
+  pedestrianInline.setAttribute('aria-hidden', 'true');
+  spinImg.style.display = '';
+  polyCanvas.style.display = '';
+  if (compass) compass.style.display = '';
+  if (pedestrianBtn) pedestrianBtn.classList.remove('active');
+  showFrame(currentFrame);
+}
 
 // ── Auto-spin ────────────────────────────────
 
@@ -683,6 +749,7 @@ document.addEventListener('keydown', (e) => {
     closePlan2d();
     closePlan3d();
     closeVisiterT();
+    closePedestrian360();
     document.getElementById('chatbot-panel').classList.remove('chatbot-open');
   }
 });

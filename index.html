@@ -749,6 +749,174 @@
           </div>
       </section>
 
+      <!-- 360° Viewer Section -->
+      <section id="viewer-360" class="card" style="margin-bottom:4rem;padding:3rem 4rem">
+        <h2 style="font-size:2.5rem;margin:0 0 0.75rem;text-align:center" data-i18n="viewer360.title">Experience Maquette Orbitale 3D</h2>
+        <p class="muted" style="text-align:center;margin-bottom:2rem" data-i18n="viewer360.subtitle">Explore this exterior view in full 360° — drag to look around, scroll to zoom</p>
+        <div id="panorama-widget" style="width:100%;height:500px;border-radius:12px;overflow:hidden;background:#111"></div>
+
+        <!-- 360 CTA Form Popup -->
+        <div id="cta-360-overlay" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(42,42,42,0.72);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+          <div style="background:var(--glossy-grad);color:var(--text);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:2rem 2.2rem;text-align:left;max-width:460px;width:92%;box-shadow:0 18px 60px rgba(0,0,0,0.38), inset 0 1px 1px rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:Inter,Segoe UI,Arial,sans-serif;animation:ctaPopIn 0.35s ease forwards">
+            <h3 style="margin:0 0 0.4rem;font-size:1.35rem;font-weight:700">Accès Complet Maquette Orbitale 3D</h3>
+            <p style="margin:0 0 1.2rem;color:var(--muted);font-size:0.98rem;line-height:1.45">Remplissez ce formulaire pour accéder à la visite complète.</p>
+            <form id="cta360Form" data-appscript-url="https://script.google.com/macros/s/AKfycbxsvrChafFpOZOLYVFeRRczMFYEJUgqlUnEeLbEGYW83VznbBhnCX9QhaG96tFb-Psv/exec" novalidate>
+              <div style="display:grid;grid-template-columns:1fr;gap:0.75rem">
+                <input id="cta360Name" name="name" type="text" placeholder="Nom complet" required style="width:100%;padding:.75rem;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.08);color:var(--text);font-family:inherit;font-size:0.96rem">
+                <input id="cta360Email" name="email" type="email" placeholder="E-mail" required style="width:100%;padding:.75rem;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.08);color:var(--text);font-family:inherit;font-size:0.96rem">
+                <input id="cta360Phone" name="phone" type="tel" placeholder="Téléphone (obligatoire)" required style="width:100%;padding:.75rem;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.08);color:var(--text);font-family:inherit;font-size:0.96rem">
+              </div>
+              <div style="display:flex;gap:0.75rem;margin-top:1rem;align-items:center;flex-wrap:wrap">
+                <button type="submit" style="padding:.8rem 1.1rem;border:none;border-radius:8px;background:var(--accent);color:white;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.96rem">Envoyer</button>
+                <button type="button" onclick="close360CTA()" style="padding:.75rem 1rem;background:transparent;color:var(--muted);border:1.5px solid rgba(255,255,255,.28);border-radius:8px;font-size:0.92rem;cursor:pointer;font-family:inherit">Fermer</button>
+              </div>
+              <p id="cta360Status" style="margin-top:.75rem;min-height:1.25rem;color:var(--muted)"></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- ParcDeLac Widget Popup -->
+        <div id="parc-widget-overlay" style="display:none;position:fixed;inset:0;z-index:3100;background:rgba(16,16,16,0.7);backdrop-filter:blur(3px);align-items:center;justify-content:center">
+          <div style="width:min(96vw,1200px);height:min(90vh,760px);background:#111;border:1px solid rgba(255,255,255,.2);border-radius:14px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.45);animation:ctaPopIn 0.3s ease forwards">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.65rem 0.9rem;background:rgba(0,0,0,.45);color:#fff;font-size:0.95rem;border-bottom:1px solid rgba(255,255,255,.12)">
+              <span>Parc de Lac - Experience 3D</span>
+              <button type="button" onclick="closeParcWidget()" style="background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:0.2rem 0.6rem;cursor:pointer">X</button>
+            </div>
+            <iframe id="parcWidgetFrame" src="about:blank" style="width:100%;height:calc(100% - 42px);border:none;background:#111" allow="fullscreen"></iframe>
+          </div>
+        </div>
+        <style>
+          @keyframes ctaPopIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to   { opacity: 1; transform: scale(1); }
+          }
+          @keyframes ctaPopOut {
+            from { opacity: 1; transform: scale(1); }
+            to   { opacity: 0; transform: scale(0.85); }
+          }
+        </style>
+        <script>
+          (function() {
+            var overlay = document.getElementById('cta-360-overlay');
+            var ctaForm = document.getElementById('cta360Form');
+            var ctaStatus = document.getElementById('cta360Status');
+            var parcOverlay = document.getElementById('parc-widget-overlay');
+            var parcFrame = document.getElementById('parcWidgetFrame');
+            var ENDPOINT_FALLBACK = 'https://script.google.com/macros/s/AKfycbxsvrChafFpOZOLYVFeRRczMFYEJUgqlUnEeLbEGYW83VznbBhnCX9QhaG96tFb-Psv/exec';
+
+            function show360CTA() {
+              overlay.style.display = 'flex';
+              var box = overlay.querySelector('div');
+              box.style.animation = 'none';
+              box.offsetHeight;
+              box.style.animation = 'ctaPopIn 0.35s ease forwards';
+            }
+
+            window.close360CTA = function() {
+              var box = overlay.querySelector('div');
+              box.style.animation = 'ctaPopOut 0.25s ease forwards';
+              setTimeout(function() { overlay.style.display = 'none'; }, 260);
+            };
+
+            window.closeParcWidget = function() {
+              parcOverlay.style.display = 'none';
+              parcFrame.src = 'about:blank';
+            };
+
+            function openParcWidget() {
+              parcOverlay.style.display = 'flex';
+              parcFrame.src = '/clients/ParcDeLac/parc.html';
+            }
+
+            overlay.addEventListener('click', function(e) {
+              if (e.target === overlay) window.close360CTA();
+            });
+
+            parcOverlay.addEventListener('click', function(e) {
+              if (e.target === parcOverlay) window.closeParcWidget();
+            });
+
+            ctaForm.addEventListener('submit', async function(event) {
+              event.preventDefault();
+              var endpoint = (ctaForm.getAttribute('data-appscript-url') || '').trim() || ENDPOINT_FALLBACK;
+              var rawData = new FormData(ctaForm);
+              var name = (rawData.get('name') || '').toString().trim();
+              var email = (rawData.get('email') || '').toString().trim();
+              var phone = (rawData.get('phone') || '').toString().trim();
+
+              if (!name || !email || !phone) {
+                ctaStatus.textContent = 'Veuillez remplir tous les champs obligatoires.';
+                return;
+              }
+
+              var payload = new FormData();
+              payload.append('name', name);
+              payload.append('email', email);
+              payload.append('phone', phone);
+              payload.append('subject', 'Acces complet Maquette Orbitale 3D');
+              payload.append('message', 'Demande d\'acces complet depuis popup 360');
+              payload.append('submittedAt', new Date().toISOString());
+
+              ctaStatus.textContent = 'Envoi de votre demande...';
+
+              try {
+                await fetch(endpoint, {
+                  method: 'POST',
+                  mode: 'no-cors',
+                  body: payload
+                });
+
+                ctaForm.reset();
+                ctaStatus.textContent = 'Message envoyé avec succès.';
+                window.close360CTA();
+                openParcWidget();
+              } catch (error) {
+                ctaStatus.textContent = 'Impossible d\'envoyer le message. Veuillez réessayer.';
+              }
+            });
+
+            // show one time after initial delay (no flashing)
+            setTimeout(function() {
+              show360CTA();
+            }, 2000);
+          })();
+        </script>
+        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--muted, #888)">
+          <span style="margin-right:1.5rem">🖱 Drag to pan</span>
+          <span style="margin-right:1.5rem">🔍 Scroll to zoom</span>
+          <span>⛶ Double-click for fullscreen</span>
+        </p>
+      </section>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+      <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+      <script>
+        (function() {
+          pannellum.viewer('panorama-widget', {
+            type: 'equirectangular',
+            panorama: 'https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/360-ext.png',
+            autoLoad: true,
+            autoRotate: -2,
+            showControls: true,
+            mouseZoom: true,
+            hfov: 100,
+            pitch: 0,
+            yaw: 0,
+            strings: {
+              loadButtonLabel: 'Click to<br>Load Panorama',
+              loadingLabel: 'Loading…',
+              bylineLabel: '',
+              noPanoramaError: 'No panorama image was specified.',
+              fileAccessError: 'The file %s could not be accessed.',
+              malformedURLError: 'There is something wrong with the panorama URL.',
+              iOS8WebGLError: 'Due to iOS 8\'s broken WebGL implementation, only progressive-encoded JPEG panorama images are supported.',
+              genericWebGLError: 'Your browser does not have the necessary WebGL support to display this panorama.',
+              textureSizeError:  'This panorama is too big for your device! It\'s %spx wide, but your device only supports images up to %spx wide. Try using a smaller panorama.',
+              unknownError: 'Unknown error. Check developer console.'
+            }
+          });
+        })();
+      </script>
+
       <section id="blog" class="card" style="margin-bottom:4rem">
         <h2 style="font-size:2.5rem;margin:0 0 1.5rem" data-i18n="blog.title">Discover our Blogs</h2>
         <p class="muted" style="margin-bottom:2rem" data-i18n="blog.subtitle">Insights and updates from the world of virtual real estate</p>

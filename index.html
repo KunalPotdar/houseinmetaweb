@@ -884,9 +884,9 @@
                 });
 
                 ctaForm.reset();
-                ctaStatus.textContent = 'Message envoyé avec succès.';
+                ctaStatus.textContent = 'Merci. Nous vous enverrons le lien de demo par e-mail.';
+                window.alert('Thank you! We will send you the demo link by email.');
                 window.close360CTA(false);
-                openParcWidget();
               } catch (error) {
                 ctaStatus.textContent = 'Impossible d\'envoyer le message. Veuillez réessayer.';
               }

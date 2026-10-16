@@ -107,11 +107,11 @@ nav a:hover {
 }
 
 :root{
-  --bg:#2a2a2a;  /* Dark grey background */
+  --bg:#203746;  /* Deep brand blue background */
   --text:#e0e0e0;  /* Light grey for text */
   --card:#ffffff;
   --muted:#a0a0a0;  /* Medium grey for muted text */
-  --accent:#4e8ce1;  /* Keep the blue accent */
+  --accent:#6c95b0;  /* Brand blue accent */
   --glass:rgba(141, 138, 138, 0.95);  /* More opaque for better text contrast */
   --glossy-grad: linear-gradient(145deg, 
     rgba(255,255,255,0.1) 0%, 
@@ -143,8 +143,8 @@ body::before {
   right: 0;
   bottom: 0;
   background: linear-gradient(180deg, 
-    rgba(42,42,42,0.85) 0%, 
-    rgba(42,42,42,0.75) 100%
+    rgba(32,55,70,0.85) 0%,
+    rgba(32,55,70,0.75) 100%
   );
   z-index: 0;
 }

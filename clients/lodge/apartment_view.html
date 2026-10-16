@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Lodge — Walkthrough</title>
 	<link rel="stylesheet" href="aptstyles.css">
 	<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
@@ -96,8 +96,16 @@
     }
     #mobile-hint strong { color: #ffd700; }
   </style>
+  <link rel="stylesheet" href="viewer-ui.css">
 </head>
 <body>
+  <header class="viewer-header">
+    <a href="/" class="viewer-brand" aria-label="Return to House in Meta">house<span>in</span>meta.</a>
+    <span class="viewer-divider" aria-hidden="true"></span>
+    <div class="viewer-title"><strong>Lodge</strong><span>Immersive residence · 3D walkthrough</span></div>
+    <a class="viewer-back" href="/#solutions">← Back to collection</a>
+  </header>
+  <details class="viewer-help"><summary>How to explore <span aria-hidden="true">?</span></summary><div><strong>Your space to explore.</strong><p>On desktop, enter the walkthrough, then use W, A, S, D to move and your mouse to look around. Press Esc to release your mouse.</p><p>On touch screens, use the arrows to move and drag on the right to look around.</p></div></details>
   <button id="startWalkthroughBtn" class="walkthrough-btn">Enter Walkthrough</button>
   <div id="walkthrough-controls" class="controls-panel" style="display: none;">
   <h3>Walkthrough Mode</h3>
@@ -113,11 +121,11 @@
 
   <!-- Mobile D-pad (bottom-left) -->
   <div id="mobile-dpad">
-    <button class="dpad-btn" id="btn-forward">&#9650;</button>
+    <button class="dpad-btn" id="btn-forward" aria-label="Move forward">&#9650;</button>
     <div class="dpad-row">
-      <button class="dpad-btn" id="btn-left">&#9664;</button>
-      <button class="dpad-btn" id="btn-backward">&#9660;</button>
-      <button class="dpad-btn" id="btn-right">&#9654;</button>
+      <button class="dpad-btn" id="btn-left" aria-label="Move left">&#9664;</button>
+      <button class="dpad-btn" id="btn-backward" aria-label="Move backward">&#9660;</button>
+      <button class="dpad-btn" id="btn-right" aria-label="Move right">&#9654;</button>
     </div>
   </div>
 
@@ -127,11 +135,15 @@
     <strong>Arrows</strong> to move
   </div>
 
-   <div id="progress-container">
+   <div id="progress-container" role="status" aria-live="polite">
+      <div class="loading-monogram" aria-hidden="true">hm.</div>
+      <p class="loading-eyebrow">YOUR NEXT PERSPECTIVE</p>
       <div id="progress-label">Loading Lodge…</div>
       <div id="progress-bar-wrap">
         <div id="progress-bar"></div>
       </div>
+      <p class="loading-note">Preparing your space. This may take a moment.</p>
+      <a class="loading-return" href="/#solutions">← Return to collection</a>
       <script>
         const urlParams = new URLSearchParams(window.location.search);
         const apartmentId = urlParams.get('apartment');

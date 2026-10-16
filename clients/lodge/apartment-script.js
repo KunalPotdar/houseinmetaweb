@@ -245,6 +245,10 @@ loader.load('https://apt-hsim-models.s3.eu-west-3.amazonaws.com/ParcDeLac/Lot/A2
   console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
 }, (error) => {
   console.error(error);
+  document.getElementById('progress-label').textContent = 'This space could not load.';
+  document.querySelector('.loading-note').textContent = 'Check your connection and refresh to try again.';
+  document.getElementById('progress-bar-wrap').hidden = true;
+  walkthroughBtn.style.display = 'none';
 });
 
 // Movement

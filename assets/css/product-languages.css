@@ -1,0 +1,8 @@
+.product-languages{display:flex;flex-wrap:wrap;gap:12px 20px;margin-block:24px;font-size:14px;line-height:1.8}
+.product-languages a{text-decoration:underline;text-underline-offset:4px}
+.product-languages a[aria-current="page"]{font-weight:700}
+.site-footer .product-languages{flex-basis:100%}
+.product-detail{max-width:780px;margin-block:40px}
+.product-detail p{color:var(--muted)}
+[dir="rtl"] .model-intro h1{letter-spacing:normal}
+[dir="rtl"] .header-inner,[dir="rtl"] .site-footer{text-align:start}

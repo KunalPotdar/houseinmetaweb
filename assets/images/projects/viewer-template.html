@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__TITLE__ – 3D walkthrough</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1d3557; --panel:rgba(244,247,250,.92); --line:#c4d0dd; --text:#1d2a3a; --muted:#5b6b7d;
+    color-scheme:light; box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ink:#9cc3ee; --panel:rgba(18,27,39,.9); --line:#2e4260; --text:#e4ebf3; --muted:#9badc2; color-scheme:dark; } }
+  :root[data-theme="dark"] { --ink:#9cc3ee; --panel:rgba(18,27,39,.9); --line:#2e4260; --text:#e4ebf3; --muted:#9badc2; color-scheme:dark; }
+  *,*::before,*::after { box-sizing:inherit; }
+  html,body { height:100%; margin:0; overflow:hidden; }
+  body { background:#cfd9e3; font-family:"Barlow","Segoe UI",system-ui,sans-serif; color:var(--text); }
+  #scene { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  .card,#map,.keys { position:fixed; background:var(--panel); border:1px solid var(--line); border-radius:4px; backdrop-filter:blur(6px); }
+  .card { left:calc(14px + env(safe-area-inset-left,0px)); top:calc(14px + env(safe-area-inset-top,0px)); border-left:4px solid var(--ink); padding:10px 14px 12px; min-width:200px; max-width:min(300px,70vw); }
+  .card .plan { font-size:.78rem; color:var(--muted); }
+  .card h1 { font-family:"Barlow Condensed","Arial Narrow",sans-serif; font-size:1.9rem; line-height:1.05; margin:2px 0 8px; color:var(--ink); }
+  .card dl { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin:0; font-size:.92rem; }
+  .card dt { color:var(--muted); } .card dd { margin:0; font-weight:600; font-variant-numeric:tabular-nums; }
+  #map { right:calc(14px + env(safe-area-inset-right,0px)); top:calc(14px + env(safe-area-inset-top,0px)); width:250px; height:170px; max-width:40vw; }
+  .keys { left:calc(14px + env(safe-area-inset-left,0px)); bottom:calc(14px + env(safe-area-inset-bottom,0px)); padding:8px 12px; font-size:.85rem; color:var(--muted); line-height:1.6; }
+  kbd { display:inline-block; min-width:1.6em; text-align:center; padding:0 5px; border:1px solid var(--line); border-bottom-width:2px; border-radius:3px; font:600 .8rem inherit; color:var(--text); }
+  #toast { position:fixed; left:50%; top:22%; transform:translateX(-50%); text-align:center; pointer-events:none; opacity:0; transition:opacity .35s; color:#fff; text-shadow:0 2px 12px rgba(10,25,45,.6); }
+  #toast.show { opacity:1; }
+  #toast .n { font:700 clamp(2.1rem,6vw,3.5rem)/1 "Barlow Condensed","Arial Narrow",sans-serif; }
+  #toast .d { margin-top:6px; font-size:1.05rem; font-weight:500; }
+  #cross { position:fixed; left:50%; top:50%; width:6px; height:6px; margin:-3px; border-radius:50%; background:rgba(255,255,255,.8); box-shadow:0 0 0 1px rgba(29,53,87,.5); pointer-events:none; }
+  #start { position:fixed; inset:0; display:grid; place-items:center; background:rgba(29,53,87,.55); backdrop-filter:blur(3px); }
+  #start .box { background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--ink); border-radius:4px; padding:20px 24px; max-width:min(420px,88vw); }
+  #start h2 { font:700 1.9rem "Barlow Condensed","Arial Narrow",sans-serif; margin:0 0 6px; color:var(--ink); }
+  #start p { margin:0 0 14px; color:var(--muted); line-height:1.5; }
+  #start button { font:600 1rem "Barlow",system-ui,sans-serif; padding:10px 20px; border:0; border-radius:3px; background:var(--ink); color:var(--panel); cursor:pointer; }
+  button:focus-visible { outline:3px solid #f2c230; outline-offset:2px; }
+  .pad { position:fixed; right:calc(14px + env(safe-area-inset-right,0px)); bottom:calc(14px + env(safe-area-inset-bottom,0px)); display:none; grid-template-columns:repeat(3,52px); gap:6px; }
+  .pad button { height:52px; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:var(--text); font-size:1.3rem; touch-action:none; }
+  .pad i { visibility:hidden; }
+  @media (pointer:coarse) { .pad { display:grid; } .keys { display:none; } }
+  @media (max-width:560px) { #map { width:150px; height:100px; } .card h1 { font-size:1.5rem; } }
+  @media (prefers-reduced-motion: reduce) { #toast { transition:none; } }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas><div id="cross"></div>
+<section class="card" aria-live="polite">
+  <div class="plan" id="planTitle"></div>
+  <h1 id="rName">–</h1>
+  <dl><dt>Dimensions</dt><dd id="rDims">–</dd><dt>Area</dt><dd id="rArea">–</dd><dt>Height</dt><dd id="rH">–</dd></dl>
+</section>
+<canvas id="map" width="500" height="340"></canvas>
+<div class="keys"><kbd>W</kbd><kbd>S</kbd> / <kbd>↑</kbd><kbd>↓</kbd> move · <kbd>A</kbd><kbd>D</kbd> strafe<br><kbd>←</kbd><kbd>→</kbd> turn · drag to look · <kbd>Shift</kbd> run</div>
+<div class="pad"><i></i><button data-k="fwd" aria-label="Forward">▲</button><i></i><button data-k="left" aria-label="Turn left">↺</button><button data-k="back" aria-label="Back">▼</button><button data-k="right" aria-label="Turn right">↻</button></div>
+<div id="toast"><div class="n"></div><div class="d"></div></div>
+<div id="start"><div class="box"><h2 id="startTitle">Walkthrough</h2><p>Each room shows its name and the length of every wall as you enter it.</p><button id="go">Start the walkthrough</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.__PLAN__ = /*__PLAN__*/null;</script>
+<script>
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+  "use strict";
+  const PLAN = window.__PLAN__;
+  const H = +PLAN.ceilingHeight || 2.5;
+  document.getElementById("planTitle").textContent = PLAN.title || "Floor plan";
+  document.getElementById("startTitle").textContent = PLAN.title || "Walkthrough";
+  document.getElementById("rH").textContent = H.toFixed(2) + " m";
+
+  // ---------- geometry helpers ----------
+  const sArea = p => { let a = 0; for (let i = 0; i < p.length; i++) { const [x1, z1] = p[i], [x2, z2] = p[(i + 1) % p.length]; a += x1 * z2 - x2 * z1; } return a / 2; };
+  const centroid = p => { const A = sArea(p); if (Math.abs(A) < 1e-6) { let x = 0, z = 0; p.forEach(q => { x += q[0]; z += q[1]; }); return [x / p.length, z / p.length]; }
+    let cx = 0, cz = 0; for (let i = 0; i < p.length; i++) { const [x1, z1] = p[i], [x2, z2] = p[(i + 1) % p.length], f = x1 * z2 - x2 * z1; cx += (x1 + x2) * f; cz += (z1 + z2) * f; } return [cx / (6 * A), cz / (6 * A)]; };
+  const inPoly = (x, z, p) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const [xi, zi] = p[i], [xj, zj] = p[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
+
+  const rooms = PLAN.rooms.map(r => {
+    const A = Math.abs(sArea(r.polygon));
+    const xs = r.polygon.map(p => p[0]), zs = r.polygon.map(p => p[1]);
+    const w = Math.max(...xs) - Math.min(...xs), d = Math.max(...zs) - Math.min(...zs);
+    return Object.assign({}, r, { area: A, center: centroid(r.polygon), size: w.toFixed(2) + " × " + d.toFixed(2) + " m" });
+  });
+  const detectOrder = rooms.slice().sort((a, b) => a.area - b.area);
+
+  // bounds
+  const allPts = [];
+  rooms.forEach(r => r.polygon.forEach(p => allPts.push(p)));
+  PLAN.walls.forEach(w => { allPts.push(w.a, w.b); });
+  const B = { x0: Math.min(...allPts.map(p => p[0])), x1: Math.max(...allPts.map(p => p[0])), z0: Math.min(...allPts.map(p => p[1])), z1: Math.max(...allPts.map(p => p[1])) };
+  const C = [(B.x0 + B.x1) / 2, (B.z0 + B.z1) / 2], span = Math.max(B.x1 - B.x0, B.z1 - B.z0);
+
+  // ---------- renderer ----------
+  const canvas = document.getElementById("scene");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xbcd3e8);
+  scene.fog = new THREE.Fog(0xbcd3e8, span * 2, span * 5);
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.05, 200);
+  camera.rotation.order = "YXZ";
+
+  scene.add(new THREE.HemisphereLight(0xf4f7ff, 0x8a7a66, 0.75));
+  const sun = new THREE.DirectionalLight(0xfff1dc, 0.8);
+  sun.position.set(C[0] + span, span * 1.2, C[1] + span * 0.7); sun.target.position.set(C[0], 0, C[1]);
+  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  const sc = span * 0.9; Object.assign(sun.shadow.camera, { left: -sc, right: sc, top: sc, bottom: -sc, near: 0.5, far: span * 5 });
+  scene.add(sun, sun.target);
+  rooms.filter(r => r.kind !== "outdoor").slice(0, 12).forEach(r => {
+    const p = new THREE.PointLight(0xfff4e6, 0.28, 7, 2); p.position.set(r.center[0], H - 0.2, r.center[1]); scene.add(p);
+  });
+
+  function canvasTex(w, h, draw) {
+    const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h);
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.encoding = THREE.sRGBEncoding;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+  }
+  const TEX = {
+    dry: [canvasTex(512, 512, (g, w, h) => { const rows = 8; for (let r = 0; r < rows; r++) { let x = -Math.random() * 300; while (x < w) { const len = 180 + Math.random() * 220; g.fillStyle = `hsl(32,38%,${62 + Math.random() * 10}%)`; g.fillRect(x, r * h / rows, len, h / rows); g.fillStyle = "rgba(70,45,20,.35)"; g.fillRect(x, r * h / rows, 2, h / rows); x += len; } g.fillStyle = "rgba(70,45,20,.3)"; g.fillRect(0, r * h / rows, w, 2); } }), 2.2],
+    wet: [canvasTex(256, 256, (g, w) => { g.fillStyle = "#c9cdd0"; g.fillRect(0, 0, w, w); const s = w / 4; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { g.fillStyle = `hsl(200,6%,${84 + Math.random() * 6}%)`; g.fillRect(i * s + 2, j * s + 2, s - 4, s - 4); } }), 1.2],
+    outdoor: [canvasTex(256, 256, (g, w) => { g.fillStyle = "#8f8a83"; g.fillRect(0, 0, w, w); const s = w / 4; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) { g.fillStyle = `hsl(30,6%,${66 + Math.random() * 8}%)`; g.fillRect(i * s + 3, j * s + 3, s - 6, s - 6); } }), 1.6]
+  };
+  const M = {
+    wall: new THREE.MeshStandardMaterial({ color: 0xf3f1ec, roughness: 0.92 }),
+    ext: new THREE.MeshStandardMaterial({ color: 0xe2ddd4, roughness: 0.95 }),
+    ceil: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, side: THREE.DoubleSide }),
+    glass: new THREE.MeshStandardMaterial({ color: 0xa9cbe6, transparent: true, opacity: 0.22, roughness: 0.05, depthWrite: false }),
+    frame: new THREE.MeshStandardMaterial({ color: 0x4b5560, roughness: 0.5 }),
+    rail: new THREE.MeshStandardMaterial({ color: 0x5d6670, roughness: 0.5, metalness: 0.4 }),
+    ground: new THREE.MeshStandardMaterial({ color: 0x9aa58c, roughness: 1 })
+  };
+
+  // ---------- walls ----------
+  const colliders = []; // segments {ax,az,bx,bz,hw}
+  function wallPiece(w, s0, s1, y0, y1, thick, mat, collide, shadow = true) {
+    if (s1 - s0 < 0.005 || y1 - y0 < 0.005) return;
+    const [ax, az] = w.a, L = w.len, ux = w.ux, uz = w.uz;
+    const m = new THREE.Mesh(new THREE.BoxGeometry(s1 - s0, y1 - y0, thick), mat);
+    const mid = (s0 + s1) / 2;
+    m.position.set(ax + ux * mid, (y0 + y1) / 2, az + uz * mid);
+    m.rotation.y = -Math.atan2(uz, ux);
+    m.castShadow = shadow; m.receiveShadow = true; scene.add(m);
+    if (collide) colliders.push({ ax: ax + ux * s0, az: az + uz * s0, bx: ax + ux * s1, bz: az + uz * s1, hw: thick / 2 });
+  }
+  PLAN.walls.forEach(w0 => {
+    const dx = w0.b[0] - w0.a[0], dz = w0.b[1] - w0.a[1], len = Math.hypot(dx, dz);
+    if (len < 0.01) return;
+    const w = Object.assign({}, w0, { len, ux: dx / len, uz: dz / len });
+    const t = +w.thickness || (w.exterior ? 0.2 : 0.1);
+    if (w.railing) {
+      wallPiece(w, 0, len, 0.96, 1.02, 0.06, M.rail, true);
+      wallPiece(w, 0, len, 0.05, 0.95, 0.02, M.glass, false, false);
+      return;
+    }
+    const mat = w.exterior ? M.ext : M.wall;
+    const ops = (w.openings || []).map(o => ({ s: Math.max(0, +o.at || 0), e: Math.min(len, (+o.at || 0) + (+o.width || 0.8)), type: o.type || "door", sill: o.sill, head: o.head }))
+      .filter(o => o.e - o.s > 0.05).sort((a, b) => a.s - b.s);
+    let cur = -t / 2;
+    ops.forEach(o => {
+      if (o.s < cur) o.s = cur;
+      wallPiece(w, cur, o.s, 0, H, t, mat, true);
+      const head = Math.min(H, +o.head || (o.type === "window" ? 2.15 : 2.1));
+      if (o.type === "window") {
+        const sill = Math.max(0, Math.min(head - 0.2, o.sill == null ? 0.9 : +o.sill));
+        wallPiece(w, o.s, o.e, 0, sill, t, mat, true);
+        wallPiece(w, o.s, o.e, head, H, t, mat, false);
+        wallPiece(w, o.s, o.e, sill, head, 0.02, M.glass, true, false);
+        wallPiece(w, o.s, o.e, sill, sill + 0.04, t * 0.6, M.frame, false);
+        wallPiece(w, o.s, o.e, head - 0.04, head, t * 0.6, M.frame, false);
+      } else {
+        wallPiece(w, o.s, o.e, o.type === "opening" && !o.head ? H : head, H, t, mat, false);
+      }
+      cur = Math.max(cur, o.e);
+    });
+    wallPiece(w, cur, len + t / 2, 0, H, t, mat, true);
+  });
+
+  // ---------- floors & ceilings ----------
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(span * 10, span * 10), M.ground);
+  ground.rotation.x = -Math.PI / 2; ground.position.set(C[0], -0.02, C[1]); ground.receiveShadow = true; scene.add(ground);
+  function polyMesh(poly, y, mat, down) {
+    const sh = new THREE.Shape(poly.map(([x, z]) => new THREE.Vector2(x, -z)));
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(sh), mat);
+    m.rotation.x = -Math.PI / 2; m.position.y = y; m.receiveShadow = !down; scene.add(m); return m;
+  }
+  rooms.forEach(r => {
+    const [tex, s] = TEX[r.kind] || TEX.dry;
+    const t = tex.clone(); t.needsUpdate = true; t.repeat.set(1 / s, 1 / s);
+    polyMesh(r.polygon, 0.001, new THREE.MeshStandardMaterial({ map: t, roughness: 0.6, side: THREE.DoubleSide }));
+    if (r.kind !== "outdoor") polyMesh(r.polygon, H, M.ceil, true);
+  });
+
+  // ---------- labels ----------
+  function textSprite(text, o = {}) {
+    const fs = o.size || 56, pad = 22, c = document.createElement("canvas"), g = c.getContext("2d");
+    const font = `600 ${fs}px Barlow, "Segoe UI", sans-serif`; g.font = font;
+    const w = Math.ceil(g.measureText(text).width) + pad * 2, h = fs + pad * 1.2; c.width = w; c.height = h; g.font = font;
+    g.fillStyle = o.bg || "#f2c230"; const r = 10; g.beginPath(); g.moveTo(r, 0); g.arcTo(w, 0, w, h, r); g.arcTo(w, h, 0, h, r); g.arcTo(0, h, 0, 0, r); g.arcTo(0, 0, w, 0, r); g.fill();
+    g.fillStyle = o.fg || "#2a2100"; g.textBaseline = "middle"; g.textAlign = "center"; g.fillText(text, w / 2, h / 2 + 2);
+    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    const k = o.scale || 0.0042; sp.scale.set(w * k, h * k, 1); sp.renderOrder = 999; return sp;
+  }
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x1d3557 });
+  rooms.forEach(r => {
+    const g = new THREE.Group(); g.visible = false;
+    const p = r.polygon, A = sArea(p), sgn = A >= 0 ? 1 : -1, y = Math.min(2.15, H - 0.3);
+    for (let i = 0; i < p.length; i++) {
+      const [x1, z1] = p[i], [x2, z2] = p[(i + 1) % p.length], L = Math.hypot(x2 - x1, z2 - z1);
+      if (L < 0.35) continue;
+      const nx = -(z2 - z1) / L * sgn, nz = (x2 - x1) / L * sgn, off = 0.16;
+      const ax = x1 + nx * off, az = z1 + nz * off, bx = x2 + nx * off, bz = z2 + nz * off, tk = 0.12;
+      g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(ax, y, az), new THREE.Vector3(bx, y, bz),
+        new THREE.Vector3(ax, y - tk, az), new THREE.Vector3(ax, y + tk, az),
+        new THREE.Vector3(bx, y - tk, bz), new THREE.Vector3(bx, y + tk, bz)]), lineMat));
+      const sp = textSprite(L.toFixed(2) + " m");
+      sp.position.set((x1 + x2) / 2 + nx * 0.22, Math.min(1.85, H - 0.6), (z1 + z2) / 2 + nz * 0.22); g.add(sp);
+    }
+    const ns = textSprite(r.name, { bg: "rgba(29,53,87,0.88)", fg: "#fff", size: 64, scale: 0.0048 });
+    ns.position.set(r.center[0], H - 0.12, r.center[1]); g.add(ns);
+    scene.add(g); r.group = g;
+  });
+
+  // ---------- player ----------
+  const st = PLAN.start || {};
+  const firstRoom = rooms.find(r => /entr|hall|foyer|lobby/i.test(r.name)) || rooms[0];
+  const player = { x: +st.x || firstRoom.center[0], z: +st.z || firstRoom.center[1], yaw: (+st.yaw || 0) * Math.PI / 180, pitch: 0, r: 0.22 };
+  const keys = {}, EYE = 1.6;
+  function blocked(x, z) {
+    for (const c of colliders) {
+      const vx = c.bx - c.ax, vz = c.bz - c.az, l2 = vx * vx + vz * vz;
+      let t = l2 ? ((x - c.ax) * vx + (z - c.az) * vz) / l2 : 0; t = Math.max(0, Math.min(1, t));
+      const px = c.ax + vx * t - x, pz = c.az + vz * t - z, rr = player.r + c.hw;
+      if (px * px + pz * pz < rr * rr) return true;
+    }
+    return false;
+  }
+  const roomAt = (x, z) => detectOrder.find(r => inPoly(x, z, r.polygon)) || null;
+
+  // ---------- HUD ----------
+  const $n = document.getElementById("rName"), $d = document.getElementById("rDims"), $a = document.getElementById("rArea"), toast = document.getElementById("toast");
+  let current = null, tt = 0;
+  function enterRoom(r) {
+    if (!r || r === current) return;
+    if (current) current.group.visible = false;
+    current = r; r.group.visible = true;
+    $n.textContent = r.name; $d.textContent = r.size; $a.textContent = "≈ " + r.area.toFixed(1) + " m²";
+    toast.querySelector(".n").textContent = r.name; toast.querySelector(".d").textContent = r.size;
+    toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+  const map = document.getElementById("map"), mg = map.getContext("2d");
+  function drawMap() {
+    const W = map.width, Hh = map.height, pad = 18;
+    const s = Math.min((W - pad * 2) / (B.x1 - B.x0 || 1), (Hh - pad * 2) / (B.z1 - B.z0 || 1));
+    const ox = (W - s * (B.x1 - B.x0)) / 2, oz = (Hh - s * (B.z1 - B.z0)) / 2;
+    const P = (x, z) => [ox + (x - B.x0) * s, oz + (z - B.z0) * s];
+    const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    mg.clearRect(0, 0, W, Hh);
+    rooms.forEach(r => { mg.beginPath(); r.polygon.forEach((q, i) => { const [x, y] = P(q[0], q[1]); i ? mg.lineTo(x, y) : mg.moveTo(x, y); }); mg.closePath();
+      mg.fillStyle = r === current ? "rgba(242,194,48,.55)" : (dark ? "rgba(156,195,238,.12)" : "rgba(29,53,87,.08)"); mg.fill(); });
+    mg.strokeStyle = dark ? "#9cc3ee" : "#1d3557";
+    PLAN.walls.forEach(w => { mg.lineWidth = w.railing ? 1 : (w.exterior ? 4 : 2); mg.beginPath(); mg.moveTo(...P(w.a[0], w.a[1])); mg.lineTo(...P(w.b[0], w.b[1])); mg.stroke(); });
+    const [px, pz] = P(player.x, player.z);
+    mg.save(); mg.translate(px, pz); mg.rotate(-player.yaw); mg.fillStyle = "#e63946";
+    mg.beginPath(); mg.moveTo(0, -11); mg.lineTo(7, 7); mg.lineTo(0, 3); mg.lineTo(-7, 7); mg.closePath(); mg.fill(); mg.restore();
+  }
+
+  // ---------- input ----------
+  const KM = { KeyW: "fwd", ArrowUp: "fwd", KeyS: "back", ArrowDown: "back", KeyA: "sl", KeyD: "sr", ArrowLeft: "left", ArrowRight: "right", KeyQ: "left", KeyE: "right", ShiftLeft: "run", ShiftRight: "run" };
+  addEventListener("keydown", e => { const k = KM[e.code]; if (k) { keys[k] = true; e.preventDefault(); } });
+  addEventListener("keyup", e => { const k = KM[e.code]; if (k) keys[k] = false; });
+  addEventListener("blur", () => { for (const k in keys) keys[k] = false; });
+  let drag = null;
+  canvas.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = { x: e.clientX, y: e.clientY };
+    player.yaw -= dx * 0.0042; player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch - dy * 0.0035)); });
+  canvas.addEventListener("pointerup", () => drag = null); canvas.addEventListener("pointercancel", () => drag = null);
+  document.querySelectorAll(".pad button").forEach(b => { const k = b.dataset.k;
+    b.addEventListener("pointerdown", e => { keys[k] = true; b.setPointerCapture(e.pointerId); e.preventDefault(); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(ev => b.addEventListener(ev, () => keys[k] = false)); });
+  const go = document.getElementById("go");
+  go.addEventListener("click", () => { document.getElementById("start").remove(); window.focus(); });
+  go.focus();
+
+  function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+  addEventListener("resize", resize); resize();
+  let last = performance.now();
+  (function tick(now) {
+    const dt = Math.min(0.05, ((now || last) - last) / 1000); last = now || last;
+    if (keys.left) player.yaw += 1.9 * dt; if (keys.right) player.yaw -= 1.9 * dt;
+    const sp = (keys.run ? 3 : 1.6) * dt;
+    let f = (keys.fwd ? 1 : 0) - (keys.back ? 1 : 0), s = (keys.sr ? 1 : 0) - (keys.sl ? 1 : 0);
+    if (f || s) { const l = Math.hypot(f, s); f /= l; s /= l; const sn = Math.sin(player.yaw), cs = Math.cos(player.yaw);
+      const dx = (-sn * f + cs * s) * sp, dz = (-cs * f - sn * s) * sp;
+      if (!blocked(player.x + dx, player.z)) player.x += dx; if (!blocked(player.x, player.z + dz)) player.z += dz; }
+    camera.position.set(player.x, EYE, player.z); camera.rotation.set(player.pitch, player.yaw, 0);
+    enterRoom(roomAt(player.x, player.z)); drawMap(); renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  })();
+});
+</script>
+</body>
+</html>

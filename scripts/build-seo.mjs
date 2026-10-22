@@ -73,9 +73,10 @@ ${l.sections.map(([title, copy]) => `<article class="product-detail"><h2>${esc(t
 }
 
 // Homepages retain their existing design and link to the translated product family.
-for (const [file, lang, homepage, other] of [['index.html', 'fr', '/', '/en/'], ['en/index.html', 'en', '/en/', '/']]) {
+for (const [file, lang, homepage, other] of [['index.html', 'en', '/', '/fr/'], ['en/index.html', 'en', '/', '/fr/'], ['fr/index.html', 'fr', '/fr/', '/']]) {
   let html = read(file);
-  const l = locales.find(l => l.lang === lang);
+  const product = locales.find(l => l.lang === lang);
+  const l = lang === 'en' ? { ...product, title: '3D property experiences for real estate developers', description: 'Interactive 3D models and virtual tours for real estate developers in the UK, USA, English-speaking Europe, Dubai and India. Showcase developments before construction.' } : product;
   html = html.replace(/<title>.*?<\/title>/, `<title>${esc(l.title)} | HouseInMeta</title>`);
   html = html.replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${esc(l.description)}">`);
   for (const prop of ['og:description', 'twitter:description']) html = html.replace(new RegExp(`<meta property="${prop}"[^>]*>`), `<meta property="${prop}" content="${esc(l.description)}">`);
@@ -83,26 +84,26 @@ for (const [file, lang, homepage, other] of [['index.html', 'fr', '/', '/en/'], 
   html = html.replace(/\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
   const graph = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': `${origin}/#organization`, name: 'HouseInMeta', url: `${origin}/`, logo: `${origin}/assets/images/HouseInMeta-newlogo.png`, email: 'houseinmeta@gmail.com' },
-    { '@type': 'WebSite', '@id': `${origin}/#website`, name: 'HouseInMeta', url: `${origin}/`, inLanguage: ['fr', 'en'], publisher: { '@id': `${origin}/#organization` } },
+    { '@type': 'WebSite', '@id': `${origin}/#website`, name: 'HouseInMeta', url: `${origin}/`, inLanguage: ['en', 'fr'], publisher: { '@id': `${origin}/#organization` } },
     { '@type': 'WebPage', '@id': `${origin}${homepage}#webpage`, url: `${origin}${homepage}`, name: l.title, description: l.description, inLanguage: lang, isPartOf: { '@id': `${origin}/#website` }, about: { '@type': 'Service', name: l.title, provider: { '@id': `${origin}/#organization` } } }
   ] };
   for (const prop of ['og:title', 'twitter:title']) html = html.replace(new RegExp(`<meta property="${prop}"[^>]*>`), `<meta property="${prop}" content="${esc(l.title)} | HouseInMeta">`);
   html = html.replace(/<meta property="og:locale"[^>]*>/, `<meta property="og:locale" content="${lang === 'fr' ? 'fr_FR' : 'en_GB'}">`).replace(/<meta property="og:locale:alternate"[^>]*>/, `<meta property="og:locale:alternate" content="${lang === 'fr' ? 'en_GB' : 'fr_FR'}">`);
   html = html.replace(/<meta property="og:url"[^>]*>/, `<meta property="og:url" content="${origin}${homepage}">`);
   html = html.replace(/\n<!-- home-seo:start -->[\s\S]*?<!-- home-seo:end -->/g, '');
-  html = html.replace('</head>', `\n<!-- home-seo:start -->\n<link rel="canonical" href="${origin}${homepage}">\n<link rel="alternate" hreflang="${lang}" href="${origin}${homepage}">\n<link rel="alternate" hreflang="${lang === 'fr' ? 'en' : 'fr'}" href="${origin}${other}">\n<link rel="alternate" hreflang="x-default" href="${origin}/en/">\n<script type="application/ld+json">${JSON.stringify(graph)}</script>\n<!-- home-seo:end -->\n</head>`);
+  html = html.replace('</head>', `\n<!-- home-seo:start -->\n<link rel="canonical" href="${origin}${homepage}">\n<link rel="alternate" hreflang="${lang}" href="${origin}${homepage}">\n<link rel="alternate" hreflang="${lang === 'fr' ? 'en' : 'fr'}" href="${origin}${other}">\n<link rel="alternate" hreflang="x-default" href="${origin}/">\n<script type="application/ld+json">${JSON.stringify(graph)}</script>\n<!-- home-seo:end -->\n</head>`);
   html = html.replace('<div>\n<a href="/contact.html">', `<!-- home-seo:start -->\n${languageNav(l).replace(' aria-current="page"', '')}\n<!-- home-seo:end -->\n<div>\n<a href="/contact.html">`);
   write(file, html);
 }
 
 // Share the language selector styling with the existing product and home pages.
-for (const file of ['index.html', 'en/index.html', ...locales.slice(0, 2).map(l => l.file)]) {
+for (const file of ['index.html', 'en/index.html', 'fr/index.html', ...locales.slice(0, 2).map(l => l.file)]) {
   let html = read(file);
   if (!html.includes('href="/assets/css/product-languages.css"')) html = html.replace('</head>', '<link rel="stylesheet" href="/assets/css/product-languages.css">\n</head>');
   write(file, html);
 }
 
-const pages = ['/', '/en/', ...locales.map(l => `/${l.file}`), '/contact.html'];
+const pages = ['/', '/fr/', ...locales.map(l => `/${l.file}`), '/contact.html'];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `  <url><loc>${origin}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
 console.log(`Built ${locales.length} localized product pages and sitemap (${pages.length} URLs).`);

@@ -1,5 +1,7 @@
 # Multilingual search visibility
 
+English is the default homepage at `/`, targeting real estate developers in the UK, USA, English-speaking Europe, Dubai and India. French is available at `/fr/`; `/en/` remains an English alias with a canonical URL of `/`.
+
 The primary French query is **maquette orbitale 3D**. The French and English homepages link to a family of nine product pages. The existing detailed French and English product pages keep their URLs and demonstrations.
 
 | Language | Target phrase | Product URL |

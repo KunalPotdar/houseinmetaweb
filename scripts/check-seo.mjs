@@ -8,7 +8,7 @@ const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const sitemap = read('sitemap.xml');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
 assert.equal(urls.length, new Set(urls).size, 'Duplicate sitemap URL');
-const products = urls.filter(u => ![`${origin}/`, `${origin}/en/`, `${origin}/contact.html`].includes(u));
+const products = urls.filter(u => ![`${origin}/`, `${origin}/fr/`, `${origin}/contact.html`].includes(u));
 assert.equal(products.length, 9);
 let jsonCount = 0;
 for (const url of urls) {

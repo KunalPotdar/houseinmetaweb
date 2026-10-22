@@ -301,31 +301,24 @@ const translations = {
   }
 };
 
-// Language state — /en path = English, otherwise default to French
+// English is the default; French is available through an explicit language choice.
 let currentLang = (function() {
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/en')) return 'en';
-  return localStorage.getItem('houseInMetaLang') || 'fr';
+  if (typeof window !== 'undefined' && /^\/fr(?:\/|$)/.test(window.location.pathname)) return 'fr';
+  if (typeof window !== 'undefined' && /^\/en(?:\/|$)/.test(window.location.pathname)) return 'en';
+  return localStorage.getItem('houseInMetaLang') === 'fr' ? 'fr' : 'en';
 })();
 
-// Toggle language function
 function toggleLanguage() {
-  if (window.location.pathname.startsWith('/en')) {
-    window.location.href = '/';
-  } else {
-    window.location.href = '/en';
-  }
+  changeLanguage(currentLang === 'en' ? 'fr' : 'en');
 }
 
-// Change language function for dropdown
 function changeLanguage(lang) {
-  const onEnPath = window.location.pathname.startsWith('/en');
-  if (lang === 'en' && !onEnPath) {
-    window.location.href = '/en';
-  } else if (lang === 'fr' && onEnPath) {
-    window.location.href = '/';
+  if (!['en', 'fr'].includes(lang)) return;
+  currentLang = lang;
+  localStorage.setItem('houseInMetaLang', currentLang);
+  if (/^\/(?:(?:en|fr)(?:\/index\.html|\/)?|index\.html)?$/.test(window.location.pathname)) {
+    window.location.href = lang === 'fr' ? '/fr/' : '/';
   } else {
-    currentLang = lang;
-    localStorage.setItem('houseInMetaLang', currentLang);
     updatePageLanguage();
   }
 }

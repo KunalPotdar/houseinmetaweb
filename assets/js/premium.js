@@ -11,6 +11,52 @@
   nav?.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); } });
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const hero = document.querySelector('[data-hero-carousel]');
+  if (hero) {
+    const slides = [...hero.querySelectorAll('.hero-slide')];
+    const controls = hero.querySelector('.hero-controls');
+    const buttons = [...hero.querySelectorAll('[data-hero-slide]')];
+    let current = 0;
+    let paused = reduced.matches;
+    let timer;
+    let elapsed = 0;
+    let started;
+    function tick(now) {
+      if (started === undefined) started = now;
+      elapsed += now - started;
+      started = now;
+      const progress = Math.min(elapsed / 15000, 1);
+      buttons[current].style.setProperty('--progress', String(progress));
+      hero.style.setProperty('--hero-zoom', String(1 + progress * 0.25));
+      if (elapsed >= 15000) show((current + 1) % slides.length);
+      else timer = requestAnimationFrame(tick);
+    }
+    function schedule() {
+      cancelAnimationFrame(timer);
+      started = undefined;
+      if (!paused && !document.hidden && !hero.matches(':hover') && !hero.contains(document.activeElement)) {
+        timer = requestAnimationFrame(tick);
+      }
+    }
+    function show(index) {
+      current = index;
+      elapsed = 0;
+      hero.style.setProperty('--hero-zoom', '1');
+      buttons.forEach(button => button.style.setProperty('--progress', '0'));
+      slides.forEach((slide, i) => { slide.hidden = i !== current; });
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === current)));
+      schedule();
+    }
+    controls.hidden = false;
+    buttons.forEach(button => button.addEventListener('click', () => show(Number(button.dataset.heroSlide))));
+    hero.addEventListener('mouseenter', schedule);
+    hero.addEventListener('mouseleave', schedule);
+    hero.addEventListener('focusin', schedule);
+    hero.addEventListener('focusout', () => setTimeout(schedule, 0));
+    document.addEventListener('visibilitychange', schedule);
+    reduced.addEventListener('change', () => { paused = reduced.matches; schedule(); });
+    schedule();
+  }
   if ('IntersectionObserver' in window && !reduced.matches) {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (entry.isIntersecting) { entry.target.classList.remove('is-pending'); observer.unobserve(entry.target); }

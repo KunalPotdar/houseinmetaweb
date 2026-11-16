@@ -103,7 +103,8 @@ for (const file of ['index.html', 'en/index.html', 'fr/index.html', ...locales.s
   write(file, html);
 }
 
-const pages = ['/', '/fr/', ...locales.map(l => `/${l.file}`), '/contact.html'];
+const blogPages = fs.readdirSync(path.join(root, 'pages/blog')).filter(file => file.endsWith('.html')).map(file => `/pages/blog/${file}`);
+const pages = ['/', '/fr/', ...locales.map(l => `/${l.file}`), '/contact.html', ...blogPages];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `  <url><loc>${origin}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
 console.log(`Built ${locales.length} localized product pages and sitemap (${pages.length} URLs).`);

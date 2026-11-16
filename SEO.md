@@ -29,7 +29,7 @@ node scripts/check-seo.mjs
 
 The build updates the existing French/English product headings and metadata and regenerates the other seven product pages, language links, robots.txt and sitemap.xml. Edit existing French/English journey content in their HTML files. Generated pages use the existing premium design. All translated copy is in static HTML; indexing does not depend on JavaScript.
 
-The sitemap covers the two homepages, nine product pages and contact page. It deliberately omits interactive viewer URLs and does not claim to inventory all blog or portfolio content. robots.txt permits crawling; it does not secure backend files or private data.
+The sitemap covers the two homepages, nine product pages, contact page and HTML articles in `pages/blog/`. The build discovers blog articles automatically so regeneration retains them. It omits interactive viewer URLs and portfolio content. robots.txt permits crawling; it does not secure backend files or private data.
 
 ## After deployment
 

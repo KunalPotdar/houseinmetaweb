@@ -326,15 +326,10 @@ Or in AWS Console:
 - File uploads to Lambda
 - Error handling
 
-✅ `convert2DTo3D.html`
-- Loads all JS files
-- Stripe integration ready
-- Payment flow complete
-
 ## 🎯 Your Complete Flow
 
 ```
-User fills form on convert2DTo3D.html
+User submits a plan through the active HouseInMeta upload interface
            ↓
 Frontend validates input
            ↓

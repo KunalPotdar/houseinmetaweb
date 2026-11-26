@@ -11,11 +11,20 @@ assert.equal(urls.length, new Set(urls).size, 'Duplicate sitemap URL');
 const products = urls.filter(u => /\/(?:pages\/solutions\/|(?:es|de|it|pt|hi|zh|ja)\/)/.test(new URL(u).pathname));
 assert.equal(products.length, 9);
 let jsonCount = 0;
+const titles = new Map();
+const descriptions = new Map();
 for (const url of urls) {
   const pathname = new URL(url).pathname;
   const file = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
   const html = read(file.slice(1));
-  if (pathname === '/contact.html') continue;
+  for (const [label, match, seen] of [
+    ['title', html.match(/<title>([\s\S]*?)<\/title>/i), titles],
+    ['description', html.match(/<meta name="description" content="([^"]+)"/i), descriptions]
+  ]) {
+    assert.ok(match, `Missing ${label}: ${file}`);
+    assert.ok(!seen.has(match[1]), `Duplicate ${label}: ${file} and ${seen.get(match[1])}`);
+    seen.set(match[1], file);
+  }
   assert.equal([...html.matchAll(/rel="canonical"/g)].length, 1, file);
   assert.ok(html.includes(`rel="canonical" href="${url}"`), `Canonical: ${file}`);
   assert.equal([...html.matchAll(/<h1[ >]/g)].length, 1, `H1: ${file}`);

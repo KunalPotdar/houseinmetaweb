@@ -54,8 +54,6 @@ ${head(l)}
 <link rel="stylesheet" href="/assets/css/premium.css">
 <link rel="stylesheet" href="/assets/css/product-languages.css">
 <link rel="icon" href="/assets/images/favicon.ico">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3386025353566002"
-     crossorigin="anonymous"></script>
 </head>
 <body>
 <header class="site-header"><div class="shell header-inner"><a class="wordmark" href="/en/"><img src="/assets/images/HouseInMeta-newlogo.png" alt="HouseInMeta" width="2172" height="724"></a><a class="text-link" href="#contact">${esc(l.contact)} ↗</a></div></header>
@@ -67,7 +65,7 @@ ${l.sections.map(([title, copy]) => `<article class="product-detail"><h2>${esc(t
 </section>
 <section id="contact" class="shell closing-cta"><h2>${esc(l.contact)}</h2><a class="button button-light" href="mailto:houseinmeta@gmail.com">houseinmeta@gmail.com ↗</a></section>
 </main>
-<footer class="shell site-footer"><span>© 2026 HouseInMeta</span>${languageNav(l)}</footer>
+<footer class="shell site-footer"><span>© 2026 HouseInMeta</span>${languageNav(l)}<a href="/privacy-policy.html">Privacy policy</a></footer>
 </body>
 </html>
 `);
@@ -78,7 +76,7 @@ ${l.sections.map(([title, copy]) => `<article class="product-detail"><h2>${esc(t
 for (const [file, lang, homepage, other] of [['index.html', 'en', '/', '/fr/'], ['en/index.html', 'en', '/', '/fr/'], ['fr/index.html', 'fr', '/fr/', '/']]) {
   let html = read(file);
   const product = locales.find(l => l.lang === lang);
-  const l = lang === 'en' ? { ...product, title: '3D floor plans and walkthroughs for home buyers & renovators', description: 'Visualize future homes and renovations in 3D. HouseInMeta helps home buyers, renovators, architects and interior designers explore floor plans, layouts, sunlight and finishes before making a decision.' } : product;
+  const l = lang === 'en' ? { ...product, title: '3D floor plans and walkthroughs for home buyers & renovators', description: 'Visualize future homes and renovations in 3D. HouseInMeta helps home buyers, renovators, architects and interior designers explore floor plans, layouts, sunlight and finishes before making a decision.' } : { ...product, title: 'Expériences immobilières 3D interactives', description: 'Découvrez les maquettes orbitales, catalogues de maisons et visites immersives 3D de HouseInMeta pour présenter vos projets immobiliers.' };
   html = html.replace(/<title>.*?<\/title>/, `<title>${esc(l.title)} | HouseInMeta</title>`);
   html = html.replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${esc(l.description)}">`);
   for (const prop of ['og:description']) html = html.replace(new RegExp(`<meta property="${prop}"[^>]*>`), `<meta property="${prop}" content="${esc(l.description)}">`);
